@@ -1,0 +1,10 @@
+Chain A: 210 residues  |  Chain B: 338 residues
+Cutoff: 4.5 Å  →  25 contact residues in chain A
+
+Annotated chain-A sequence (upper=contact):
+  lsaedkaAVeRSkmIEknLkeDGisaakdvkllllgadnsgkstivkTtGIvEthftfknlhfrlFdvggQrSerkKWiHCFEDvtaiifcvdlsdynrmheslmlfdsicnnKFfidtsiilflnkkdlfgekikksplticfpeytgpntyedaaayiqaqfesknrspnkeiychmtcatdtnnaqvifdavtdiilqmnlreynlv
+Contact positions (0-based): [7, 8, 10, 11, 14, 15, 18, 21, 22, 47, 49, 50, 52, 65, 70, 72, 76, 77, 79, 80, 81, 82, 83, 113, 114]
+Contact residue numbers:     [12, 13, 15, 16, 19, 20, 23, 26, 27, 182, 184, 185, 187, 200, 205, 207, 211, 212, 214, 215, 216, 217, 218, 258, 259]
+
+>7QVM|chain_A|interface_annotated
+lsaedkaAVeRSkmIEknLkeDGisaakdvkllllgadnsgkstivkTtGIvEthftfknlhfrlFdvggQrSerkKWiHCFEDvtaiifcvdlsdynrmheslmlfdsicnnKFfidtsiilflnkkdlfgekikksplticfpeytgpntyedaaayiqaqfesknrspnkeiychmtcatdtnnaqvifdavtdiilqmnlreynlv

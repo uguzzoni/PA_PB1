@@ -1,0 +1,14 @@
+# Large structure prediction outputs
+results/af3/
+results/boltz/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# OS
+.DS_Store

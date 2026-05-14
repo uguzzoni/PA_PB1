@@ -1,0 +1,208 @@
+{
+  "protocol": {
+    "stage_1a": {
+      "iters": 50,
+      "soft": true,
+      "hard": false,
+      "dropout": true,
+      "temp": 1.0,
+      "energy_weight": 0.05
+    },
+    "stage_1b": {
+      "iters": 50,
+      "soft": true,
+      "hard": false,
+      "dropout": true,
+      "temp": 1.0,
+      "energy_weight": 0.2
+    },
+    "stage_2": {
+      "iters": 50,
+      "soft": false,
+      "hard": false,
+      "dropout": true,
+      "temp": "1\u21920",
+      "energy_weight": 0.05
+    },
+    "stage_3": {
+      "iters": 30,
+      "soft": false,
+      "hard": true,
+      "dropout": false,
+      "temp": 1e-06,
+      "energy_weight": 0.5
+    }
+  },
+  "results": [
+    {
+      "seed": 0,
+      "seq": "AWGEWWCWSFFQGEC",
+      "loss_total": 0.6787,
+      "loss_af": 3.9484,
+      "energy": -6.5394,
+      "i_ptm": 0.4601,
+      "ptm": 0.862,
+      "plddt": 0.308
+    },
+    {
+      "seed": 1,
+      "seq": "AWSWWCFQGNYYRFA",
+      "loss_total": 0.3623,
+      "loss_af": 3.969,
+      "energy": -7.2133,
+      "i_ptm": 0.4562,
+      "ptm": 0.857333,
+      "plddt": 0.299667
+    },
+    {
+      "seed": 2,
+      "seq": "TAGNRWAVVMWQCGG",
+      "loss_total": 1.8775,
+      "loss_af": 3.6736,
+      "energy": -3.5921,
+      "i_ptm": 0.5876,
+      "ptm": 0.873333,
+      "plddt": 0.341667
+    },
+    {
+      "seed": 3,
+      "seq": "AIGPRHVMVFYCGFW",
+      "loss_total": 0.4886,
+      "loss_af": 3.7723,
+      "energy": -6.5674,
+      "i_ptm": 0.5575,
+      "ptm": 0.861,
+      "plddt": 0.248
+    },
+    {
+      "seed": 4,
+      "seq": "AIGNPHVFVNYYGFC",
+      "loss_total": -0.1332,
+      "loss_af": 4.1972,
+      "energy": -8.6608,
+      "i_ptm": 0.3095,
+      "ptm": 0.858667,
+      "plddt": 0.223
+    },
+    {
+      "seed": 5,
+      "seq": "NDNWRWWDNFWQDDA",
+      "loss_total": 1.0407,
+      "loss_af": 3.1157,
+      "energy": -4.15,
+      "i_ptm": 0.7586,
+      "ptm": 0.883,
+      "plddt": 0.521333
+    },
+    {
+      "seed": 6,
+      "seq": "AIGPPAWDVFYQWFC",
+      "loss_total": 1.443,
+      "loss_af": 4.4434,
+      "energy": -6.0008,
+      "i_ptm": 0.2925,
+      "ptm": 0.853667,
+      "plddt": 0.281
+    },
+    {
+      "seed": 7,
+      "seq": "GAKWTVRCVFWNCPC",
+      "loss_total": 4.3151,
+      "loss_af": 6.1072,
+      "energy": -3.5842,
+      "i_ptm": 0.3368,
+      "ptm": 0.864,
+      "plddt": 0.366667
+    },
+    {
+      "seed": 8,
+      "seq": "DWFWWSICSNKQKRA",
+      "loss_total": 0.893,
+      "loss_af": 3.8234,
+      "energy": -5.8607,
+      "i_ptm": 0.4843,
+      "ptm": 0.863333,
+      "plddt": 0.282667
+    },
+    {
+      "seed": 9,
+      "seq": "AIGGPWIMLNYQEFC",
+      "loss_total": 1.0522,
+      "loss_af": 4.3419,
+      "energy": -6.5795,
+      "i_ptm": 0.2824,
+      "ptm": 0.854,
+      "plddt": 0.227667
+    },
+    {
+      "seed": 10,
+      "seq": "DIGWAWADVFYQKKA",
+      "loss_total": 1.2135,
+      "loss_af": 3.9542,
+      "energy": -5.4814,
+      "i_ptm": 0.392,
+      "ptm": 0.860333,
+      "plddt": 0.281333
+    },
+    {
+      "seed": 11,
+      "seq": "AIGLLPWELMYYRFA",
+      "loss_total": 0.8358,
+      "loss_af": 4.563,
+      "energy": -7.4544,
+      "i_ptm": 0.2637,
+      "ptm": 0.855,
+      "plddt": 0.270333
+    },
+    {
+      "seed": 12,
+      "seq": "TAKNRVWCVFWQCFC",
+      "loss_total": 3.0094,
+      "loss_af": 5.2411,
+      "energy": -4.4634,
+      "i_ptm": 0.2425,
+      "ptm": 0.871,
+      "plddt": 0.334333
+    },
+    {
+      "seed": 13,
+      "seq": "AISGPARQVFYYWFC",
+      "loss_total": 2.3522,
+      "loss_af": 5.2963,
+      "energy": -5.8882,
+      "i_ptm": 0.145,
+      "ptm": 0.861,
+      "plddt": 0.264667
+    },
+    {
+      "seed": 14,
+      "seq": "MHWNPAQVVAWQWFC",
+      "loss_total": 1.1641,
+      "loss_af": 4.0105,
+      "energy": -5.693,
+      "i_ptm": 0.42,
+      "ptm": 0.866667,
+      "plddt": 0.341333
+    },
+    {
+      "seed": 15,
+      "seq": "DWFWWWWCNNSNKDA",
+      "loss_total": 1.2723,
+      "loss_af": 3.7931,
+      "energy": -5.0416,
+      "i_ptm": 0.4822,
+      "ptm": 0.864,
+      "plddt": 0.331667
+    },
+    {
+      "seed": 16,
+      "seq": "NGKKRACWVNWFGTC",
+      "loss_total": 0.6875,
+      "loss_af": 3.7097,
+      "energy": -6.0443,
+      "i_ptm": 0.5524,
+      "ptm": 0.869333,
+      "plddt": 0.308333
+    }
+  ]
+}

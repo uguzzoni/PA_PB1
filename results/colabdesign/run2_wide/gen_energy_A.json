@@ -1,0 +1,318 @@
+{
+  "protocol": {
+    "stage_1a": {
+      "iters": 50,
+      "soft": true,
+      "hard": false,
+      "dropout": true,
+      "temp": 1.0,
+      "energy_weight": 0.02
+    },
+    "stage_1b": {
+      "iters": 50,
+      "soft": true,
+      "hard": false,
+      "dropout": true,
+      "temp": 1.0,
+      "energy_weight": 0.05
+    },
+    "stage_2": {
+      "iters": 50,
+      "soft": false,
+      "hard": false,
+      "dropout": true,
+      "temp": "1\u21920",
+      "energy_weight": 0.02
+    },
+    "stage_3": {
+      "iters": 30,
+      "soft": false,
+      "hard": true,
+      "dropout": false,
+      "temp": 1e-06,
+      "energy_weight": 0.05
+    }
+  },
+  "results": [
+    {
+      "seed": 0,
+      "seq": "AAFSPGELLLALLCC",
+      "loss_total": 3.6866,
+      "loss_af": 3.8501,
+      "energy": -3.2699,
+      "i_ptm": 0.4206,
+      "ptm": 0.890667,
+      "plddt": 0.415333
+    },
+    {
+      "seed": 1,
+      "seq": "AARGPALEVLLCMLL",
+      "loss_total": 3.7517,
+      "loss_af": 3.8561,
+      "energy": -2.0876,
+      "i_ptm": 0.4171,
+      "ptm": 0.890667,
+      "plddt": 0.424
+    },
+    {
+      "seed": 2,
+      "seq": "AAGGPDLLLNLLLFD",
+      "loss_total": 3.6535,
+      "loss_af": 3.7784,
+      "energy": -2.4985,
+      "i_ptm": 0.4263,
+      "ptm": 0.889333,
+      "plddt": 0.4
+    },
+    {
+      "seed": 3,
+      "seq": "AAGGPGEALLLLMFL",
+      "loss_total": 3.8312,
+      "loss_af": 3.9259,
+      "energy": -1.895,
+      "i_ptm": 0.3014,
+      "ptm": 0.883,
+      "plddt": 0.37
+    },
+    {
+      "seed": 4,
+      "seq": "SAGGGAALLNFLECL",
+      "loss_total": 3.6496,
+      "loss_af": 3.8567,
+      "energy": -4.1435,
+      "i_ptm": 0.4035,
+      "ptm": 0.892,
+      "plddt": 0.37
+    },
+    {
+      "seed": 5,
+      "seq": "AWGGPDLLLNFLEEL",
+      "loss_total": 3.7376,
+      "loss_af": 3.9578,
+      "energy": -4.4049,
+      "i_ptm": 0.3601,
+      "ptm": 0.891333,
+      "plddt": 0.375667
+    },
+    {
+      "seed": 6,
+      "seq": "AWAGPAALVLLCMFL",
+      "loss_total": 3.7493,
+      "loss_af": 3.8991,
+      "energy": -2.9975,
+      "i_ptm": 0.3707,
+      "ptm": 0.885333,
+      "plddt": 0.389333
+    },
+    {
+      "seed": 7,
+      "seq": "AAGGADEALLLLMFL",
+      "loss_total": 4.059,
+      "loss_af": 4.1786,
+      "energy": -2.3911,
+      "i_ptm": 0.2673,
+      "ptm": 0.88,
+      "plddt": 0.35
+    },
+    {
+      "seed": 8,
+      "seq": "AWGGPDGALLLIMFC",
+      "loss_total": 3.7467,
+      "loss_af": 3.9341,
+      "energy": -3.7477,
+      "i_ptm": 0.3145,
+      "ptm": 0.885333,
+      "plddt": 0.366
+    },
+    {
+      "seed": 9,
+      "seq": "AIRVPALEVLLVMLC",
+      "loss_total": 3.9749,
+      "loss_af": 4.1737,
+      "energy": -3.9759,
+      "i_ptm": 0.3026,
+      "ptm": 0.885333,
+      "plddt": 0.374667
+    },
+    {
+      "seed": 10,
+      "seq": "AAGGPCALVNLLLFL",
+      "loss_total": 3.77,
+      "loss_af": 3.9941,
+      "energy": -4.483,
+      "i_ptm": 0.3787,
+      "ptm": 0.885333,
+      "plddt": 0.39
+    },
+    {
+      "seed": 11,
+      "seq": "AWAGPALLVLLVCEL",
+      "loss_total": 3.9057,
+      "loss_af": 4.0731,
+      "energy": -3.3471,
+      "i_ptm": 0.3177,
+      "ptm": 0.885667,
+      "plddt": 0.367
+    },
+    {
+      "seed": 12,
+      "seq": "NDGLLFLLLDLELFC",
+      "loss_total": 3.8015,
+      "loss_af": 3.9607,
+      "energy": -3.1829,
+      "i_ptm": 0.3551,
+      "ptm": 0.890667,
+      "plddt": 0.360667
+    },
+    {
+      "seed": 13,
+      "seq": "AIAGPALELLQVMML",
+      "loss_total": 3.7853,
+      "loss_af": 3.9528,
+      "energy": -3.3486,
+      "i_ptm": 0.3702,
+      "ptm": 0.888667,
+      "plddt": 0.385667
+    },
+    {
+      "seed": 14,
+      "seq": "AAGGACALLNFLMEC",
+      "loss_total": 3.6035,
+      "loss_af": 3.8875,
+      "energy": -5.6796,
+      "i_ptm": 0.4153,
+      "ptm": 0.888667,
+      "plddt": 0.368667
+    },
+    {
+      "seed": 15,
+      "seq": "AGSGPDLLLLLMCCC",
+      "loss_total": 4.0532,
+      "loss_af": 4.129,
+      "energy": -1.5163,
+      "i_ptm": 0.3098,
+      "ptm": 0.881333,
+      "plddt": 0.341333
+    },
+    {
+      "seed": 16,
+      "seq": "AASGPALEVLLCLCL",
+      "loss_total": 3.7807,
+      "loss_af": 3.8348,
+      "energy": -1.0816,
+      "i_ptm": 0.4266,
+      "ptm": 0.891333,
+      "plddt": 0.401333
+    },
+    {
+      "seed": 17,
+      "seq": "AIGGLDELLLYLCCC",
+      "loss_total": 4.0597,
+      "loss_af": 4.2928,
+      "energy": -4.6615,
+      "i_ptm": 0.2628,
+      "ptm": 0.885333,
+      "plddt": 0.354667
+    },
+    {
+      "seed": 18,
+      "seq": "AAGGPALEVLLLMFC",
+      "loss_total": 3.6026,
+      "loss_af": 3.7488,
+      "energy": -2.9246,
+      "i_ptm": 0.4484,
+      "ptm": 0.888,
+      "plddt": 0.436
+    },
+    {
+      "seed": 19,
+      "seq": "AAGGPSAALGLCLFE",
+      "loss_total": 3.845,
+      "loss_af": 3.9374,
+      "energy": -1.8481,
+      "i_ptm": 0.3338,
+      "ptm": 0.886667,
+      "plddt": 0.36
+    },
+    {
+      "seed": 20,
+      "seq": "SIGALDCLLNFLCCC",
+      "loss_total": 3.9219,
+      "loss_af": 4.1797,
+      "energy": -5.1566,
+      "i_ptm": 0.3415,
+      "ptm": 0.888,
+      "plddt": 0.4
+    },
+    {
+      "seed": 21,
+      "seq": "EGGGLDVLLNFLCFD",
+      "loss_total": 3.5214,
+      "loss_af": 3.7491,
+      "energy": -4.5532,
+      "i_ptm": 0.4814,
+      "ptm": 0.891333,
+      "plddt": 0.444
+    },
+    {
+      "seed": 22,
+      "seq": "LAAGPGEALLLCLFC",
+      "loss_total": 3.8963,
+      "loss_af": 4.1187,
+      "energy": -4.4473,
+      "i_ptm": 0.2826,
+      "ptm": 0.885,
+      "plddt": 0.35
+    },
+    {
+      "seed": 23,
+      "seq": "WIGGPDLLEFLCMCC",
+      "loss_total": 3.8869,
+      "loss_af": 4.1072,
+      "energy": -4.4066,
+      "i_ptm": 0.2953,
+      "ptm": 0.886,
+      "plddt": 0.36
+    },
+    {
+      "seed": 24,
+      "seq": "AWGGPAALLNLIMCL",
+      "loss_total": 3.8557,
+      "loss_af": 4.0597,
+      "energy": -4.0802,
+      "i_ptm": 0.3443,
+      "ptm": 0.887667,
+      "plddt": 0.392333
+    },
+    {
+      "seed": 25,
+      "seq": "AIGGPDQQLFLELFL",
+      "loss_total": 3.5478,
+      "loss_af": 3.7955,
+      "energy": -4.9535,
+      "i_ptm": 0.4177,
+      "ptm": 0.889333,
+      "plddt": 0.393333
+    },
+    {
+      "seed": 26,
+      "seq": "AAGGPGEALCLLLFE",
+      "loss_total": 3.671,
+      "loss_af": 3.7577,
+      "energy": -1.7331,
+      "i_ptm": 0.3801,
+      "ptm": 0.896,
+      "plddt": 0.498
+    },
+    {
+      "seed": 27,
+      "seq": "AAAGPGEALNLLLFC",
+      "loss_total": 3.8174,
+      "loss_af": 4.0319,
+      "energy": -4.2908,
+      "i_ptm": 0.3602,
+      "ptm": 0.886333,
+      "plddt": 0.355333
+    }
+  ]
+}

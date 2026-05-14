@@ -1,0 +1,81 @@
+{
+  "protocol": {
+    "source": "input_sequences.txt",
+    "n_input_seqs": 5,
+    "n_seeds_per_seq": 1,
+    "stage_2": {
+      "iters": 0,
+      "soft": false,
+      "hard": false,
+      "dropout": true,
+      "temp": "1\u21920",
+      "energy_weight": 0.05,
+      "skipped": true
+    },
+    "stage_3": {
+      "iters": 30,
+      "soft": false,
+      "hard": true,
+      "dropout": false,
+      "temp": 1e-06,
+      "energy_weight": 0.05
+    }
+  },
+  "results": [
+    {
+      "seed": 0,
+      "input_seq": "CHGYVYDHHKNQEVL",
+      "seq": "CHGYVYDHHKNQEVL",
+      "loss_total": 6.528339385986328,
+      "loss_af": 6.539748757332563,
+      "energy": -0.2281874269247055,
+      "i_ptm": 0.12605369091033936,
+      "ptm": 0.8862127065658569,
+      "plddt": 0.36281341314315796
+    },
+    {
+      "seed": 0,
+      "input_seq": "YVCNVYDHFARKEVL",
+      "seq": "YVCNVYDHFARKEVL",
+      "loss_total": 5.567489147186279,
+      "loss_af": 5.504635494947434,
+      "energy": 1.2570730447769165,
+      "i_ptm": 0.12484996020793915,
+      "ptm": 0.8857415914535522,
+      "plddt": 0.32744407653808594
+    },
+    {
+      "seed": 0,
+      "input_seq": "YHPQVEGSPEMKKCL",
+      "seq": "YHPQVEGSPEMKKCL",
+      "loss_total": 6.472219467163086,
+      "loss_af": 6.647524797916413,
+      "energy": -3.5061066150665283,
+      "i_ptm": 0.10671785473823547,
+      "ptm": 0.8858966827392578,
+      "plddt": 0.3914411664009094
+    },
+    {
+      "seed": 0,
+      "input_seq": "GWKQPTCSMKICKKL",
+      "seq": "GWKQPTCSMKICKKL",
+      "loss_total": 6.631411552429199,
+      "loss_af": 6.804862177371978,
+      "energy": -3.469012498855591,
+      "i_ptm": 0.1064079999923706,
+      "ptm": 0.8853221535682678,
+      "plddt": 0.38269472122192383
+    },
+    {
+      "seed": 0,
+      "input_seq": "FWLSRMSSPNMKEWA",
+      "seq": "FWLSRMSSPNMKEWA",
+      "loss_total": 5.379841327667236,
+      "loss_af": 5.528847587108612,
+      "energy": -2.9801251888275146,
+      "i_ptm": 0.08510119467973709,
+      "ptm": 0.8854657411575317,
+      "plddt": 0.3542274236679077
+    }
+  ]
+}

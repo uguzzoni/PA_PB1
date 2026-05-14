@@ -1,0 +1,367 @@
+{
+  "protocol": {
+    "source": "input_sequences.txt",
+    "n_input_seqs": 31,
+    "n_seeds_per_seq": 1,
+    "stage_2": {
+      "iters": 0,
+      "soft": false,
+      "hard": false,
+      "dropout": true,
+      "temp": "1\u21920",
+      "energy_weight": 0.05,
+      "skipped": true
+    },
+    "stage_3": {
+      "iters": 30,
+      "soft": false,
+      "hard": true,
+      "dropout": false,
+      "temp": 1e-06,
+      "energy_weight": 0.5
+    }
+  },
+  "results": [
+    {
+      "seed": 0,
+      "input_seq": "YVCNVYDHFARKEVL",
+      "seq": "YVCNVYDHFARKEVL",
+      "loss_total": 6.133172035217285,
+      "loss_af": 5.504635512828827,
+      "energy": 1.2570730447769165,
+      "i_ptm": 0.12484996020793915,
+      "ptm": 0.8857415914535522,
+      "plddt": 0.32744407653808594
+    },
+    {
+      "seed": 0,
+      "input_seq": "YVGYRYKHRKRKKVL",
+      "seq": "YVGYRYKHRKRKKVL",
+      "loss_total": 4.474368095397949,
+      "loss_af": 6.4684271812438965,
+      "energy": -3.9881181716918945,
+      "i_ptm": 0.09391187131404877,
+      "ptm": 0.8852245807647705,
+      "plddt": 0.3860933184623718
+    },
+    {
+      "seed": 0,
+      "input_seq": "CHMNRYWHFCRKKQL",
+      "seq": "CHMNRYWHFCRKKQL",
+      "loss_total": 6.21925687789917,
+      "loss_af": 6.597269833087921,
+      "energy": -0.7560259103775024,
+      "i_ptm": 0.1507057249546051,
+      "ptm": 0.8863091468811035,
+      "plddt": 0.3458436131477356
+    },
+    {
+      "seed": 0,
+      "input_seq": "CHCNVYDHFAKKESL",
+      "seq": "CHCNVYDHFAKKESL",
+      "loss_total": 5.774621486663818,
+      "loss_af": 6.049684703350067,
+      "energy": -0.5501264333724976,
+      "i_ptm": 0.11909456551074982,
+      "ptm": 0.8859062194824219,
+      "plddt": 0.34571754932403564
+    },
+    {
+      "seed": 0,
+      "input_seq": "CWMNRYWHPCAKEWA",
+      "seq": "CWMNRYWHPCAKEWA",
+      "loss_total": 8.127610206604004,
+      "loss_af": 5.736386775970459,
+      "energy": 4.78244686126709,
+      "i_ptm": 0.10379894077777863,
+      "ptm": 0.8855504393577576,
+      "plddt": 0.3353240489959717
+    },
+    {
+      "seed": 0,
+      "input_seq": "CWPNVYWLFCRMEQL",
+      "seq": "CWPNVYWLFCRMEQL",
+      "loss_total": 3.638394832611084,
+      "loss_af": 4.713563323020935,
+      "energy": -2.150336980819702,
+      "i_ptm": 0.1643892228603363,
+      "ptm": 0.887066125869751,
+      "plddt": 0.30599677562713623
+    },
+    {
+      "seed": 0,
+      "input_seq": "CHCNVHEHFHRTELL",
+      "seq": "CHCNVHEHFHRTELL",
+      "loss_total": 6.1971116065979,
+      "loss_af": 6.098995603621006,
+      "energy": 0.19623200595378876,
+      "i_ptm": 0.10907703638076782,
+      "ptm": 0.8860560655593872,
+      "plddt": 0.3387033939361572
+    },
+    {
+      "seed": 0,
+      "input_seq": "IHCEVHCHRKRKGGL",
+      "seq": "IHCEVHCHRKRKGGL",
+      "loss_total": 5.142400741577148,
+      "loss_af": 6.761290907859802,
+      "energy": -3.2377803325653076,
+      "i_ptm": 0.12496139854192734,
+      "ptm": 0.886363685131073,
+      "plddt": 0.38259023427963257
+    },
+    {
+      "seed": 0,
+      "input_seq": "CVCNVYDHFARKEML",
+      "seq": "CVCNVYDHFARKEML",
+      "loss_total": 6.140610694885254,
+      "loss_af": 5.378925979137421,
+      "energy": 1.5233694314956665,
+      "i_ptm": 0.11754139512777328,
+      "ptm": 0.8857133388519287,
+      "plddt": 0.31115394830703735
+    },
+    {
+      "seed": 0,
+      "input_seq": "CVMNRYDHRCRKEWL",
+      "seq": "CVMNRYDHRCRKEWL",
+      "loss_total": 9.72891902923584,
+      "loss_af": 6.757307767868042,
+      "energy": 5.943222522735596,
+      "i_ptm": 0.15413466095924377,
+      "ptm": 0.8864105939865112,
+      "plddt": 0.34485965967178345
+    },
+    {
+      "seed": 0,
+      "input_seq": "VHGYRYEHRKRKKKL",
+      "seq": "VHGYRYEHRKRKKKL",
+      "loss_total": 4.317459583282471,
+      "loss_af": 6.374090671539307,
+      "energy": -4.113262176513672,
+      "i_ptm": 0.10130572319030762,
+      "ptm": 0.8858222365379333,
+      "plddt": 0.4024590253829956
+    },
+    {
+      "seed": 0,
+      "input_seq": "YHCNVYWHFSRKKWL",
+      "seq": "YHCNVYWHFSRKKWL",
+      "loss_total": 5.711541175842285,
+      "loss_af": 6.283658742904663,
+      "energy": -1.1442351341247559,
+      "i_ptm": 0.2015150934457779,
+      "ptm": 0.8867043256759644,
+      "plddt": 0.349565327167511
+    },
+    {
+      "seed": 0,
+      "input_seq": "CVCNVYWHFSRKGLL",
+      "seq": "CVCNVYWHFSRKGLL",
+      "loss_total": 4.656257629394531,
+      "loss_af": 5.446460723876953,
+      "energy": -1.5804061889648438,
+      "i_ptm": 0.14452773332595825,
+      "ptm": 0.8858553171157837,
+      "plddt": 0.33756011724472046
+    },
+    {
+      "seed": 0,
+      "input_seq": "CVGNVYWHPKRMKLL",
+      "seq": "CVGNVYWHPKRMKLL",
+      "loss_total": 3.8554234504699707,
+      "loss_af": 5.637698650360107,
+      "energy": -3.5645503997802734,
+      "i_ptm": 0.14254893362522125,
+      "ptm": 0.8859649896621704,
+      "plddt": 0.32739293575286865
+    },
+    {
+      "seed": 0,
+      "input_seq": "CVCNVFWHFARKGLL",
+      "seq": "CVCNVFWHFARKGLL",
+      "loss_total": 4.3913044929504395,
+      "loss_af": 5.797253727912903,
+      "energy": -2.8118984699249268,
+      "i_ptm": 0.1281718611717224,
+      "ptm": 0.8855640292167664,
+      "plddt": 0.4034586548805237
+    },
+    {
+      "seed": 0,
+      "input_seq": "DWCNVFDWPAAKEWA",
+      "seq": "DWCNVFDWPAAKEWA",
+      "loss_total": 3.7011940479278564,
+      "loss_af": 4.890873432159424,
+      "energy": -2.3793587684631348,
+      "i_ptm": 0.12486517429351807,
+      "ptm": 0.8863561153411865,
+      "plddt": 0.2899916172027588
+    },
+    {
+      "seed": 0,
+      "input_seq": "CHGYRYDHRKRYKCL",
+      "seq": "CHGYRYDHRKRYKCL",
+      "loss_total": 7.595678329467773,
+      "loss_af": 7.419948309659958,
+      "energy": 0.3514600396156311,
+      "i_ptm": 0.17205123603343964,
+      "ptm": 0.8864313364028931,
+      "plddt": 0.4670775532722473
+    },
+    {
+      "seed": 0,
+      "input_seq": "CFINVYDHPCRMEQA",
+      "seq": "CFINVYDHPCRMEQA",
+      "loss_total": 5.296707630157471,
+      "loss_af": 5.61144894361496,
+      "energy": -0.629482626914978,
+      "i_ptm": 0.11642171442508698,
+      "ptm": 0.8857554793357849,
+      "plddt": 0.33733731508255005
+    },
+    {
+      "seed": 0,
+      "input_seq": "FVMNVYDSRKRKKWL",
+      "seq": "FVMNVYDSRKRKKWL",
+      "loss_total": 3.6288070678710938,
+      "loss_af": 5.328947186470032,
+      "energy": -3.400280237197876,
+      "i_ptm": 0.10133030265569687,
+      "ptm": 0.8857002258300781,
+      "plddt": 0.33994632959365845
+    },
+    {
+      "seed": 0,
+      "input_seq": "CHYQRYEHRKNKEKL",
+      "seq": "CHYQRYEHRKNKEKL",
+      "loss_total": 6.178887844085693,
+      "loss_af": 7.137479662895203,
+      "energy": -1.9171836376190186,
+      "i_ptm": 0.19363246858119965,
+      "ptm": 0.8872196078300476,
+      "plddt": 0.4734947681427002
+    },
+    {
+      "seed": 0,
+      "input_seq": "CVCNVWDIFAKMGQA",
+      "seq": "CVCNVWDIFAKMGQA",
+      "loss_total": 3.765784740447998,
+      "loss_af": 4.914044260978699,
+      "energy": -2.2965190410614014,
+      "i_ptm": 0.13239067792892456,
+      "ptm": 0.8858116269111633,
+      "plddt": 0.3081662058830261
+    },
+    {
+      "seed": 0,
+      "input_seq": "WWMNRYDHFAGKEWA",
+      "seq": "WWMNRYDHFAGKEWA",
+      "loss_total": 4.123096466064453,
+      "loss_af": 4.753012835979462,
+      "energy": -1.259832739830017,
+      "i_ptm": 0.1483740508556366,
+      "ptm": 0.8870216608047485,
+      "plddt": 0.32120978832244873
+    },
+    {
+      "seed": 0,
+      "input_seq": "YVFYRYIHRKRKGVL",
+      "seq": "YVFYRYIHRKRKGVL",
+      "loss_total": 4.229342937469482,
+      "loss_af": 5.772790908813477,
+      "energy": -3.0868959426879883,
+      "i_ptm": 0.10963161289691925,
+      "ptm": 0.8855926990509033,
+      "plddt": 0.4527527689933777
+    },
+    {
+      "seed": 0,
+      "input_seq": "CHCNVYDHSKRQGML",
+      "seq": "CHCNVYDHSKRQGML",
+      "loss_total": 6.252971649169922,
+      "loss_af": 6.6143012046813965,
+      "energy": -0.7226591110229492,
+      "i_ptm": 0.13111074268817902,
+      "ptm": 0.8861274123191833,
+      "plddt": 0.36722737550735474
+    },
+    {
+      "seed": 0,
+      "input_seq": "WWNNVYWSPCAKEWA",
+      "seq": "WWNNVYWSPCAKEWA",
+      "loss_total": 3.333557605743408,
+      "loss_af": 5.32007896900177,
+      "energy": -3.9730427265167236,
+      "i_ptm": 0.1146366223692894,
+      "ptm": 0.8855665922164917,
+      "plddt": 0.29908478260040283
+    },
+    {
+      "seed": 0,
+      "input_seq": "IVCNVWEHRKRKGCL",
+      "seq": "IVCNVWEHRKRKGCL",
+      "loss_total": 4.4514641761779785,
+      "loss_af": 6.162260055541992,
+      "energy": -3.4215917587280273,
+      "i_ptm": 0.14885982871055603,
+      "ptm": 0.8860976696014404,
+      "plddt": 0.3671499490737915
+    },
+    {
+      "seed": 0,
+      "input_seq": "VHYYVYDHRKNLPAL",
+      "seq": "VHYYVYDHRKNLPAL",
+      "loss_total": 4.27480411529541,
+      "loss_af": 5.823868989944458,
+      "energy": -3.0981297492980957,
+      "i_ptm": 0.12052719295024872,
+      "ptm": 0.8858039379119873,
+      "plddt": 0.357680082321167
+    },
+    {
+      "seed": 0,
+      "input_seq": "YWCEPPCHWKRAGLL",
+      "seq": "YWCEPPCHWKRAGLL",
+      "loss_total": 3.9589667320251465,
+      "loss_af": 6.182717323303223,
+      "energy": -4.447501182556152,
+      "i_ptm": 0.13414306938648224,
+      "ptm": 0.8857985734939575,
+      "plddt": 0.37597936391830444
+    },
+    {
+      "seed": 0,
+      "input_seq": "YHCYRFCHRWRKEGL",
+      "seq": "YHCYRFCHRWRKEGL",
+      "loss_total": 6.116426467895508,
+      "loss_af": 7.412634968757629,
+      "energy": -2.592417001724243,
+      "i_ptm": 0.2633964419364929,
+      "ptm": 0.887965977191925,
+      "plddt": 0.4345850348472595
+    },
+    {
+      "seed": 0,
+      "input_seq": "CFPNRYWHSKKKEFL",
+      "seq": "CFPNRYWHSKKKEFL",
+      "loss_total": 7.573817253112793,
+      "loss_af": 6.177564859390259,
+      "energy": 2.7925047874450684,
+      "i_ptm": 0.12196356058120728,
+      "ptm": 0.8858201503753662,
+      "plddt": 0.36172688007354736
+    },
+    {
+      "seed": 0,
+      "input_seq": "GWVQPMESDKYLKCL",
+      "seq": "GWVQPMESDKYLKCL",
+      "loss_total": 3.587310314178467,
+      "loss_af": 6.004457473754883,
+      "energy": -4.834294319152832,
+      "i_ptm": 0.13262313604354858,
+      "ptm": 0.8857886791229248,
+      "plddt": 0.35247737169265747
+    }
+  ]
+}
