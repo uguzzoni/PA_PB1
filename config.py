@@ -30,6 +30,8 @@ WEIGHTS_PATH = _require("ENERGY_WEIGHTS_PATH")
 RESULTS_DIR = _require("COLABDESIGN_RESULTS_DIR")
 BOLTZ_RESULTS_DIR = _require("BOLTZ_RESULTS_DIR")
 AF3_RESULTS_DIR = _require("AF3_RESULTS_DIR")
+# Colon-separated folder names to skip inside AF3_RESULTS_DIR (set via .env)
+AF3_SKIP = set(os.environ.get("AF3_SKIP", "").split(":")) - {""}
 HOTSPOT_RESIDUES = [408, 411, 412, 415, 594, 595, 599,
                     617, 618, 619, 620, 621, 622, 623,
                     629, 631, 639, 640, 643, 666, 667,

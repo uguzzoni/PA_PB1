@@ -1,0 +1,65 @@
+{
+  "protocol": {
+    "type": "score_only",
+    "soft": false,
+    "hard": true,
+    "dropout": false,
+    "temp": 1e-06,
+    "model_names": [
+      "model_3",
+      "model_4",
+      "model_5"
+    ],
+    "source_file": "data/seqs_aff_alberto_darren_6best.txt"
+  },
+  "results": [
+    {
+      "seq": "MDFNPWLLFLKVPAQ",
+      "energy": -1.0169219970703125,
+      "i_ptm": 0.18927457928657532,
+      "ptm": 0.8883891701698303,
+      "plddt": 0.3078215718269348,
+      "idx": 0
+    },
+    {
+      "seq": "VDFNPWLLFLKVPAQ",
+      "energy": -1.1298952102661133,
+      "i_ptm": 0.21645845472812653,
+      "ptm": 0.8898887634277344,
+      "plddt": 0.30774402618408203,
+      "idx": 1
+    },
+    {
+      "seq": "IDFNPYLLFLKVPAQ",
+      "energy": 0.9208765625953674,
+      "i_ptm": 0.20218893885612488,
+      "ptm": 0.8894103765487671,
+      "plddt": 0.29598867893218994,
+      "idx": 2
+    },
+    {
+      "seq": "MDWNPLLLHLKRPAQ",
+      "energy": 3.178508758544922,
+      "i_ptm": 0.20929348468780518,
+      "ptm": 0.8891598582267761,
+      "plddt": 0.3282007575035095,
+      "idx": 3
+    },
+    {
+      "seq": "VDYNPWLLFLRKPKQ",
+      "energy": 1.1072289943695068,
+      "i_ptm": 0.2862330377101898,
+      "ptm": 0.8929997086524963,
+      "plddt": 0.35284483432769775,
+      "idx": 4
+    },
+    {
+      "seq": "IDYNPYLLFLKQPKQ",
+      "energy": -1.1511486768722534,
+      "i_ptm": 0.21099314093589783,
+      "ptm": 0.888940691947937,
+      "plddt": 0.3114480972290039,
+      "idx": 5
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+[project]
+name = "pa-pb1-design"
+version = "0.1.0"
+description = "PA-PB1 binder design campaign"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    # ColabDesign fork (editable, see [tool.uv.sources])
+    "colabdesign",
+    # JAX with bundled CUDA 12 libraries — no system CUDA install needed
+    "jax[cuda12]",
+    # ColabDesign runtime deps (mirrors setup.py install_requires)
+    "absl-py",
+    "biopython",
+    "chex",
+    "dm-haiku",
+    "dm-tree",
+    "immutabledict",
+    "joblib",
+    "matplotlib",
+    "ml-collections",
+    "numpy",
+    "optax",
+    "pandas",
+    "py3Dmol",
+    "scipy",
+    # Notebook / analysis
+    "ipykernel",
+    "jupyter",
+    "scikit-learn",
+    "seaborn",
+]
+
+[tool.uv.sources]
+# editable install of the local colabdesign fork
+colabdesign = { path = "../../methods/colabdesign_fork", editable = true }
