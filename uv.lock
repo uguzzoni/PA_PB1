@@ -352,7 +352,7 @@ wheels = [
 [[package]]
 name = "colabdesign"
 version = "1.1.3"
-source = { editable = "../../methods/colabdesign_fork" }
+source = { editable = "../../methods/colabdesign_energy_guidance" }
 dependencies = [
     { name = "absl-py" },
     { name = "biopython" },
@@ -1995,7 +1995,7 @@ requires-dist = [
     { name = "absl-py" },
     { name = "biopython" },
     { name = "chex" },
-    { name = "colabdesign", editable = "../../methods/colabdesign_fork" },
+    { name = "colabdesign", editable = "../../methods/colabdesign_energy_guidance" },
     { name = "dm-haiku" },
     { name = "dm-tree" },
     { name = "immutabledict" },

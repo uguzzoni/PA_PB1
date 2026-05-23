@@ -32,4 +32,4 @@ dependencies = [
 
 [tool.uv.sources]
 # editable install of the local colabdesign fork
-colabdesign = { path = "../../methods/colabdesign_fork", editable = true }
+colabdesign = { path = "../../methods/colabdesign_energy_guidance", editable = true }

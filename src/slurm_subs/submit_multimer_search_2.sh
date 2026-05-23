@@ -9,7 +9,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=24G
 #SBATCH --time=0-06:00:00
-#SBATCH --array=0-2
+#SBATCH --array=0-5
 
 # =============================================================================
 # 3 protocol search — 3 selected protocols (see protocol_selection_wider_run.md)
@@ -39,22 +39,24 @@ PROTO=${PROTO_NAMES[$SLURM_ARRAY_TASK_ID]}
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 SHARED=/home/share_nfs/342-Projets_BGE/342.3-Gen-Chem/342.3.2-BioInfo/342.3.2.8-SeqModels
-CODEBASE=${SHARED}/protein_design/colabdesign_energy_guidance
-SCRIPT_DIR=${CODEBASE}/prg/PA_PB1
+PRJBASE=${SHARED}/protein_design/prg/PA_PB1
+SCRIPT_DIR=${PRJBASE}/src
 
 GEN_SCRIPT=${SCRIPT_DIR}/generate_sequences_multimer.py
 OPT_SCRIPT=${SCRIPT_DIR}/optimize_sequences_multimer.py
-SEQ_FILE=${SCRIPT_DIR}/input_sequences.txt   # energy-model-generated sequences
-OUTDIR=${SCRIPT_DIR}/results/run_multimer
+SEQ_FILE=${PRJBASE}/data/input_sequences.txt   # energy-model-generated sequences
+OUTDIR=${PRJBASE}/results/colabdesign/run_multimer2
 mkdir -p ${OUTDIR}
+
+export PATH=${SHARED}/bin:$PATH
 
 # ── Environment ───────────────────────────────────────────────────────────────
 source ${SHARED}/miniforge3/bin/activate colabdesign
-source ${CODEBASE}/.env
+source ${PRJBASE}/.env
 
 CUDNN_LIB=${SHARED}/miniforge3/envs/colabdesign/lib/python3.10/site-packages/nvidia/cudnn/lib
 export LD_LIBRARY_PATH=$CUDNN_LIB:$LD_LIBRARY_PATH
-export PYTHONPATH=${CODEBASE}:$PYTHONPATH
+#export PYTHONPATH=${PRJBASE}:$PYTHONPATH
 
 # ── Diagnostics ───────────────────────────────────────────────────────────────
 echo "Job ID       : $SLURM_JOB_ID"
@@ -90,63 +92,63 @@ case "$PROTO" in
 
     # ── Group A: generate from scratch ─────────────────────────────────────
     # gen_energy_A)
-    #     python3 $GEN_SCRIPT -n 100 \
+    #     uv run python3 $GEN_SCRIPT -n 100 \
     #         --ew_1a 0.02 --ew_1b 0.05 --ew_2 0.02 --ew_3 0.05 \
     #         -o $OUTPUT
     #     ;;
 
     gen_energy_C)
-        python3 $GEN_SCRIPT -n 30 \
+        uv run python3 $GEN_SCRIPT -n 30 \
             --ew_1a 0.05 --ew_1b 0.20 --ew_2 0.05 --ew_3 0.50 \
             -o $OUTPUT
         ;;
     
     gen_energy_D)
-        python3 $GEN_SCRIPT -n 30 \
+        uv run python3 $GEN_SCRIPT -n 30 \
             --ew_1a 0.05 --ew_1b 0.30 --ew_2 0.1 --ew_3 0.70 \
             -o $OUTPUT
         ;;
 
     gen_energy_E)
-        python3 $GEN_SCRIPT -n 30 \
+        uv run python3 $GEN_SCRIPT -n 30 \
             --ew_1a 0.05 --ew_1b 0.10 --ew_2 0.5 --ew_3 0.90 \
             -o $OUTPUT
         ;;
     # # ── Group B: optimize from energy-model sequences ───────────────────────
     # # Fast hard screen: stage 3 only, 1 seed/seq × ~20-30 seqs
     # opt_hard_energy_C)
-    #     python3 $OPT_SCRIPT --seq_file $SEQ_FILE \
+    #     uv run python3 $OPT_SCRIPT --seq_file $SEQ_FILE \
     #         --iters_2 0 --ew_3 0.50 -n 1 \
     #         -o $OUTPUT
     #     ;;
 
     # Structural refinement without energy bias: 4 seeds/seq × ~20-30 seqs
     # opt_anneal_noenergy)
-    #     python3 $OPT_SCRIPT --seq_file $SEQ_FILE \
+    #     uv run python3 $OPT_SCRIPT --seq_file $SEQ_FILE \
     #         --ew_2 0.00 --ew_3 0.00 -n 4 \
     #         -o $OUTPUT
     #     ;;
 
     # opt_anneal_energy_B)
-    #     python3 $OPT_SCRIPT --seq_file $SEQ_FILE \
+    #     uv run python3 $OPT_SCRIPT --seq_file $SEQ_FILE \
     #         --ew_2 0.02 --ew_3 0.20 -n 4 \
     #         -o $OUTPUT
     #     ;;
 
     opt_anneal_energy_C)
-        python3 $OPT_SCRIPT --seq_file $SEQ_FILE \
+        uv run python3 $OPT_SCRIPT --seq_file $SEQ_FILE \
             --ew_2 0.05 --ew_3 0.50 -n 4 \
             -o $OUTPUT
         ;;
 
     opt_anneal_energy_D)
-        python3 $OPT_SCRIPT --seq_file $SEQ_FILE \
+        uv run python3 $OPT_SCRIPT --seq_file $SEQ_FILE \
             --ew_2 0.1 --ew_3 0.70 -n 4 \
             -o $OUTPUT
         ;;
 
     opt_anneal_energy_E)
-        python3 $OPT_SCRIPT --seq_file $SEQ_FILE \
+        uv run python3 $OPT_SCRIPT --seq_file $SEQ_FILE \
             --ew_2 0.5 --ew_3 0.90 -n 4 \
             -o $OUTPUT
         ;;
