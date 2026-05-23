@@ -1,6 +1,7 @@
 # Large structure prediction outputs
 results/af3/
 results/boltz/
+data/to_share/
 
 # Python
 __pycache__/

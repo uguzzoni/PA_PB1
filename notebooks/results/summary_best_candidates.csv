@@ -1,10 +1,10 @@
 seq,protocol,model,name,colab_iptm,colab_ptm,colab_plddt,energy,af3_iptm_cross,af3_iptm,af3_ptm,af3_ranking_score,af3_has_clash,af3_frac_disordered,af3_folder
-MDFNPWLLFLKVPAQ,,,,,,,,0.97,0.97,0.88,1.01,0.0,0.12,fold_2026_04_16_mdfnpwllflkvpaq
-VDFNPWLLFLKVPAQ,,,,,,,,0.97,0.97,0.88,1.01,0.0,0.12,fold_2026_04_16_vdfnpwllflkvpaq
-IDFNPYLLFLKVPAQ,,,,,,,,0.97,0.97,0.88,1.01,0.0,0.12,fold_2026_04_16_idfnpyllflkvpaq
-MDWNPLLLHLKRPAQ,,,,,,,,0.92,0.92,0.88,0.97,0.0,0.12,fold_2026_04_16_mdwnplllhlkrpaq
-VDYNPWLLFLRKPKQ,,,,,,,,0.91,0.91,0.88,0.97,0.0,0.12,fold_2026_04_16_vdynpwllflrkpkq
-IDYNPYLLFLKQPKQ,,,,,,,,0.9,0.9,0.88,0.95,0.0,0.11,fold_2026_04_16_idynpyllflkqpkq
+MDFNPWLLFLKVPAQ,seqs_aff_alberto_darren_6best,af2,custom/seqs_aff_alberto_darren_6best_0,0.18927457928657532,0.8883891701698303,0.3078215718269348,-1.0169219970703125,0.97,0.97,0.88,1.01,0.0,0.12,fold_2026_04_16_mdfnpwllflkvpaq
+VDFNPWLLFLKVPAQ,seqs_aff_alberto_darren_6best,af2,custom/seqs_aff_alberto_darren_6best_1,0.21645845472812653,0.8898887634277344,0.30774402618408203,-1.1298952102661133,0.97,0.97,0.88,1.01,0.0,0.12,fold_2026_04_16_vdfnpwllflkvpaq
+IDFNPYLLFLKVPAQ,seqs_aff_alberto_darren_6best,af2,custom/seqs_aff_alberto_darren_6best_2,0.20218893885612488,0.8894103765487671,0.29598867893218994,0.9208765625953674,0.97,0.97,0.88,1.01,0.0,0.12,fold_2026_04_16_idfnpyllflkvpaq
+MDWNPLLLHLKRPAQ,seqs_aff_alberto_darren_6best,af2,custom/seqs_aff_alberto_darren_6best_3,0.20929348468780518,0.8891598582267761,0.3282007575035095,3.178508758544922,0.92,0.92,0.88,0.97,0.0,0.12,fold_2026_04_16_mdwnplllhlkrpaq
+VDYNPWLLFLRKPKQ,seqs_aff_alberto_darren_6best,af2,custom/seqs_aff_alberto_darren_6best_4,0.2862330377101898,0.8929997086524963,0.35284483432769775,1.1072289943695068,0.91,0.91,0.88,0.97,0.0,0.12,fold_2026_04_16_vdynpwllflrkpkq
+IDYNPYLLFLKQPKQ,seqs_aff_alberto_darren_6best,af2,custom/seqs_aff_alberto_darren_6best_5,0.21099314093589783,0.888940691947937,0.3114480972290039,-1.1511486768722534,0.9,0.9,0.88,0.95,0.0,0.11,fold_2026_04_16_idynpyllflkqpkq
 AISGPALEVLYCIFC,gen_energy_C,af2,run1_protocols/gen_energy_C_16,0.6782609224319458,0.909453272819519,0.5389730036258698,-6.436742305755615,0.82,0.82,0.86,0.88,0.0,0.11,fold_2026_04_16_aisgpalevlycifc
 SHGYVYDALWNMEVL,opt_anneal_energy_C,af2,run1_protocols/opt_anneal_energy_C_2,0.49495723843574524,0.9020661115646362,0.4095444679260254,-2.916034460067749,0.82,0.82,0.86,0.88,0.0,0.11,fold_2026_04_08_SHGYVYDALWNMEVL
 AISGPALEVLYCIFC,gen_energy_C,af2,run2_wide/gen_energy_C_16,0.6783,0.901333,0.501,-6.4367,0.82,0.82,0.86,0.88,0.0,0.11,fold_2026_04_16_aisgpalevlycifc
