@@ -50,6 +50,24 @@ PROTOCOL_CONFIGS = {
             "stage_3":  {"iters": 30, "soft": False, "hard": True,  "dropout": False, "temp": 1e-6,  "energy_weight": 0.50},
         },
     },
+    "gen_energy_D": {
+        "type": "gen",
+        "protocol": {
+            "stage_1a": {"iters": 50, "soft": True,  "hard": False, "dropout": True,  "temp": 1.0,   "energy_weight": 0.05},
+            "stage_1b": {"iters": 50, "soft": True,  "hard": False, "dropout": True,  "temp": 1.0,   "energy_weight": 0.30},
+            "stage_2":  {"iters": 50, "soft": False, "hard": False, "dropout": True,  "temp": "1\u21920", "energy_weight": 0.1},
+            "stage_3":  {"iters": 30, "soft": False, "hard": True,  "dropout": False, "temp": 1e-6,  "energy_weight": 0.70},
+        },
+    },
+    "gen_energy_E": {
+        "type": "gen",
+        "protocol": {
+            "stage_1a": {"iters": 50, "soft": True,  "hard": False, "dropout": True,  "temp": 1.0,   "energy_weight": 0.05},
+            "stage_1b": {"iters": 50, "soft": True,  "hard": False, "dropout": True,  "temp": 1.0,   "energy_weight": 0.10},
+            "stage_2":  {"iters": 50, "soft": False, "hard": False, "dropout": True,  "temp": "1\u21920", "energy_weight": 0.5},
+            "stage_3":  {"iters": 30, "soft": False, "hard": True,  "dropout": False, "temp": 1e-6,  "energy_weight": 0.90},
+        },
+    },
     "opt_hard_energy_C": {
         "type": "opt",
         "n_seeds_per_seq": 1,
@@ -92,6 +110,28 @@ PROTOCOL_CONFIGS = {
             "n_seeds_per_seq": 4,
             "stage_2": {"iters": 50, "soft": False, "hard": False, "dropout": True,  "temp": "1\u21920", "energy_weight": 0.05, "skipped": False},
             "stage_3": {"iters": 30, "soft": False, "hard": True,  "dropout": False, "temp": 1e-6,  "energy_weight": 0.50},
+        },
+    },
+    "opt_anneal_energy_D": {
+        "type": "opt",
+        "n_seeds_per_seq": 4,
+        "protocol": {
+            "source": "input_sequences.txt",
+            "n_input_seqs": None,
+            "n_seeds_per_seq": 4,
+            "stage_2": {"iters": 50, "soft": False, "hard": False, "dropout": True,  "temp": "1\u21920", "energy_weight": 0.1, "skipped": False},
+            "stage_3": {"iters": 30, "soft": False, "hard": True,  "dropout": False, "temp": 1e-6,  "energy_weight": 0.70},
+        },
+    },
+    "opt_anneal_energy_E": {
+        "type": "opt",
+        "n_seeds_per_seq": 4,
+        "protocol": {
+            "source": "input_sequences.txt",
+            "n_input_seqs": None,
+            "n_seeds_per_seq": 4,
+            "stage_2": {"iters": 50, "soft": False, "hard": False, "dropout": True,  "temp": "1\u21920", "energy_weight": 0.5, "skipped": False},
+            "stage_3": {"iters": 30, "soft": False, "hard": True,  "dropout": False, "temp": 1e-6,  "energy_weight": 0.90},
         },
     },
 }
