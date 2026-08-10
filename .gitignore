@@ -2,6 +2,7 @@
 results/af3/
 results/boltz/
 data/to_share/
+PD_energy_model/
 
 # Python
 __pycache__/
