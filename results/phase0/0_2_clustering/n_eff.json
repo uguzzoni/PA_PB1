@@ -1,0 +1,30 @@
+{
+  "identity_threshold": 0.7,
+  "max_mismatches": 4,
+  "clustering_method": "greedy CD-HIT-style (fallback Python, MMseqs2/CD-HIT non installati)",
+  "primary_late_round": "round3",
+  "round3": {
+    "n_unique_sequences": 6154,
+    "n_total_reads": 32873,
+    "n_clusters": 1375,
+    "N_eff": 1375.0,
+    "cluster_size_mean": 4.475636363636363,
+    "cluster_size_median": 1.0,
+    "cluster_size_max": 945,
+    "n_singleton_clusters": 769,
+    "n_clusters_for_50pct_read_mass": 2,
+    "n_clusters_for_90pct_read_mass": 19
+  },
+  "round2": {
+    "n_unique_sequences": 23677,
+    "n_total_reads": 81068,
+    "n_clusters": 3200,
+    "N_eff": 3200.0,
+    "cluster_size_mean": 7.3990625,
+    "cluster_size_median": 2.0,
+    "cluster_size_max": 2229,
+    "n_singleton_clusters": 1513,
+    "n_clusters_for_50pct_read_mass": 3,
+    "n_clusters_for_90pct_read_mass": 177
+  }
+}

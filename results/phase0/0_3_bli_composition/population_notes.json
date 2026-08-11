@@ -1,0 +1,34 @@
+{
+  "bli_n_sequences": 23,
+  "bli_excluded_no_valid_kd": [
+    "MPNN_06",
+    "MPNN_07",
+    "P10",
+    "P7"
+  ],
+  "wt_discrepancy": {
+    "hardcoded_wt_seq": "MDVNPTLLFLKVPAQ",
+    "sequences_labeled_WT_in_csv": [
+      "MDVNPTLLFLKLPAQ",
+      "MDVNPTLLFLKVPAQ"
+    ],
+    "wt_rows": [
+      {
+        "Sequence": "MDVNPTLLFLKLPAQ",
+        "Kd_nM": 24.64
+      },
+      {
+        "Sequence": "MDVNPTLLFLKVPAQ",
+        "Kd_nM": 33.8
+      },
+      {
+        "Sequence": "MDVNPTLLFLKLPAQ",
+        "Kd_nM": 13.56
+      }
+    ],
+    "note": "2 sequenze diverse condividono il nome 'WT' nel CSV grezzo; verosimile typo di trascrizione (pos. 12: L vs V), non due WT distinti. Non risolto automaticamente: la composizione WT usa solo la sequenza hardcoded dal piano, le altre righe 'WT' sono riportate qui per traccia."
+  },
+  "library_round1_n_dropped_nonstandard": 18,
+  "training_set_n_dropped_nonstandard": 1076,
+  "enrichment_proxy_definition": "count_round3(seq) / total_reads_round3 (0 se assente da round3)"
+}

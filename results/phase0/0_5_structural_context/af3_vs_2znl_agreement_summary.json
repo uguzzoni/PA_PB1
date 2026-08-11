@@ -1,0 +1,133 @@
+{
+  "n_positions_agree_burial_vs_af3_interface": 6,
+  "n_positions_total": 15,
+  "n_positions_znl_contact_interface": 15,
+  "znl_contact_criterion_degenerate": true,
+  "contact_distance_threshold_A": 5.0,
+  "af3_contact_prob_threshold": 0.5,
+  "sasa_exposed_threshold": 0.5,
+  "n_af3_sequences": 35,
+  "n_af3_sequences_with_clash_on_best_model": 0,
+  "per_position_agreement": [
+    {
+      "position": 1,
+      "znl_interface": true,
+      "znl_buried": true,
+      "af3_interface": false,
+      "af3_frac_interface": 0.2571428571428571,
+      "agree": false
+    },
+    {
+      "position": 2,
+      "znl_interface": true,
+      "znl_buried": true,
+      "af3_interface": false,
+      "af3_frac_interface": 0.34285714285714286,
+      "agree": false
+    },
+    {
+      "position": 3,
+      "znl_interface": true,
+      "znl_buried": true,
+      "af3_interface": false,
+      "af3_frac_interface": 0.3142857142857143,
+      "agree": false
+    },
+    {
+      "position": 4,
+      "znl_interface": true,
+      "znl_buried": true,
+      "af3_interface": false,
+      "af3_frac_interface": 0.42857142857142855,
+      "agree": false
+    },
+    {
+      "position": 5,
+      "znl_interface": true,
+      "znl_buried": true,
+      "af3_interface": false,
+      "af3_frac_interface": 0.42857142857142855,
+      "agree": false
+    },
+    {
+      "position": 6,
+      "znl_interface": true,
+      "znl_buried": true,
+      "af3_interface": true,
+      "af3_frac_interface": 0.5142857142857142,
+      "agree": true
+    },
+    {
+      "position": 7,
+      "znl_interface": true,
+      "znl_buried": true,
+      "af3_interface": true,
+      "af3_frac_interface": 0.5428571428571428,
+      "agree": true
+    },
+    {
+      "position": 8,
+      "znl_interface": true,
+      "znl_buried": true,
+      "af3_interface": true,
+      "af3_frac_interface": 0.5714285714285714,
+      "agree": true
+    },
+    {
+      "position": 9,
+      "znl_interface": true,
+      "znl_buried": true,
+      "af3_interface": true,
+      "af3_frac_interface": 0.5714285714285714,
+      "agree": true
+    },
+    {
+      "position": 10,
+      "znl_interface": true,
+      "znl_buried": true,
+      "af3_interface": false,
+      "af3_frac_interface": 0.4857142857142857,
+      "agree": false
+    },
+    {
+      "position": 11,
+      "znl_interface": true,
+      "znl_buried": true,
+      "af3_interface": false,
+      "af3_frac_interface": 0.4857142857142857,
+      "agree": false
+    },
+    {
+      "position": 12,
+      "znl_interface": true,
+      "znl_buried": true,
+      "af3_interface": false,
+      "af3_frac_interface": 0.37142857142857144,
+      "agree": false
+    },
+    {
+      "position": 13,
+      "znl_interface": true,
+      "znl_buried": false,
+      "af3_interface": false,
+      "af3_frac_interface": 0.34285714285714286,
+      "agree": true
+    },
+    {
+      "position": 14,
+      "znl_interface": true,
+      "znl_buried": true,
+      "af3_interface": false,
+      "af3_frac_interface": 0.3142857142857143,
+      "agree": false
+    },
+    {
+      "position": 15,
+      "znl_interface": true,
+      "znl_buried": false,
+      "af3_interface": false,
+      "af3_frac_interface": 0.22857142857142856,
+      "agree": true
+    }
+  ]
+}

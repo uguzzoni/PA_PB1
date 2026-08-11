@@ -3,6 +3,8 @@ results/af3/
 results/boltz/
 data/to_share/
 PD_energy_model/
+af3_predictions/
+af3_predictions.tar.gz
 
 # Python
 __pycache__/

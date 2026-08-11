@@ -88,6 +88,28 @@ PD_energy_model/data/4_counts/R_3_count_protein.csv
 
 **Output:** `results/phase0/0_2_clustering/{n_eff.json, cluster_sizes.png, lorenz_curve.png, cluster_assignment.csv}`
 
+**Stato: eseguita (2026-08-11).** Script scritti: `src/phase0_diagnostics/data_loading.py` (aggiunti `load_round2_counts`/`load_round3_counts`, entrambi via helper condiviso `_merge_counts` — anche `load_round1_counts`/`load_training_counts` refactored su di esso), `src/phase0_diagnostics/run_0_2_clustering.py`. Eseguita con `uv run python3 src/phase0_diagnostics/run_0_2_clustering.py` (~4s, CPU, nessun bisogno di JAX qui).
+
+**Decisione aperta #1 risolta per questo run:** MMseqs2/CD-HIT confermati assenti (`which mmseqs cd-hit` vuoto). Implementato fallback greedy stile CD-HIT invece di hierarchical clustering scipy: per round 2 (N=23.677) una condensed distance matrix in float64 peserebbe ~2.2GB, al limite degli 8GB liberi su questa macchina (`free -h`: 15GB totali, ~8GB disponibili). Il greedy (ordina per abbondanza decrescente, assegna al rappresentante esistente più vicino in Hamming se a distanza ≤4/15 posizioni, altrimenti apre un nuovo cluster) evita la matrice N×N confrontando solo contro i rappresentanti già aperti: 0.38s per round 3, 3.5s per round 2. Soglia 70% identità → ≤4 mismatch su 15 posizioni (Hamming diretto, sequenze già a lunghezza fissa, nessun allineamento necessario).
+
+**Nota sulla formula N_eff:** $N_{\text{eff}} = \sum_s 1/m_s$ con $s$ sulle sequenze uniche e $m_s$ la dimensione del cluster di $s$ collassa algebricamente al numero di cluster (ogni cluster di dimensione $m$ contribuisce $m \cdot (1/m) = 1$) — implementato come tale, con nota esplicita nel codice.
+
+**Risultati:**
+| | round 3 (F+R, primario) | round 2 (F+R, confronto) |
+|---|---|---|
+| sequenze uniche | 6.154 | 23.677 |
+| reads totali | 32.873 | 81.068 |
+| **N_eff (cluster @70%)** | **1.375** | **3.200** |
+| cluster singleton | 769 (56%) | 1.513 (47%) |
+| cluster più grande | 945 sequenze / 11.232 reads (34% della massa) | 2.229 sequenze |
+| cluster per 50% massa | 2 | 3 |
+| cluster per 90% massa | 19 | 177 |
+
+- **Collasso di diversità forte da round 2 a round 3**: N_eff scende da 3.200 a 1.375 (-57%) nonostante meno sequenze uniche di partenza siano già un fattore (23.677→6.154, -74%) — il rapporto N_eff/N_unique cresce leggermente (13.5%→22.3%), cioè il collasso di round 3 non è solo "meno reads sequenziate" ma una vera contrazione post-selezione.
+- **Massa di read fortemente concentrata in pochissimi cluster** in entrambi i round (curva di Lorenz molto lontana dalla diagonale): in round 3 un solo cluster (945 varianti quasi-identiche, verosimilmente attorno a un binder dominante) copre il 34% di tutti i reads; 2 cluster bastano per il 50%. Questo è coerente con una selezione di phage display convergente, non con un pool ancora diverso.
+- **Implicazione operativa per 2.3/2.5** (che dichiarano `cluster_assignment.csv` come prerequisito): la "taglia effettiva" del dataset di training per il modello di energia è molto più piccola dei 27.342 conteggi grezzi usati in 0.1 — se il training/validation split in 2.3/2.5 non pesa o non deduplica per cluster, rischia di sovra-rappresentare le ~1-2 varianti dominanti di round 3 come se fossero centinaia di osservazioni indipendenti. Da tenere presente quando si disegna lo split.
+- `cluster_assignment.csv` (round 3) e `cluster_assignment_round2.csv` (round 2, extra non richiesto esplicitamente ma a costo marginale) salvati con colonne `Sequence, Count, cluster_id, cluster_size, cluster_read_mass, is_representative`.
+
 ---
 
 ## 0.3′ — Composizione amminoacidica dei leganti validati in BLI
@@ -108,6 +130,20 @@ PD_energy_model/data/4_counts/R_3_count_protein.csv
 
 **Costo:** ~10 minuti come da piano originale — è lo script più semplice dei cinque, nessuna dipendenza da 0.0.
 
+**Stato: eseguita (2026-08-11).** Script scritto: `src/phase0_diagnostics/run_0_3_bli_composition.py`. Eseguita con `uv run python3 src/phase0_diagnostics/run_0_3_bli_composition.py` (pochi secondi, CPU).
+
+**Scoperta non ovvia dal piano originale**: il CSV BLI ha 39 **righe** ma solo **28 sequenze uniche** — molte righe sono ri-misurazioni della stessa sequenza in round sperimentali diversi (scouting preliminare → best-hits → side-by-side finale → confronto MPNN). Dopo dedup per sequenza (media geometrica del Kd sulle misure valide ripetute), esclusione delle 4 righe con Kd_nM=NA (P7, una riga di P10, MPNN_06, MPNN_07 — nessun segnale misurabile) ed esclusione delle righe "WT" (trattata come popolazione a sé): **N effettivo = 23 sequenze disegnate**, non 39. La stratificazione per quartile di Kd è quindi ancora più risicata di quanto stimato nel piano (~5-6 per quartile su N=23, non su N=39) — riportata ma esplicitamente etichettata come puramente descrittiva.
+
+**Anomalia nei dati grezzi, non risolta silenziosamente**: il nome "WT" nel CSV è assegnato a **due sequenze diverse** — `MDVNPTLLFLKLPAQ` (2 righe) e `MDVNPTLLFLKVPAQ` (1 riga, posizione 12: L vs V), quest'ultima è quella hardcoded nel piano. Kd simili tra le 3 righe (13.6–33.8 nM) suggeriscono un typo di trascrizione, non due costrutti distinti — segnalato in `population_notes.json`, la composizione WT usa solo la sequenza del piano.
+
+**Risultati:**
+- **Bias aromatico crescente lungo tutta la catena di selezione**, non solo nel training set: frazione aromatica (F+W+Y) WT=6.7% → libreria round1=15.9% → decili di arricchimento (range 9–20%, decile 9 il più arricchito=20.0%) → BLI validati (tutti i quartili di Kd, 19–21%). Vedi `aromatic_fraction_by_population.png`. Conferma indipendente (via dati BLI reali, non solo il modello di energia) del bias già ipotizzato in 0.1 e nell'interpretazione del piano originale.
+- **G e C completamente assenti nei 23 leganti BLI validati** (0/345 residui, tutti i quartili di Kd inclusi) — molto più forte della libreria iniziale (G=3.0%, C=0.08%) e coerente col decile 9 del training set (G=0.44%, C=0.03%, quasi-azzerato ma non zero). Plausibile: G/C sfavoriti sia dalla selezione di binding sia da vincoli sperimentali BLI (Cys libere → aggregazione/legami disolfuro spuri).
+- **Test di arricchimento (Fisher esatto per amminoacido, BLI/decile-9 vs libreria round1, BH-corretto)**: 23/40 test significativi a p_BH<0.05. Y (tirosina) è l'arricchimento più forte e più robusto in entrambe le popolazioni (odds ratio 5.6 in BLI, 5.8 nel decile 9, p_BH≈0 per il decile, p_BH=3e-7 per BLI) — singolo amminoacido con il segnale più pulito.
+- **La frazione aromatica non discrimina i quartili di Kd** (BLI_Q1_tightest=20.0% vs BLI_Q4_weakest=18.9%, differenza minima e nell'ordine del rumore per N≈6/quartile): il bias aromatico sembra una firma di "cosa sopravvive alla selezione/al filtro BLI" più che di "quanto stringe" tra i leganti già validati — coerente con l'ipotesi che l'energy model catturi un effetto di enrichment/druggability generico, non necessariamente l'affinità fine.
+- Proxy di arricchimento scelto (alternativa "più semplice" indicata dal piano): abbondanza normalizzata in round 3 (0 se la sequenza non compare in round 3 — è la maggioranza: overlap round2∩round3 = 2.425 su 23.677+6.154 sequenze uniche). Decili forzati a numerosità uguale via rank invece di qcut diretto sul valore, perché ~78% delle sequenze ha proxy=0.
+- File aggiuntivo `population_notes.json` (non nella lista output del piano, aggiunto per audit trail): righe escluse, discrepanza WT, sequenze scartate per stop-codon/ambiguità in libreria (18/4789) e training set (1076/27406) — qui le sequenze con stop codon sono escluse del tutto (a differenza di 0.1 dove il canale gap è input valido per il modello di energia), perché per una composizione amminoacidica un read troncato non è un 15-mero reale.
+
 ---
 
 ## 0.4 — Direzione del gradiente di E
@@ -125,25 +161,69 @@ PD_energy_model/data/4_counts/R_3_count_protein.csv
 
 **Dipendenza:** condivide pesi ed encoder con 0.1 — nessun dato nuovo da caricare oltre al training set già usato in 0.2.
 
+**Stato: eseguita (2026-08-11).** Script scritto: `src/phase0_diagnostics/run_0_4_gradient_direction.py`. Eseguita con `JAX_PLATFORMS=cpu uv run python3 src/phase0_diagnostics/run_0_4_gradient_direction.py` (~10s CPU). Refactor collaterale: `load_bli_population` (definita in 0.3') spostata in `data_loading.py` per essere riusata qui come secondo controllo indipendente, invece di duplicarla o importarla da uno script eseguibile.
+
+**Metodo:** `jax.grad(mlp_forward, argnums=x)` valutato in ciascuno dei 27.342 vertici one-hot del training set (stesso set di 0.1/0.2) e, separatamente, nei 23 vertici BLI validati (0.3'). Nessuna proiezione sul simplesso: è la derivata parziale non vincolata, coerente con come ColabDesign perturba i logit soft durante l'ottimizzazione — non un gradiente "riprogettato" per rispettare il vincolo di somma-1.
+
+**Risultati:**
+- **W (triptofano) è l'unico amminoacido con gradiente medio negativo** su tutta la popolazione training (-0.17, cioè aumentarne la probabilità da un vertice osservato riduce E in media) — quasi tutti gli altri 19 hanno gradiente medio positivo (aumentarli aumenta E). Nel controllo BLI (N=23) anche S risulta marginalmente negativo, ma è entro il rumore (std comparabile alla media). **D (aspartato) è il più evitato** in entrambe le popolazioni.
+- **Forte accordo fra le due popolazioni indipendenti**: correlazione di Spearman fra ranking training e ranking BLI = **0.86** — la direzione del gradiente non è un artefatto del training set, si riproduce sulle sequenze realmente validate in laboratorio.
+- **Interpretazione strutturale, collegata a 0.1**: che quasi tutti gli amminoacidi abbiano gradiente positivo (aumentarli aumenta E) significa che i vertici one-hot osservati nel training set sono già vicini a un minimo locale di E lungo quasi tutte le direzioni — coerente con la scoperta di 0.1 che i punti interni del simplesso (verso il baricentro) collassano in una banda di E più bassa e stretta, non esplodono. L'unica "via di fuga" verso E più basso è la direzione W — che è anche l'amminoacido più arricchito nella composizione dei leganti validati (0.3'). I due risultati si rinforzano a vicenda: il modello di energia premia strutturalmente la direzione aromatica, e la selezione sperimentale sembra averla effettivamente seguita.
+- **Attenzione a non sovrainterpretare il ranking pooled**: `position_map.png` mostra che l'effetto non è omogeneo per posizione — es. il segnale "C favorito" nel ranking aggregato è dominato quasi interamente dalla posizione 15 (gradiente ≈ -3σ lì, vicino a zero altrove), non un effetto generico di C su tutte le 15 posizioni. Il ranking in `aa_ranking.csv` è una media utile per un primo confronto ma va letto insieme alla mappa posizionale prima di trarre conclusioni per singolo amminoacido.
+- **Caveat sui campioni rari**: C è solo l'1.06% dei residui osservati nel training set (H e T ancora più rari, 0.27%/0.64%) — il suo gradiente medio potrebbe riflettere in parte una stima meno affidabile in una regione poco campionata dello spazio, non necessariamente un vero minimo locale di E. Non c'è modo di distinguere i due casi senza dati aggiuntivi (es. sequenze sintetiche mirate), qui solo segnalato.
+
+**Output:** `results/phase0/0_4_gradient_direction/{aa_ranking.csv, aa_ranking.png, position_map.png, metrics.json}` (`aa_ranking.png` e `metrics.json` non nella lista del piano originale, aggiunti per completezza — costo marginale).
+
 ---
 
 ## 0.5 — Composizione dei design esistenti, per contesto strutturale
 
-**Input:**
-- **Sequenze disegnate**: tutti i JSON in `results/colabdesign/{run1_protocols,run2_wide,run_multimer,run_multimer2}/*.json` — campo `results[].seq`, 15 caratteri, nessuna coordinata 3D salvata (verificato: i JSON contengono solo `seq, loss_*, energy, i_ptm, ptm, plddt`, mai un path a un PDB).
-- **Classificazione interfaccia/esposto per posizione**: il piano originale dice "usando le strutture AF2 già generate" — **queste non esistono su disco** (nessuno script di design salva un PDB per seme). L'alternativa concreta trovata nel repo: `data/pdbs/2ZNL.pdb` contiene **sia** la catena target A (residui 257–716, include tutti i 27 hotspot 408–714) **sia** la catena B, che è il **frammento N-terminale nativo di PB1 legato a PA — esattamente i 15 residui del binder canonico** (`MDVNPTLLFLKVPAQ`, numerati 1–15 in catena B). È la struttura del complesso reale, non un modello.
+**Aggiornamento (2026-08-11): il presupposto originale è superato.** Il piano diceva "usando le strutture AF2 già generate — queste non esistono su disco" e proponeva come unica alternativa la geometria statica di `2ZNL.pdb`, applicata per indice a tutti i design assumendo un registro nativo mai verificato. **Ora esistono strutture predette reali**: `af3_predictions/` (root del repo, git-ignored come `results/af3`/`results/boltz`, con tarball di backup `af3_predictions.tar.gz`) contiene **35 predizioni AF3 del complesso completo** (target + binder) per un set curato di "peptidi promettenti" — non l'intera popolazione disegnata, ma un sottoinsieme selezionato a valle dell'analisi (vedi sotto). Questo permette di sostituire l'assunzione di registro nativo con una verifica diretta, almeno per questo sottoinsieme.
 
-  **Decisione proposta**: classificare le 15 posizioni come interfaccia/esposte **una sola volta**, dalla geometria catena B↔catena A in `2ZNL.pdb` (contatti sotto soglia di distanza per "interfaccia", SASA relativa per "esposta"), poi applicare questa classificazione posizionale a tutte le sequenze disegnate per indice (posizione 1 del design ↔ posizione 1 di catena B, ecc.), assumendo che ColabDesign mantenga il registro nativo (stesso `binder_len=15` e stesso target/hotspot). È una semplificazione rispetto al testo del piano (non cattura variazioni di registro *per-design*), ma è l'unica opzione senza rigenerare strutture — e per lo scopo di 0.5 (causa AF2 vs causa energia sul bias aromatico *in media*) è adeguata. Se si vuole la versione forte (registro per-design), serve rifoldare un campione con AF2/Boltz, il che richiede GPU e ricade fuori dal perimetro CPU-only di Fase 0 — da eventualmente spostare in Fase 4.
+**Input:**
+- **Sequenze disegnate (popolazione completa)**: tutti i JSON in `results/colabdesign/{run1_protocols,run2_wide,run_multimer,run_multimer2}/*.json` — campo `results[].seq`, come nel piano originale. Resta la base per l'analisi di composizione su larga scala (step 4 sotto), perché `af3_predictions/` copre solo 34 sequenze uniche, una piccola frazione del totale disegnato.
+- **Predizioni strutturali reali (sottoinsieme "promettente")**: `af3_predictions/fold_<data>_<seq-lowercase-o-uppercase>/`, 35 cartelle. Ciascuna contiene 5 modelli/seed AF3 (`*_model_{0..4}.cif`), le confidenze riassuntive per modello (`*_summary_confidences_{0..4}.json`: `iptm`, `ptm`, `chain_pair_iptm`, `chain_pair_pae_min`, `has_clash`, `fraction_disordered`, `ranking_score`), i dati completi per modello (`*_full_data_{0..4}.json`: `contact_probs` e `pae` come matrici NxN a livello di token/residuo, `token_chain_ids`, `token_res_ids`, `atom_plddts`, `atom_chain_ids` — **niente parsing di coordinate 3D necessario per la classificazione interfaccia/esposto**, `contact_probs` la dà già token-per-token) e `*_job_request.json` (sequenza reale per catena, come sottomessa ad AF3 — target chain A ~478 aa, binder chain B 15 aa).
+
+  **Attenzione alla nomenclatura, verificata sui file**: il batch del 2026-04-08 (10 cartelle, nomi sequenza in MAIUSCOLO) usa nomi interni dei file basati su un timestamp generico (es. `fold_2026_04_08_14_28_summary_confidences_0.json`), **non** sul nome della cartella — uno script deve fare `glob("*_summary_confidences_*.json")` dentro ogni cartella, mai assumere il pattern `<nome_cartella>_summary_confidences_N.json`. Il batch del 2026-04-16 (25 cartelle, minuscolo) segue invece quel pattern. In entrambi i casi la sequenza va letta da `job_request.json` (`sequences[1].proteinChain.sequence`), mai dal nome della cartella (case-inconsistente, puramente cosmetico).
+
+  **Provenienza già tracciata**: `src/analysis/results/summary_best_candidates.csv` (60 righe, 34 sequenze uniche, 35 `af3_folder` unici, **tutte e 35 presenti su disco** — verificato) è il manifest che collega ogni cartella `af3_predictions/` alla sequenza, al protocollo di design che l'ha generata (colonna `protocol`: soprattutto `opt_anneal_energy_C`/`gen_energy_C`/`opt_hard_energy_C`, le varianti energy-guided; 6 righe sono `seqs_aff_alberto_darren_6best`, cioè le stesse sequenze già validate in BLI e usate come validazione dell'encoder in 0.1/0.4), alle metriche ColabDesign-time (`colab_iptm/ptm/plddt`, `energy`) e alle metriche di confidenza AF3 (`af3_iptm`, `af3_ptm`, `af3_ranking_score`, `af3_has_clash`, `af3_frac_disordered`) — **non serve ricostruire questo join**, è già fatto.
+
+  **Decisione proposta (sostituisce quella precedente)**: classificare interfaccia/esposto **direttamente dai contatti predetti da AF3** sulle 35 sequenze reali, invece che dalla sola geometria statica di `2ZNL.pdb`. Per ciascuna cartella: scegliere il modello con `ranking_score` più alto fra i 5 (scartare o segnalare se `has_clash>0`); dai token della catena binder in `full_data_<best>.json`, interfaccia = `contact_probs` verso almeno un token della catena target sopra soglia (es. 0.5, da confermare — vedi decisioni aperte); "esposta" per esclusione o da `atom_plddts`/pattern di contatto intra-catena. Il calcolo su `2ZNL.pdb` (geometria nativa, contatti a soglia di distanza + SASA) **resta nel piano ma come cross-check**, non più come unica fonte: se le due classificazioni concordano in gran parte delle 15 posizioni, valida retroattivamente l'assunzione "ColabDesign mantiene il registro nativo" usata finora (mai verificata direttamente); se divergono, è un risultato in sé (il registro non è stabile fra design). La classificazione via AF3 è per costruzione mediata solo sulle 35 sequenze promettenti (non un campione casuale — sono già le sequenze a punteggio più alto, quindi un possibile bias di selezione sulla classificazione posizionale va segnalato in output, non ignorato), quella via 2ZNL resta l'unica indipendente dal processo di design.
 
 **Script da creare: `src/phase0_diagnostics/run_0_5_structural_context.py`**
-1. Parsing di `2ZNL.pdb` (Biopython `PDBParser`, già in `pyproject.toml`), estrazione catena A (257–716) e catena B (1–15).
-2. Per ciascuna delle 15 posizioni di catena B: (a) contatto = qualunque atomo entro soglia (es. 5 Å, da confermare) da un atomo di catena A → "interfaccia"; (b) SASA relativa (Shrake-Rupley, `Bio.PDB.SASA` o `freesasa` se disponibile) calcolata sul complesso vs sulla catena B isolata → "esposta" se alta.
-3. Carica tutte le sequenze disegnate (`data_loading.py`, unione dei JSON in `results/colabdesign/`).
-4. Frazione aromatica (F/W/Y) per classe di posizione (interfaccia vs esposta), confrontata con WT, libreria iniziale (round 1, come in 0.3′), training set.
+1. Parsing di `2ZNL.pdb` (Biopython `PDBParser`) come nel piano originale: estrazione catena A (257–716) e catena B (1–15), contatto a soglia di distanza (es. 5 Å, da confermare) + SASA relativa (Shrake-Rupley via `Bio.PDB.SASA`, niente `freesasa` esterno) → classificazione posizionale "nativa".
+2. Parsing di `af3_predictions/` via `summary_best_candidates.csv` come indice (evita di dover dedurre sequenza/provenienza dai nomi cartella): per ciascuna delle 35 cartelle, `glob` dei file `*_summary_confidences_*.json` (non assumere naming), selezione del modello a `ranking_score` massimo, lettura di `contact_probs`/`token_chain_ids` dal `full_data` corrispondente, classificazione binder-per-binder → aggregazione (frazione di sequenze in cui ciascuna delle 15 posizioni risulta interfaccia) → classificazione "AF3-consensus".
+3. Confronto fra le due classificazioni (agreement per posizione, non solo aggregato) → `af3_vs_2znl_agreement.csv`/json.
+4. Carica tutte le sequenze disegnate (`data_loading.py`, unione dei JSON in `results/colabdesign/`, popolazione completa — invariato dal piano originale).
+5. Frazione aromatica (F/W/Y) per classe di posizione (interfaccia vs esposta, usando la classificazione scelta al punto 3 — AF3 se concorde/più affidabile, 2ZNL come fallback dove i 15mer AF3 non aiutano a disambiguare), confrontata con WT, libreria iniziale (round 1, come in 0.3′), training set (come in 0.2/0.3′).
 
-**Output:** `results/phase0/0_5_structural_context/{position_classification.csv, aromatic_fraction_by_class.csv, summary.png}`
+**Output:** `results/phase0/0_5_structural_context/{position_classification.csv, af3_vs_2znl_agreement.csv, aromatic_fraction_by_class.csv, summary.png}` (`af3_vs_2znl_agreement.csv` nuovo rispetto al piano originale, motivato dalla disponibilità delle predizioni reali).
 
-**Dipendenza aggiuntiva**: `freesasa` non è nelle dipendenze attuali di `pyproject.toml` (solo `biopython`, che include un calcolo SASA proprio via `Bio.PDB.SASA.ShrakeRupley` — sufficiente, non serve aggiungere `freesasa` come dipendenza esterna).
+**Dipendenza aggiuntiva**: nessuna nuova libreria — `contact_probs` è già nei JSON di `af3_predictions/`, non serve parsing di coordinate né `freesasa` esterno (Biopython copre il cross-check SASA su 2ZNL, invariato dal piano originale).
+
+**Limite dichiarato**: le 35 sequenze con struttura reale sono un sottoinsieme selezionato (i migliori candidati per protocollo, non un campione casuale della popolazione disegnata) — utili per validare/raffinare la classificazione posizionale interfaccia/esposto, non per rifare l'intera analisi di composizione punto-per-punto: quella resta sulla popolazione completa `results/colabdesign/*.json` come nel piano originale, con la classificazione (validata) applicata per indice.
+
+**Stato: eseguita (2026-08-11).** Script scritto: `src/phase0_diagnostics/run_0_5_structural_context.py`. Aggiunto `load_designed_sequences()` a `data_loading.py` (unione dei JSON in `results/colabdesign/{run1_protocols,run2_wide,run_multimer,run_multimer2}/`, esclude `custom/`; 900 design, nessun dedup — si contano i design non le sequenze uniche). Eseguita con `uv run python3 src/phase0_diagnostics/run_0_5_structural_context.py` (pochi secondi, CPU).
+
+**Il criterio di contatto a 5Å su 2ZNL è risultato degenere, e riportato come tale invece di forzare una soglia diversa per ottenere un risultato più "pulito"**: le distanze minime osservate catena B↔A vanno da 2.58 a 3.75 Å su **tutte e 15** le posizioni — il peptide di 15 residui è incassato per l'intera lunghezza nel solco del target, non c'è un sottoinsieme di posizioni "in contatto" e un altro "no" a nessuna soglia ragionevole. Il contatto binario non è quindi l'asse che discrimina; la **SASA relativa** (complesso vs catena B isolata) sì: 13/15 posizioni restano sepolte (SASA relativa <0.5) anche isolando la sola catena B, solo le posizioni 13 e 15 emergono come chiaramente esposte (SASA relativa 0.85 e 0.61).
+
+**Confronto 2ZNL (sepoltura) vs AF3-consensus (35 sequenze reali)**: accordo su 6/15 posizioni — moderato, non una validazione netta. AF3 identifica un nucleo di interfaccia molto più ristretto e concentrato (posizioni 6-9, frazione di sequenze con contatto >0.5 su tutte le 35: 51-57%) rispetto alla sepoltura quasi totale (13/15) suggerita dalla sola struttura nativa 2ZNL. Le due letture sono conciliabili (sepolto nella struttura nativa non implica necessariamente "in contatto diretto con probabilità >50%" nella predizione medita su design reali, spesso non nativi), ma l'accordo parziale è esso stesso un risultato: **il registro di legame non è identico fra le 35 sequenze promettenti e il binder nativo WT** — l'assunzione "ColabDesign mantiene il registro nativo", usata implicitamente ovunque nel piano originale, non è confermata in modo netto. Le posizioni 13 e 15 (esposte per SASA) sono fra le poche in accordo (anche AF3 le classifica non-interfaccia), le posizioni 1-5 e 10-12 sono i casi di disaccordo (sepolte per 2ZNL, ma sotto soglia di contatto AF3 nel 35-49% delle sequenze).
+
+**Classificazione finale usata per l'analisi di composizione (AF3-consensus, come da piano): interfaccia = posizioni 6-9, esposta = le altre 11.**
+
+**Risultato più forte di tutta la Fase 0**: il bias aromatico (F+W+Y) è fortemente concentrato all'interfaccia AF3, e la concentrazione cresce esattamente lungo la stessa progressione di selezione già vista in 0.1/0.3'/0.4:
+
+| popolazione | aromatica interfaccia (4 pos.) | aromatica esposta (11 pos.) | rapporto |
+|---|---|---|---|
+| WT | 25.0% | 0.0% | — |
+| libreria round1 | 31.9% | 10.1% | 3.2× |
+| training set (selezionato) | 41.6% | 9.4% | 4.4× |
+| **BLI validati** | **47.8%** | **9.9%** | **4.8×** |
+| design (tutte le campagne) | 31.5% | 13.9% | 2.3× |
+
+- La frazione aromatica all'interfaccia cresce monotonicamente WT→libreria→training→BLI (25%→32%→42%→48%), mentre quella "esposta" resta piatta intorno al 9-10% per tutte le popolazioni selezionate — il bias aromatico non è un effetto generico su tutta la sequenza, è specificamente un effetto di interfaccia, e si rafforza esattamente nelle popolazioni più vicine alla validazione sperimentale reale (BLI).
+- **La popolazione disegnata (ColabDesign, 900 sequenze da tutte le campagne) mostra il rapporto interfaccia/esposta più debole di tutti (2.3×)** — più debole non solo di BLI ma anche della sola libreria round1 pre-selezione per il denominatore (esposta 13.9% vs 10.1%, quindi il design "sparge" più residui aromatici anche in posizioni non di interfaccia rispetto a quanto farebbe la sola libreria naturale). Suggerisce un gap fra cosa il pipeline di design genera e cosa la selezione biologica reale (NGS + BLI) converge a preferire — il primo concentra meno strettamente il bias aromatico sulle posizioni che contano strutturalmente.
+- File aggiuntivi rispetto al piano originale: `af3_vs_2znl_agreement.csv`/`af3_vs_2znl_agreement_summary.json` (confronto fra le due classificazioni, motivato dalla disponibilità delle predizioni reali — vedi sopra).
 
 ---
 
@@ -156,13 +236,13 @@ encoder + colabdesign.energy_model.model_3layer ──┬──> 0.1
 0.2 (loader training set + clustering) ──> usato da 0.1, 0.3′, 0.4 (stesso data_loading.py)
 
 0.3′  indipendente (solo CSV BLI + conteggi round 1)
-0.5   indipendente dal modello di energia e da 0.2 (usa 2ZNL.pdb + i JSON dei design)
+0.5   indipendente dal modello di energia e da 0.2 (usa 2ZNL.pdb + af3_predictions/ + i JSON dei design)
 ```
 
 Ordine di implementazione consigliato: **encoder + validazione (§Perimetro) → 0.3′ (rapido, valida i dati BLI) → 0.2 (loader condiviso + clustering) → 0.1 → 0.4 → 0.5**. 0.3′ prima di 0.2 perché è il rapporto informazione/costo più alto del piano originale ed è del tutto disaccoppiato dal resto — buon primo risultato da vedere prima di investire nel loader condiviso.
 
 ## Decisioni aperte da confermare prima di scrivere codice
 
-1. **MMseqs2 vs fallback Python** per 0.2 — dipende da cosa è installabile sul cluster AAR.
-2. **Soglia di distanza per "contatto interfaccia"** in 0.5 (proposta: 5 Å heavy-atom, standard ma da confermare).
-3. **Layout cartelle**: `src/phase0_diagnostics/` + `results/phase0/` come proposto sopra, oppure integrare nei notebook esistenti sotto `src/analysis/`.
+1. **MMseqs2 vs fallback Python** per 0.2 — dipende da cosa è installabile sul cluster AAR. **Risolto**: fallback greedy Python (vedi §0.2, eseguita).
+2. **Soglia di distanza per "contatto interfaccia"** in 0.5 su `2ZNL.pdb` (proposta: 5 Å heavy-atom, standard ma da confermare) **e** soglia di `contact_probs` per l'interfaccia AF3-based (proposta: 0.5, da confermare — le due soglie non sono direttamente comparabili, una è geometrica sulla struttura nativa, l'altra è una probabilità predetta da AF3 su 35 design reali).
+3. **Layout cartelle**: `src/phase0_diagnostics/` + `results/phase0/` come proposto sopra, oppure integrare nei notebook esistenti sotto `src/analysis/`. **Risolto de facto**: script in `src/phase0_diagnostics/` (0.1–0.4 eseguite così).
