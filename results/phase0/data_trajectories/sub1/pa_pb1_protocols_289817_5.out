@@ -1,0 +1,9 @@
+Job ID       : 289919
+Array task   : 5  →  protocol: opt_anneal_noenergy
+Node         : aar019
+Start time   : Fri Apr  3 09:41:31 CEST 2026
+---------------------------------------------
+Failed to initialize NVML: Insufficient Permissions
+---------------------------------------------
+JAX devices: [CpuDevice(id=0)]
+ERROR: GPU check failed. Exiting.

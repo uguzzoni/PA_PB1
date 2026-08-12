@@ -1,0 +1,588 @@
+Job ID       : 277689
+Array task   : 1
+Node         : aar114
+Start time   : Wed Mar 11 17:11:57 CET 2026
+ew_low       : 0.00
+ew_high      : 0.10
+---------------------------------------------
+Wed Mar 11 17:11:57 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.54.14              Driver Version: 550.54.14      CUDA Version: 12.4     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla V100-PCIE-32GB           Off |   00000000:3B:00.0 Off |                    0 |
+| N/A   33C    P0             36W /  250W |    4123MiB /  32768MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+---------------------------------------------
+JAX devices: [cuda(id=0)]
+GPU check passed: cuda:0
+Output file  : /home/share_nfs/342-Projets_BGE/342.3-Gen-Chem/342.3.2-BioInfo/342.3.2.8-SeqModels/protein_design/colabdesign_energy_guidance/prg/PA_PB1/sweep_results/sweep_ewlow0.00_ewhigh0.10.json
+Running generate_sequences.py ...
+py3Dmol not installed
+/home/share_nfs/342-Projets_BGE/342.3-Gen-Chem/342.3.2-BioInfo/342.3.2.8-SeqModels/protein_design/energy_model_params/PNB_2R_3lay_negbinom_energy_model_weights.json
+[1/3] seed=0 ...
+1 models [1] recycles 0 hard 0 soft 1 temp 1 loss 7.44 i_con 7.39 plddt 0.48 ptm 0.88 i_ptm 0.09
+2 models [1] recycles 0 hard 0 soft 1 temp 1 loss 7.51 i_con 7.47 plddt 0.57 ptm 0.88 i_ptm 0.10
+3 models [0] recycles 0 hard 0 soft 1 temp 1 loss 7.57 i_con 7.53 plddt 0.56 ptm 0.86 i_ptm 0.12
+4 models [0] recycles 0 hard 0 soft 1 temp 1 loss 7.18 i_con 7.14 plddt 0.60 ptm 0.86 i_ptm 0.14
+5 models [1] recycles 0 hard 0 soft 1 temp 1 loss 7.34 i_con 7.30 plddt 0.52 ptm 0.88 i_ptm 0.09
+6 models [1] recycles 0 hard 0 soft 1 temp 1 loss 6.59 i_con 6.54 plddt 0.51 ptm 0.88 i_ptm 0.09
+7 models [1] recycles 0 hard 0 soft 1 temp 1 loss 6.83 i_con 6.78 plddt 0.49 ptm 0.88 i_ptm 0.09
+8 models [0] recycles 0 hard 0 soft 1 temp 1 loss 6.06 i_con 6.01 plddt 0.49 ptm 0.86 i_ptm 0.11
+9 models [1] recycles 0 hard 0 soft 1 temp 1 loss 6.14 i_con 6.08 plddt 0.47 ptm 0.88 i_ptm 0.09
+10 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.19 i_con 5.13 plddt 0.38 ptm 0.87 i_ptm 0.11
+11 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.67 i_con 5.61 plddt 0.40 ptm 0.88 i_ptm 0.08
+12 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.82 i_con 5.76 plddt 0.44 ptm 0.88 i_ptm 0.09
+13 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.99 i_con 4.93 plddt 0.40 ptm 0.87 i_ptm 0.11
+14 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.66 i_con 5.61 plddt 0.44 ptm 0.88 i_ptm 0.08
+15 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.19 i_con 5.13 plddt 0.39 ptm 0.88 i_ptm 0.11
+16 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.29 i_con 5.22 plddt 0.36 ptm 0.88 i_ptm 0.10
+17 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.96 i_con 4.90 plddt 0.35 ptm 0.87 i_ptm 0.14
+18 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.98 i_con 4.92 plddt 0.37 ptm 0.87 i_ptm 0.17
+19 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.44 i_con 5.38 plddt 0.39 ptm 0.88 i_ptm 0.09
+20 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.33 i_con 5.27 plddt 0.40 ptm 0.88 i_ptm 0.09
+21 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.27 i_con 5.21 plddt 0.42 ptm 0.88 i_ptm 0.10
+22 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.98 i_con 4.91 plddt 0.38 ptm 0.87 i_ptm 0.19
+23 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.07 i_con 5.01 plddt 0.38 ptm 0.88 i_ptm 0.12
+24 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.15 i_con 5.08 plddt 0.34 ptm 0.88 i_ptm 0.16
+25 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.72 i_con 4.66 plddt 0.38 ptm 0.87 i_ptm 0.19
+26 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.08 i_con 5.02 plddt 0.36 ptm 0.88 i_ptm 0.11
+27 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.89 i_con 4.83 plddt 0.40 ptm 0.87 i_ptm 0.19
+28 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.33 i_con 5.27 plddt 0.36 ptm 0.88 i_ptm 0.10
+29 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.82 i_con 4.76 plddt 0.36 ptm 0.88 i_ptm 0.21
+30 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.58 i_con 4.52 plddt 0.40 ptm 0.87 i_ptm 0.24
+31 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.83 i_con 4.76 plddt 0.37 ptm 0.87 i_ptm 0.19
+32 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.77 i_con 4.71 plddt 0.37 ptm 0.88 i_ptm 0.22
+33 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.28 i_con 5.22 plddt 0.38 ptm 0.88 i_ptm 0.11
+34 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.70 i_con 4.64 plddt 0.40 ptm 0.87 i_ptm 0.21
+35 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.59 i_con 4.53 plddt 0.41 ptm 0.87 i_ptm 0.27
+36 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.83 i_con 4.76 plddt 0.38 ptm 0.87 i_ptm 0.21
+37 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.13 i_con 5.06 plddt 0.37 ptm 0.88 i_ptm 0.14
+38 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.32 i_con 5.26 plddt 0.38 ptm 0.88 i_ptm 0.15
+39 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.00 i_con 4.94 plddt 0.35 ptm 0.88 i_ptm 0.19
+40 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.71 i_con 4.65 plddt 0.38 ptm 0.88 i_ptm 0.23
+41 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.22 i_con 5.16 plddt 0.38 ptm 0.88 i_ptm 0.16
+42 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.58 i_con 4.52 plddt 0.38 ptm 0.87 i_ptm 0.23
+43 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.09 i_con 5.03 plddt 0.37 ptm 0.88 i_ptm 0.17
+44 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.98 i_con 4.91 plddt 0.34 ptm 0.88 i_ptm 0.18
+45 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.77 i_con 4.70 plddt 0.33 ptm 0.88 i_ptm 0.19
+46 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.03 i_con 4.97 plddt 0.36 ptm 0.88 i_ptm 0.18
+47 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.09 i_con 5.03 plddt 0.37 ptm 0.88 i_ptm 0.15
+48 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.66 i_con 4.60 plddt 0.41 ptm 0.87 i_ptm 0.23
+49 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.63 i_con 4.57 plddt 0.37 ptm 0.87 i_ptm 0.20
+50 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.54 i_con 4.48 plddt 0.40 ptm 0.87 i_ptm 0.23
+51 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.45 i_con 4.56 plddt 0.39 ptm 0.87 i_ptm 0.23 energy 8.29
+52 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.23 i_con 4.37 plddt 0.38 ptm 0.87 i_ptm 0.27 energy 7.97
+53 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.73 i_con 4.96 plddt 0.38 ptm 0.88 i_ptm 0.17 energy 7.12
+54 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.63 i_con 4.88 plddt 0.37 ptm 0.88 i_ptm 0.18 energy 6.88
+55 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.05 i_con 4.38 plddt 0.39 ptm 0.87 i_ptm 0.23 energy 6.07
+56 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.93 i_con 4.36 plddt 0.39 ptm 0.87 i_ptm 0.25 energy 5.08
+57 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.01 i_con 4.54 plddt 0.37 ptm 0.87 i_ptm 0.24 energy 4.06
+58 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.61 i_con 4.22 plddt 0.38 ptm 0.87 i_ptm 0.28 energy 3.31
+59 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.80 i_con 4.51 plddt 0.41 ptm 0.87 i_ptm 0.21 energy 2.32
+60 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.61 i_con 4.41 plddt 0.41 ptm 0.87 i_ptm 0.25 energy 1.44
+61 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.45 i_con 4.35 plddt 0.41 ptm 0.87 i_ptm 0.25 energy 0.40
+62 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.35 i_con 4.34 plddt 0.40 ptm 0.87 i_ptm 0.24 energy -0.53
+63 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.34 i_con 5.38 plddt 0.40 ptm 0.88 i_ptm 0.09 energy -1.00
+64 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.73 i_con 4.81 plddt 0.39 ptm 0.88 i_ptm 0.19 energy -1.46
+65 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.56 i_con 4.64 plddt 0.35 ptm 0.88 i_ptm 0.22 energy -1.46
+66 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.50 i_con 4.59 plddt 0.39 ptm 0.87 i_ptm 0.21 energy -1.43
+67 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.29 i_con 4.39 plddt 0.41 ptm 0.87 i_ptm 0.23 energy -1.58
+68 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.34 i_con 4.50 plddt 0.39 ptm 0.87 i_ptm 0.23 energy -2.28
+69 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.11 i_con 4.27 plddt 0.38 ptm 0.87 i_ptm 0.27 energy -2.28
+70 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.49 i_con 4.69 plddt 0.34 ptm 0.88 i_ptm 0.19 energy -2.59
+71 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.52 i_con 4.67 plddt 0.36 ptm 0.89 i_ptm 0.22 energy -2.14
+72 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.02 i_con 4.17 plddt 0.42 ptm 0.87 i_ptm 0.28 energy -2.08
+73 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.78 i_con 4.98 plddt 0.39 ptm 0.88 i_ptm 0.16 energy -2.57
+74 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.34 i_con 4.51 plddt 0.43 ptm 0.87 i_ptm 0.25 energy -2.26
+75 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.19 i_con 4.36 plddt 0.41 ptm 0.87 i_ptm 0.25 energy -2.34
+76 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.06 i_con 4.28 plddt 0.42 ptm 0.87 i_ptm 0.26 energy -2.76
+77 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.30 i_con 4.54 plddt 0.42 ptm 0.87 i_ptm 0.24 energy -2.96
+78 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.22 i_con 4.45 plddt 0.40 ptm 0.87 i_ptm 0.23 energy -2.91
+79 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.46 i_con 4.71 plddt 0.37 ptm 0.88 i_ptm 0.20 energy -3.11
+80 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.54 i_con 4.77 plddt 0.36 ptm 0.88 i_ptm 0.18 energy -2.91
+81 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.46 i_con 4.66 plddt 0.37 ptm 0.88 i_ptm 0.19 energy -2.56
+82 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.20 i_con 4.40 plddt 0.35 ptm 0.88 i_ptm 0.23 energy -2.65
+83 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.97 i_con 4.23 plddt 0.42 ptm 0.87 i_ptm 0.26 energy -3.11
+84 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.31 i_con 4.57 plddt 0.35 ptm 0.88 i_ptm 0.22 energy -3.26
+85 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.40 i_con 4.67 plddt 0.38 ptm 0.89 i_ptm 0.20 energy -3.33
+86 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.96 i_con 4.24 plddt 0.39 ptm 0.89 i_ptm 0.25 energy -3.37
+87 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.25 i_con 4.53 plddt 0.37 ptm 0.88 i_ptm 0.22 energy -3.41
+88 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.01 i_con 4.28 plddt 0.39 ptm 0.87 i_ptm 0.23 energy -3.30
+89 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.06 i_con 4.35 plddt 0.41 ptm 0.87 i_ptm 0.25 energy -3.47
+90 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.87 i_con 4.16 plddt 0.41 ptm 0.87 i_ptm 0.25 energy -3.50
+91 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.67 i_con 3.97 plddt 0.40 ptm 0.88 i_ptm 0.30 energy -3.62
+92 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.68 i_con 3.99 plddt 0.43 ptm 0.87 i_ptm 0.33 energy -3.66
+93 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.05 i_con 4.35 plddt 0.41 ptm 0.88 i_ptm 0.25 energy -3.65
+94 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.67 i_con 3.98 plddt 0.46 ptm 0.88 i_ptm 0.35 energy -3.64
+95 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.89 i_con 4.19 plddt 0.42 ptm 0.89 i_ptm 0.26 energy -3.59
+96 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.78 i_con 4.07 plddt 0.43 ptm 0.89 i_ptm 0.29 energy -3.51
+97 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.88 i_con 4.18 plddt 0.42 ptm 0.87 i_ptm 0.26 energy -3.56
+98 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.89 i_con 4.19 plddt 0.40 ptm 0.87 i_ptm 0.25 energy -3.64
+99 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.68 i_con 4.00 plddt 0.43 ptm 0.87 i_ptm 0.31 energy -3.79
+100 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.68 i_con 4.01 plddt 0.44 ptm 0.87 i_ptm 0.32 energy -3.81
+101 models [0] recycles 0 hard 0 soft 0 temp 1 loss 7.75 i_con 7.69 plddt 0.48 ptm 0.87 i_ptm 0.14
+102 models [1] recycles 0 hard 0 soft 0 temp 0.98 loss 7.12 i_con 7.07 plddt 0.51 ptm 0.88 i_ptm 0.10
+103 models [1] recycles 0 hard 0 soft 0 temp 0.96 loss 6.43 i_con 6.38 plddt 0.53 ptm 0.88 i_ptm 0.09
+104 models [0] recycles 0 hard 0 soft 0 temp 0.94 loss 4.32 i_con 4.26 plddt 0.42 ptm 0.87 i_ptm 0.29
+105 models [1] recycles 0 hard 0 soft 0 temp 0.92 loss 4.64 i_con 4.58 plddt 0.41 ptm 0.88 i_ptm 0.23
+106 models [1] recycles 0 hard 0 soft 0 temp 0.90 loss 3.98 i_con 3.93 plddt 0.46 ptm 0.89 i_ptm 0.37
+107 models [0] recycles 0 hard 0 soft 0 temp 0.88 loss 4.03 i_con 3.98 plddt 0.44 ptm 0.87 i_ptm 0.33
+108 models [0] recycles 0 hard 0 soft 0 temp 0.86 loss 3.97 i_con 3.91 plddt 0.44 ptm 0.88 i_ptm 0.36
+109 models [0] recycles 0 hard 0 soft 0 temp 0.84 loss 3.87 i_con 3.81 plddt 0.45 ptm 0.88 i_ptm 0.40
+110 models [1] recycles 0 hard 0 soft 0 temp 0.82 loss 3.90 i_con 3.85 plddt 0.46 ptm 0.89 i_ptm 0.40
+111 models [1] recycles 0 hard 0 soft 0 temp 0.80 loss 3.69 i_con 3.63 plddt 0.50 ptm 0.89 i_ptm 0.49
+112 models [0] recycles 0 hard 0 soft 0 temp 0.78 loss 3.88 i_con 3.82 plddt 0.45 ptm 0.88 i_ptm 0.37
+113 models [0] recycles 0 hard 0 soft 0 temp 0.76 loss 3.77 i_con 3.72 plddt 0.46 ptm 0.88 i_ptm 0.44
+114 models [1] recycles 0 hard 0 soft 0 temp 0.74 loss 3.46 i_con 3.41 plddt 0.50 ptm 0.90 i_ptm 0.56
+115 models [1] recycles 0 hard 0 soft 0 temp 0.72 loss 3.56 i_con 3.51 plddt 0.51 ptm 0.90 i_ptm 0.52
+116 models [1] recycles 0 hard 0 soft 0 temp 0.70 loss 3.30 i_con 3.25 plddt 0.55 ptm 0.90 i_ptm 0.61
+117 models [0] recycles 0 hard 0 soft 0 temp 0.68 loss 3.69 i_con 3.64 plddt 0.48 ptm 0.88 i_ptm 0.49
+118 models [0] recycles 0 hard 0 soft 0 temp 0.66 loss 3.55 i_con 3.50 plddt 0.49 ptm 0.88 i_ptm 0.55
+119 models [1] recycles 0 hard 0 soft 0 temp 0.64 loss 3.10 i_con 3.06 plddt 0.59 ptm 0.91 i_ptm 0.69
+120 models [0] recycles 0 hard 0 soft 0 temp 0.62 loss 3.54 i_con 3.49 plddt 0.51 ptm 0.88 i_ptm 0.56
+121 models [1] recycles 0 hard 0 soft 0 temp 0.60 loss 3.07 i_con 3.03 plddt 0.59 ptm 0.90 i_ptm 0.68
+122 models [0] recycles 0 hard 0 soft 0 temp 0.58 loss 3.56 i_con 3.50 plddt 0.48 ptm 0.88 i_ptm 0.53
+123 models [1] recycles 0 hard 0 soft 0 temp 0.56 loss 3.04 i_con 3.00 plddt 0.58 ptm 0.91 i_ptm 0.67
+124 models [0] recycles 0 hard 0 soft 0 temp 0.54 loss 3.36 i_con 3.31 plddt 0.54 ptm 0.88 i_ptm 0.59
+125 models [0] recycles 0 hard 0 soft 0 temp 0.52 loss 3.39 i_con 3.34 plddt 0.54 ptm 0.88 i_ptm 0.59
+126 models [0] recycles 0 hard 0 soft 0 temp 0.50 loss 3.43 i_con 3.38 plddt 0.53 ptm 0.88 i_ptm 0.58
+127 models [0] recycles 0 hard 0 soft 0 temp 0.48 loss 3.59 i_con 3.54 plddt 0.49 ptm 0.88 i_ptm 0.52
+128 models [1] recycles 0 hard 0 soft 0 temp 0.46 loss 2.95 i_con 2.91 plddt 0.59 ptm 0.91 i_ptm 0.70
+129 models [1] recycles 0 hard 0 soft 0 temp 0.44 loss 2.78 i_con 2.74 plddt 0.62 ptm 0.91 i_ptm 0.70
+130 models [1] recycles 0 hard 0 soft 0 temp 0.42 loss 2.67 i_con 2.64 plddt 0.64 ptm 0.91 i_ptm 0.72
+131 models [0] recycles 0 hard 0 soft 0 temp 0.40 loss 3.28 i_con 3.24 plddt 0.56 ptm 0.88 i_ptm 0.66
+132 models [0] recycles 0 hard 0 soft 0 temp 0.38 loss 3.32 i_con 3.28 plddt 0.54 ptm 0.88 i_ptm 0.60
+133 models [0] recycles 0 hard 0 soft 0 temp 0.36 loss 3.09 i_con 3.05 plddt 0.59 ptm 0.89 i_ptm 0.67
+134 models [0] recycles 0 hard 0 soft 0 temp 0.34 loss 3.05 i_con 3.01 plddt 0.59 ptm 0.89 i_ptm 0.68
+135 models [1] recycles 0 hard 0 soft 0 temp 0.32 loss 2.70 i_con 2.67 plddt 0.64 ptm 0.91 i_ptm 0.74
+136 models [1] recycles 0 hard 0 soft 0 temp 0.30 loss 2.69 i_con 2.65 plddt 0.64 ptm 0.91 i_ptm 0.74
+137 models [1] recycles 0 hard 0 soft 0 temp 0.28 loss 2.49 i_con 2.46 plddt 0.69 ptm 0.91 i_ptm 0.78
+138 models [1] recycles 0 hard 0 soft 0 temp 0.26 loss 2.64 i_con 2.60 plddt 0.64 ptm 0.91 i_ptm 0.75
+139 models [1] recycles 0 hard 0 soft 0 temp 0.24 loss 2.59 i_con 2.56 plddt 0.68 ptm 0.91 i_ptm 0.77
+140 models [1] recycles 0 hard 0 soft 0 temp 0.22 loss 2.50 i_con 2.46 plddt 0.69 ptm 0.91 i_ptm 0.78
+141 models [0] recycles 0 hard 0 soft 0 temp 0.20 loss 3.02 i_con 2.98 plddt 0.61 ptm 0.89 i_ptm 0.72
+142 models [0] recycles 0 hard 0 soft 0 temp 0.18 loss 3.13 i_con 3.09 plddt 0.59 ptm 0.88 i_ptm 0.65
+143 models [1] recycles 0 hard 0 soft 0 temp 0.16 loss 2.70 i_con 2.66 plddt 0.62 ptm 0.91 i_ptm 0.72
+144 models [0] recycles 0 hard 0 soft 0 temp 0.14 loss 3.05 i_con 3.01 plddt 0.60 ptm 0.89 i_ptm 0.70
+145 models [1] recycles 0 hard 0 soft 0 temp 0.12 loss 2.54 i_con 2.51 plddt 0.66 ptm 0.91 i_ptm 0.77
+146 models [1] recycles 0 hard 0 soft 0 temp 0.10 loss 2.70 i_con 2.67 plddt 0.66 ptm 0.91 i_ptm 0.76
+147 models [0] recycles 0 hard 0 soft 0 temp 0.08 loss 2.94 i_con 2.90 plddt 0.61 ptm 0.89 i_ptm 0.71
+148 models [1] recycles 0 hard 0 soft 0 temp 0.06 loss 2.41 i_con 2.38 plddt 0.68 ptm 0.91 i_ptm 0.77
+149 models [0] recycles 0 hard 0 soft 0 temp 0.04 loss 3.00 i_con 2.96 plddt 0.59 ptm 0.89 i_ptm 0.67
+150 models [1] recycles 0 hard 0 soft 0 temp 0.02 loss 2.65 i_con 2.62 plddt 0.66 ptm 0.91 i_ptm 0.77
+151 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 4.12 i_con 4.24 plddt 0.41 ptm 0.89 i_ptm 0.31 energy -1.74
+152 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 4.12 i_con 4.24 plddt 0.41 ptm 0.89 i_ptm 0.31 energy -1.74
+153 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 4.12 i_con 4.24 plddt 0.41 ptm 0.89 i_ptm 0.31 energy -1.74
+154 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 4.13 i_con 4.24 plddt 0.43 ptm 0.88 i_ptm 0.25 energy -1.74
+155 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 4.12 i_con 4.24 plddt 0.41 ptm 0.89 i_ptm 0.31 energy -1.74
+156 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 4.12 i_con 4.24 plddt 0.41 ptm 0.89 i_ptm 0.31 energy -1.74
+157 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 4.13 i_con 4.24 plddt 0.43 ptm 0.88 i_ptm 0.25 energy -1.74
+158 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 4.13 i_con 4.24 plddt 0.43 ptm 0.88 i_ptm 0.25 energy -1.74
+159 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 4.12 i_con 4.24 plddt 0.41 ptm 0.89 i_ptm 0.31 energy -1.74
+160 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 4.12 i_con 4.24 plddt 0.41 ptm 0.89 i_ptm 0.31 energy -1.74
+161 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 4.13 i_con 4.24 plddt 0.43 ptm 0.88 i_ptm 0.25 energy -1.74
+162 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 4.12 i_con 4.24 plddt 0.41 ptm 0.89 i_ptm 0.31 energy -1.74
+163 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 4.13 i_con 4.24 plddt 0.43 ptm 0.88 i_ptm 0.25 energy -1.74
+164 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 4.12 i_con 4.24 plddt 0.41 ptm 0.89 i_ptm 0.31 energy -1.74
+165 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 4.13 i_con 4.24 plddt 0.43 ptm 0.88 i_ptm 0.25 energy -1.74
+166 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 4.12 i_con 4.24 plddt 0.41 ptm 0.89 i_ptm 0.31 energy -1.74
+167 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 4.13 i_con 4.24 plddt 0.43 ptm 0.88 i_ptm 0.25 energy -1.74
+168 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 4.13 i_con 4.24 plddt 0.43 ptm 0.88 i_ptm 0.25 energy -1.74
+169 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 4.13 i_con 4.24 plddt 0.43 ptm 0.88 i_ptm 0.25 energy -1.74
+170 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 4.12 i_con 4.24 plddt 0.41 ptm 0.89 i_ptm 0.31 energy -1.74
+171 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 4.13 i_con 4.24 plddt 0.43 ptm 0.88 i_ptm 0.25 energy -1.74
+172 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 4.12 i_con 4.24 plddt 0.41 ptm 0.89 i_ptm 0.31 energy -1.74
+173 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 4.13 i_con 4.24 plddt 0.43 ptm 0.88 i_ptm 0.25 energy -1.74
+174 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 4.13 i_con 4.24 plddt 0.43 ptm 0.88 i_ptm 0.25 energy -1.74
+175 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 4.12 i_con 4.24 plddt 0.41 ptm 0.89 i_ptm 0.31 energy -1.74
+176 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 4.12 i_con 4.24 plddt 0.41 ptm 0.89 i_ptm 0.31 energy -1.74
+177 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 4.12 i_con 4.24 plddt 0.41 ptm 0.89 i_ptm 0.31 energy -1.74
+178 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 4.13 i_con 4.24 plddt 0.43 ptm 0.88 i_ptm 0.25 energy -1.74
+179 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 4.13 i_con 4.24 plddt 0.43 ptm 0.88 i_ptm 0.25 energy -1.74
+180 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 4.12 i_con 4.24 plddt 0.41 ptm 0.89 i_ptm 0.31 energy -1.74
+  seq=AAFSPAELVLLLCLL  loss=4.1204  loss_af=4.2945  energy=-1.7407  i_ptm=0.3060
+[2/3] seed=1 ...
+1 models [0] recycles 0 hard 0 soft 1 temp 1 loss 7.94 i_con 7.90 plddt 0.58 ptm 0.86 i_ptm 0.13
+2 models [1] recycles 0 hard 0 soft 1 temp 1 loss 7.28 i_con 7.23 plddt 0.54 ptm 0.88 i_ptm 0.08
+3 models [0] recycles 0 hard 0 soft 1 temp 1 loss 7.26 i_con 7.21 plddt 0.52 ptm 0.86 i_ptm 0.12
+4 models [1] recycles 0 hard 0 soft 1 temp 1 loss 6.94 i_con 6.89 plddt 0.53 ptm 0.88 i_ptm 0.09
+5 models [0] recycles 0 hard 0 soft 1 temp 1 loss 6.77 i_con 6.73 plddt 0.58 ptm 0.86 i_ptm 0.13
+6 models [1] recycles 0 hard 0 soft 1 temp 1 loss 7.20 i_con 7.15 plddt 0.49 ptm 0.88 i_ptm 0.09
+7 models [1] recycles 0 hard 0 soft 1 temp 1 loss 6.87 i_con 6.83 plddt 0.52 ptm 0.88 i_ptm 0.08
+8 models [1] recycles 0 hard 0 soft 1 temp 1 loss 6.72 i_con 6.67 plddt 0.51 ptm 0.88 i_ptm 0.09
+9 models [1] recycles 0 hard 0 soft 1 temp 1 loss 6.15 i_con 6.10 plddt 0.49 ptm 0.88 i_ptm 0.08
+10 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.59 i_con 5.54 plddt 0.44 ptm 0.86 i_ptm 0.11
+11 models [1] recycles 0 hard 0 soft 1 temp 1 loss 6.18 i_con 6.12 plddt 0.48 ptm 0.88 i_ptm 0.07
+12 models [1] recycles 0 hard 0 soft 1 temp 1 loss 6.11 i_con 6.05 plddt 0.48 ptm 0.88 i_ptm 0.08
+13 models [1] recycles 0 hard 0 soft 1 temp 1 loss 6.00 i_con 5.95 plddt 0.50 ptm 0.88 i_ptm 0.08
+14 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.24 i_con 5.18 plddt 0.42 ptm 0.86 i_ptm 0.11
+15 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.88 i_con 4.81 plddt 0.34 ptm 0.86 i_ptm 0.13
+16 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.62 i_con 4.56 plddt 0.40 ptm 0.87 i_ptm 0.20
+17 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.67 i_con 4.60 plddt 0.32 ptm 0.86 i_ptm 0.18
+18 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.65 i_con 5.60 plddt 0.48 ptm 0.88 i_ptm 0.08
+19 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.73 i_con 5.67 plddt 0.42 ptm 0.88 i_ptm 0.08
+20 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.16 i_con 5.10 plddt 0.38 ptm 0.88 i_ptm 0.11
+21 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.57 i_con 4.51 plddt 0.38 ptm 0.87 i_ptm 0.19
+22 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.17 i_con 5.10 plddt 0.36 ptm 0.88 i_ptm 0.13
+23 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.10 i_con 5.03 plddt 0.35 ptm 0.88 i_ptm 0.15
+24 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.16 i_con 5.10 plddt 0.36 ptm 0.88 i_ptm 0.13
+25 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.61 i_con 4.55 plddt 0.40 ptm 0.87 i_ptm 0.22
+26 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.92 i_con 4.86 plddt 0.38 ptm 0.87 i_ptm 0.17
+27 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.24 i_con 5.18 plddt 0.36 ptm 0.88 i_ptm 0.11
+28 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.93 i_con 4.87 plddt 0.34 ptm 0.88 i_ptm 0.17
+29 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.02 i_con 4.96 plddt 0.38 ptm 0.88 i_ptm 0.15
+30 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.48 i_con 4.42 plddt 0.42 ptm 0.87 i_ptm 0.21
+31 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.53 i_con 4.47 plddt 0.39 ptm 0.87 i_ptm 0.21
+32 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.08 i_con 5.02 plddt 0.38 ptm 0.88 i_ptm 0.13
+33 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.52 i_con 4.46 plddt 0.40 ptm 0.87 i_ptm 0.22
+34 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.55 i_con 4.48 plddt 0.37 ptm 0.87 i_ptm 0.20
+35 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.56 i_con 4.49 plddt 0.37 ptm 0.87 i_ptm 0.20
+36 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.52 i_con 4.46 plddt 0.39 ptm 0.87 i_ptm 0.20
+37 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.41 i_con 4.35 plddt 0.36 ptm 0.87 i_ptm 0.23
+38 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.47 i_con 4.41 plddt 0.37 ptm 0.87 i_ptm 0.22
+39 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.21 i_con 5.15 plddt 0.37 ptm 0.88 i_ptm 0.10
+40 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.35 i_con 4.29 plddt 0.40 ptm 0.87 i_ptm 0.24
+41 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.75 i_con 4.68 plddt 0.36 ptm 0.87 i_ptm 0.18
+42 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.80 i_con 4.74 plddt 0.36 ptm 0.88 i_ptm 0.20
+43 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.14 i_con 5.08 plddt 0.40 ptm 0.88 i_ptm 0.15
+44 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.87 i_con 4.81 plddt 0.37 ptm 0.86 i_ptm 0.13
+45 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.39 i_con 4.33 plddt 0.39 ptm 0.87 i_ptm 0.24
+46 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.72 i_con 4.66 plddt 0.41 ptm 0.87 i_ptm 0.19
+47 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.44 i_con 4.38 plddt 0.37 ptm 0.87 i_ptm 0.19
+48 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.56 i_con 4.49 plddt 0.38 ptm 0.87 i_ptm 0.21
+49 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.62 i_con 4.56 plddt 0.39 ptm 0.87 i_ptm 0.20
+50 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.24 i_con 5.18 plddt 0.35 ptm 0.88 i_ptm 0.12
+51 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.61 i_con 4.62 plddt 0.37 ptm 0.88 i_ptm 0.19 energy 9.28
+52 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.92 i_con 4.97 plddt 0.34 ptm 0.88 i_ptm 0.13 energy 8.85
+53 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.73 i_con 4.82 plddt 0.35 ptm 0.88 i_ptm 0.17 energy 8.49
+54 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.21 i_con 4.36 plddt 0.39 ptm 0.87 i_ptm 0.23 energy 7.83
+55 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.17 i_con 4.41 plddt 0.40 ptm 0.87 i_ptm 0.21 energy 6.96
+56 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.04 i_con 4.32 plddt 0.36 ptm 0.87 i_ptm 0.21 energy 6.51
+57 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.87 i_con 4.26 plddt 0.41 ptm 0.87 i_ptm 0.26 energy 5.48
+58 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.72 i_con 4.20 plddt 0.40 ptm 0.87 i_ptm 0.26 energy 4.59
+59 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.66 i_con 4.26 plddt 0.39 ptm 0.87 i_ptm 0.23 energy 3.37
+60 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.60 i_con 5.31 plddt 0.38 ptm 0.88 i_ptm 0.10 energy 2.32
+61 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.42 i_con 5.15 plddt 0.35 ptm 0.88 i_ptm 0.13 energy 2.12
+62 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.46 i_con 4.27 plddt 0.43 ptm 0.87 i_ptm 0.26 energy 1.29
+63 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.48 i_con 4.32 plddt 0.40 ptm 0.87 i_ptm 0.25 energy 1.00
+64 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.32 i_con 4.25 plddt 0.39 ptm 0.87 i_ptm 0.23 energy 0.08
+65 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.87 i_con 4.85 plddt 0.37 ptm 0.88 i_ptm 0.17 energy -0.41
+66 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.70 i_con 4.71 plddt 0.31 ptm 0.88 i_ptm 0.15 energy -0.72
+67 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.14 i_con 4.14 plddt 0.41 ptm 0.87 i_ptm 0.26 energy -0.57
+68 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.15 i_con 4.18 plddt 0.39 ptm 0.87 i_ptm 0.24 energy -0.85
+69 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.41 i_con 4.53 plddt 0.35 ptm 0.88 i_ptm 0.19 energy -1.84
+70 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.26 i_con 4.42 plddt 0.37 ptm 0.88 i_ptm 0.21 energy -2.19
+71 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.96 i_con 5.12 plddt 0.35 ptm 0.88 i_ptm 0.11 energy -2.25
+72 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.34 i_con 4.54 plddt 0.31 ptm 0.88 i_ptm 0.18 energy -2.70
+73 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.00 i_con 4.18 plddt 0.38 ptm 0.87 i_ptm 0.24 energy -2.41
+74 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.11 i_con 4.31 plddt 0.38 ptm 0.87 i_ptm 0.22 energy -2.58
+75 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.07 i_con 4.29 plddt 0.34 ptm 0.89 i_ptm 0.23 energy -2.81
+76 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.57 i_con 4.78 plddt 0.34 ptm 0.88 i_ptm 0.18 energy -2.80
+77 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.05 i_con 4.23 plddt 0.38 ptm 0.89 i_ptm 0.26 energy -2.51
+78 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.43 i_con 4.65 plddt 0.34 ptm 0.88 i_ptm 0.19 energy -2.83
+79 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.11 i_con 4.32 plddt 0.37 ptm 0.87 i_ptm 0.23 energy -2.81
+80 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.17 i_con 4.39 plddt 0.37 ptm 0.88 i_ptm 0.22 energy -2.82
+81 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.07 i_con 4.30 plddt 0.38 ptm 0.87 i_ptm 0.23 energy -2.87
+82 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.08 i_con 4.30 plddt 0.42 ptm 0.87 i_ptm 0.24 energy -2.75
+83 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.25 i_con 4.43 plddt 0.38 ptm 0.88 i_ptm 0.21 energy -2.44
+84 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.90 i_con 4.12 plddt 0.40 ptm 0.89 i_ptm 0.28 energy -2.77
+85 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.09 i_con 4.30 plddt 0.33 ptm 0.88 i_ptm 0.23 energy -2.80
+86 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.98 i_con 4.18 plddt 0.39 ptm 0.89 i_ptm 0.27 energy -2.68
+87 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.97 i_con 4.21 plddt 0.39 ptm 0.89 i_ptm 0.25 energy -2.96
+88 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.92 i_con 4.16 plddt 0.41 ptm 0.87 i_ptm 0.25 energy -3.07
+89 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.41 i_con 4.65 plddt 0.35 ptm 0.88 i_ptm 0.17 energy -3.11
+90 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.05 i_con 4.28 plddt 0.36 ptm 0.88 i_ptm 0.25 energy -2.96
+91 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.01 i_con 4.26 plddt 0.38 ptm 0.87 i_ptm 0.26 energy -3.16
+92 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.03 i_con 4.28 plddt 0.37 ptm 0.89 i_ptm 0.25 energy -3.11
+93 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.36 i_con 4.60 plddt 0.36 ptm 0.88 i_ptm 0.20 energy -3.06
+94 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.06 i_con 4.29 plddt 0.40 ptm 0.88 i_ptm 0.23 energy -2.92
+95 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.88 i_con 4.12 plddt 0.40 ptm 0.87 i_ptm 0.27 energy -2.94
+96 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.17 i_con 4.40 plddt 0.39 ptm 0.89 i_ptm 0.22 energy -2.95
+97 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.83 i_con 4.05 plddt 0.41 ptm 0.87 i_ptm 0.33 energy -2.73
+98 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.90 i_con 4.12 plddt 0.36 ptm 0.89 i_ptm 0.27 energy -2.90
+99 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.12 i_con 4.34 plddt 0.38 ptm 0.88 i_ptm 0.23 energy -2.90
+100 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.05 i_con 4.29 plddt 0.36 ptm 0.89 i_ptm 0.24 energy -3.09
+101 models [0] recycles 0 hard 0 soft 0 temp 1 loss 6.28 i_con 6.23 plddt 0.46 ptm 0.87 i_ptm 0.12
+102 models [0] recycles 0 hard 0 soft 0 temp 0.98 loss 4.81 i_con 4.75 plddt 0.39 ptm 0.87 i_ptm 0.21
+103 models [0] recycles 0 hard 0 soft 0 temp 0.96 loss 4.61 i_con 4.55 plddt 0.39 ptm 0.87 i_ptm 0.26
+104 models [0] recycles 0 hard 0 soft 0 temp 0.94 loss 4.37 i_con 4.31 plddt 0.40 ptm 0.87 i_ptm 0.25
+105 models [1] recycles 0 hard 0 soft 0 temp 0.92 loss 5.18 i_con 5.11 plddt 0.37 ptm 0.88 i_ptm 0.11
+106 models [1] recycles 0 hard 0 soft 0 temp 0.90 loss 4.27 i_con 4.20 plddt 0.36 ptm 0.89 i_ptm 0.27
+107 models [1] recycles 0 hard 0 soft 0 temp 0.88 loss 4.34 i_con 4.28 plddt 0.39 ptm 0.89 i_ptm 0.27
+108 models [0] recycles 0 hard 0 soft 0 temp 0.86 loss 3.99 i_con 3.93 plddt 0.39 ptm 0.87 i_ptm 0.33
+109 models [1] recycles 0 hard 0 soft 0 temp 0.84 loss 4.05 i_con 3.99 plddt 0.40 ptm 0.89 i_ptm 0.33
+110 models [0] recycles 0 hard 0 soft 0 temp 0.82 loss 3.98 i_con 3.92 plddt 0.39 ptm 0.88 i_ptm 0.34
+111 models [1] recycles 0 hard 0 soft 0 temp 0.80 loss 3.95 i_con 3.90 plddt 0.42 ptm 0.89 i_ptm 0.35
+112 models [0] recycles 0 hard 0 soft 0 temp 0.78 loss 4.18 i_con 4.11 plddt 0.39 ptm 0.87 i_ptm 0.28
+113 models [0] recycles 0 hard 0 soft 0 temp 0.76 loss 4.03 i_con 3.97 plddt 0.40 ptm 0.87 i_ptm 0.30
+114 models [1] recycles 0 hard 0 soft 0 temp 0.74 loss 3.71 i_con 3.65 plddt 0.45 ptm 0.90 i_ptm 0.46
+115 models [0] recycles 0 hard 0 soft 0 temp 0.72 loss 3.86 i_con 3.81 plddt 0.42 ptm 0.88 i_ptm 0.38
+116 models [1] recycles 0 hard 0 soft 0 temp 0.70 loss 3.90 i_con 3.84 plddt 0.41 ptm 0.89 i_ptm 0.41
+117 models [0] recycles 0 hard 0 soft 0 temp 0.68 loss 3.84 i_con 3.78 plddt 0.42 ptm 0.87 i_ptm 0.38
+118 models [1] recycles 0 hard 0 soft 0 temp 0.66 loss 3.88 i_con 3.82 plddt 0.41 ptm 0.90 i_ptm 0.39
+119 models [1] recycles 0 hard 0 soft 0 temp 0.64 loss 3.85 i_con 3.80 plddt 0.43 ptm 0.89 i_ptm 0.43
+120 models [0] recycles 0 hard 0 soft 0 temp 0.62 loss 3.82 i_con 3.76 plddt 0.44 ptm 0.88 i_ptm 0.40
+121 models [0] recycles 0 hard 0 soft 0 temp 0.60 loss 3.77 i_con 3.71 plddt 0.45 ptm 0.88 i_ptm 0.44
+122 models [1] recycles 0 hard 0 soft 0 temp 0.58 loss 3.54 i_con 3.50 plddt 0.50 ptm 0.90 i_ptm 0.53
+123 models [0] recycles 0 hard 0 soft 0 temp 0.56 loss 3.90 i_con 3.85 plddt 0.42 ptm 0.88 i_ptm 0.35
+124 models [1] recycles 0 hard 0 soft 0 temp 0.54 loss 3.84 i_con 3.78 plddt 0.44 ptm 0.89 i_ptm 0.41
+125 models [1] recycles 0 hard 0 soft 0 temp 0.52 loss 3.50 i_con 3.45 plddt 0.49 ptm 0.90 i_ptm 0.53
+126 models [0] recycles 0 hard 0 soft 0 temp 0.50 loss 3.83 i_con 3.77 plddt 0.42 ptm 0.88 i_ptm 0.41
+127 models [1] recycles 0 hard 0 soft 0 temp 0.48 loss 3.73 i_con 3.67 plddt 0.45 ptm 0.90 i_ptm 0.45
+128 models [1] recycles 0 hard 0 soft 0 temp 0.46 loss 3.37 i_con 3.33 plddt 0.54 ptm 0.90 i_ptm 0.58
+129 models [0] recycles 0 hard 0 soft 0 temp 0.44 loss 3.79 i_con 3.74 plddt 0.42 ptm 0.87 i_ptm 0.39
+130 models [1] recycles 0 hard 0 soft 0 temp 0.42 loss 3.74 i_con 3.68 plddt 0.45 ptm 0.90 i_ptm 0.46
+131 models [0] recycles 0 hard 0 soft 0 temp 0.40 loss 3.78 i_con 3.73 plddt 0.43 ptm 0.88 i_ptm 0.42
+132 models [1] recycles 0 hard 0 soft 0 temp 0.38 loss 3.68 i_con 3.63 plddt 0.44 ptm 0.90 i_ptm 0.47
+133 models [0] recycles 0 hard 0 soft 0 temp 0.36 loss 3.72 i_con 3.66 plddt 0.43 ptm 0.88 i_ptm 0.44
+134 models [1] recycles 0 hard 0 soft 0 temp 0.34 loss 3.71 i_con 3.65 plddt 0.44 ptm 0.90 i_ptm 0.47
+135 models [0] recycles 0 hard 0 soft 0 temp 0.32 loss 3.81 i_con 3.76 plddt 0.43 ptm 0.87 i_ptm 0.41
+136 models [0] recycles 0 hard 0 soft 0 temp 0.30 loss 3.73 i_con 3.67 plddt 0.44 ptm 0.88 i_ptm 0.41
+137 models [0] recycles 0 hard 0 soft 0 temp 0.28 loss 3.82 i_con 3.76 plddt 0.42 ptm 0.87 i_ptm 0.40
+138 models [0] recycles 0 hard 0 soft 0 temp 0.26 loss 3.77 i_con 3.72 plddt 0.43 ptm 0.88 i_ptm 0.43
+139 models [0] recycles 0 hard 0 soft 0 temp 0.24 loss 3.68 i_con 3.62 plddt 0.43 ptm 0.88 i_ptm 0.46
+140 models [0] recycles 0 hard 0 soft 0 temp 0.22 loss 3.67 i_con 3.61 plddt 0.46 ptm 0.88 i_ptm 0.48
+141 models [0] recycles 0 hard 0 soft 0 temp 0.20 loss 3.59 i_con 3.53 plddt 0.46 ptm 0.88 i_ptm 0.51
+142 models [1] recycles 0 hard 0 soft 0 temp 0.18 loss 3.52 i_con 3.47 plddt 0.48 ptm 0.90 i_ptm 0.53
+143 models [1] recycles 0 hard 0 soft 0 temp 0.16 loss 3.10 i_con 3.05 plddt 0.53 ptm 0.90 i_ptm 0.65
+144 models [0] recycles 0 hard 0 soft 0 temp 0.14 loss 3.56 i_con 3.51 plddt 0.47 ptm 0.88 i_ptm 0.52
+145 models [0] recycles 0 hard 0 soft 0 temp 0.12 loss 3.55 i_con 3.49 plddt 0.46 ptm 0.88 i_ptm 0.51
+146 models [1] recycles 0 hard 0 soft 0 temp 0.10 loss 3.77 i_con 3.71 plddt 0.45 ptm 0.90 i_ptm 0.44
+147 models [1] recycles 0 hard 0 soft 0 temp 0.08 loss 3.42 i_con 3.37 plddt 0.51 ptm 0.90 i_ptm 0.55
+148 models [0] recycles 0 hard 0 soft 0 temp 0.06 loss 3.56 i_con 3.51 plddt 0.45 ptm 0.88 i_ptm 0.50
+149 models [0] recycles 0 hard 0 soft 0 temp 0.04 loss 3.55 i_con 3.50 plddt 0.46 ptm 0.88 i_ptm 0.53
+150 models [1] recycles 0 hard 0 soft 0 temp 0.02 loss 3.47 i_con 3.42 plddt 0.48 ptm 0.90 i_ptm 0.55
+151 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.88 i_con 4.05 plddt 0.37 ptm 0.88 i_ptm 0.34 energy -2.28
+152 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.88 i_con 4.05 plddt 0.37 ptm 0.88 i_ptm 0.34 energy -2.28
+153 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.88 i_con 4.05 plddt 0.37 ptm 0.88 i_ptm 0.34 energy -2.28
+154 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.78 i_con 3.94 plddt 0.38 ptm 0.90 i_ptm 0.35 energy -2.28
+155 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.78 i_con 3.94 plddt 0.38 ptm 0.90 i_ptm 0.35 energy -2.28
+156 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.78 i_con 3.94 plddt 0.38 ptm 0.90 i_ptm 0.35 energy -2.28
+157 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.88 i_con 4.05 plddt 0.37 ptm 0.88 i_ptm 0.34 energy -2.28
+158 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.78 i_con 3.94 plddt 0.38 ptm 0.90 i_ptm 0.35 energy -2.28
+159 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.88 i_con 4.05 plddt 0.37 ptm 0.88 i_ptm 0.34 energy -2.28
+160 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.88 i_con 4.05 plddt 0.37 ptm 0.88 i_ptm 0.34 energy -2.28
+161 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.88 i_con 4.05 plddt 0.37 ptm 0.88 i_ptm 0.34 energy -2.28
+162 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.78 i_con 3.94 plddt 0.38 ptm 0.90 i_ptm 0.35 energy -2.28
+163 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.88 i_con 4.05 plddt 0.37 ptm 0.88 i_ptm 0.34 energy -2.28
+164 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.78 i_con 3.94 plddt 0.38 ptm 0.90 i_ptm 0.35 energy -2.28
+165 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.78 i_con 3.94 plddt 0.38 ptm 0.90 i_ptm 0.35 energy -2.28
+166 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.78 i_con 3.94 plddt 0.38 ptm 0.90 i_ptm 0.35 energy -2.28
+167 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.88 i_con 4.05 plddt 0.37 ptm 0.88 i_ptm 0.34 energy -2.28
+168 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.88 i_con 4.05 plddt 0.37 ptm 0.88 i_ptm 0.34 energy -2.28
+169 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.78 i_con 3.94 plddt 0.38 ptm 0.90 i_ptm 0.35 energy -2.28
+170 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.88 i_con 4.05 plddt 0.37 ptm 0.88 i_ptm 0.34 energy -2.28
+171 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.78 i_con 3.94 plddt 0.38 ptm 0.90 i_ptm 0.35 energy -2.28
+172 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.78 i_con 3.94 plddt 0.38 ptm 0.90 i_ptm 0.35 energy -2.28
+173 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.88 i_con 4.05 plddt 0.37 ptm 0.88 i_ptm 0.34 energy -2.28
+174 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.78 i_con 3.94 plddt 0.38 ptm 0.90 i_ptm 0.35 energy -2.28
+175 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.78 i_con 3.94 plddt 0.38 ptm 0.90 i_ptm 0.35 energy -2.28
+176 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.78 i_con 3.94 plddt 0.38 ptm 0.90 i_ptm 0.35 energy -2.28
+177 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.88 i_con 4.05 plddt 0.37 ptm 0.88 i_ptm 0.34 energy -2.28
+178 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.78 i_con 3.94 plddt 0.38 ptm 0.90 i_ptm 0.35 energy -2.28
+179 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.78 i_con 3.94 plddt 0.38 ptm 0.90 i_ptm 0.35 energy -2.28
+180 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.88 i_con 4.05 plddt 0.37 ptm 0.88 i_ptm 0.34 energy -2.28
+  seq=LASDPLCEVLLVMCC  loss=3.8837  loss_af=4.1118  energy=-2.2805  i_ptm=0.3361
+[3/3] seed=2 ...
+1 models [0] recycles 0 hard 0 soft 1 temp 1 loss 7.57 i_con 7.52 plddt 0.55 ptm 0.87 i_ptm 0.12
+2 models [1] recycles 0 hard 0 soft 1 temp 1 loss 7.39 i_con 7.35 plddt 0.54 ptm 0.88 i_ptm 0.10
+3 models [0] recycles 0 hard 0 soft 1 temp 1 loss 7.60 i_con 7.56 plddt 0.56 ptm 0.86 i_ptm 0.12
+4 models [1] recycles 0 hard 0 soft 1 temp 1 loss 7.37 i_con 7.33 plddt 0.57 ptm 0.88 i_ptm 0.09
+5 models [0] recycles 0 hard 0 soft 1 temp 1 loss 7.29 i_con 7.25 plddt 0.58 ptm 0.86 i_ptm 0.12
+6 models [1] recycles 0 hard 0 soft 1 temp 1 loss 7.02 i_con 6.97 plddt 0.51 ptm 0.88 i_ptm 0.09
+7 models [0] recycles 0 hard 0 soft 1 temp 1 loss 6.85 i_con 6.79 plddt 0.44 ptm 0.86 i_ptm 0.12
+8 models [1] recycles 0 hard 0 soft 1 temp 1 loss 6.61 i_con 6.56 plddt 0.52 ptm 0.88 i_ptm 0.09
+9 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.72 i_con 5.67 plddt 0.44 ptm 0.86 i_ptm 0.13
+10 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.09 i_con 5.03 plddt 0.39 ptm 0.87 i_ptm 0.14
+11 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.74 i_con 5.68 plddt 0.44 ptm 0.88 i_ptm 0.09
+12 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.14 i_con 5.08 plddt 0.40 ptm 0.86 i_ptm 0.12
+13 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.02 i_con 4.96 plddt 0.37 ptm 0.86 i_ptm 0.16
+14 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.16 i_con 5.10 plddt 0.42 ptm 0.87 i_ptm 0.11
+15 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.10 i_con 5.04 plddt 0.38 ptm 0.86 i_ptm 0.12
+16 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.56 i_con 5.51 plddt 0.42 ptm 0.88 i_ptm 0.09
+17 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.07 i_con 5.00 plddt 0.37 ptm 0.88 i_ptm 0.14
+18 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.83 i_con 4.77 plddt 0.43 ptm 0.87 i_ptm 0.16
+19 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.78 i_con 4.72 plddt 0.40 ptm 0.87 i_ptm 0.14
+20 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.89 i_con 4.83 plddt 0.40 ptm 0.87 i_ptm 0.17
+21 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.65 i_con 4.59 plddt 0.36 ptm 0.86 i_ptm 0.21
+22 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.79 i_con 4.72 plddt 0.36 ptm 0.87 i_ptm 0.18
+23 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.13 i_con 5.07 plddt 0.39 ptm 0.88 i_ptm 0.11
+24 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.68 i_con 5.63 plddt 0.42 ptm 0.88 i_ptm 0.09
+25 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.68 i_con 4.62 plddt 0.37 ptm 0.87 i_ptm 0.19
+26 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.48 i_con 5.42 plddt 0.39 ptm 0.88 i_ptm 0.11
+27 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.46 i_con 4.40 plddt 0.41 ptm 0.87 i_ptm 0.27
+28 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.67 i_con 4.61 plddt 0.40 ptm 0.87 i_ptm 0.19
+29 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.84 i_con 4.78 plddt 0.40 ptm 0.87 i_ptm 0.18
+30 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.47 i_con 4.41 plddt 0.39 ptm 0.87 i_ptm 0.25
+31 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.17 i_con 5.10 plddt 0.35 ptm 0.88 i_ptm 0.15
+32 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.01 i_con 4.94 plddt 0.34 ptm 0.88 i_ptm 0.19
+33 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.50 i_con 4.45 plddt 0.41 ptm 0.87 i_ptm 0.22
+34 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.69 i_con 5.64 plddt 0.44 ptm 0.88 i_ptm 0.09
+35 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.24 i_con 5.17 plddt 0.36 ptm 0.88 i_ptm 0.13
+36 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.23 i_con 5.17 plddt 0.42 ptm 0.86 i_ptm 0.13
+37 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.53 i_con 4.47 plddt 0.40 ptm 0.87 i_ptm 0.22
+38 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.44 i_con 4.38 plddt 0.39 ptm 0.87 i_ptm 0.22
+39 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.45 i_con 4.39 plddt 0.40 ptm 0.87 i_ptm 0.26
+40 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.13 i_con 5.07 plddt 0.36 ptm 0.88 i_ptm 0.12
+41 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.80 i_con 4.74 plddt 0.36 ptm 0.87 i_ptm 0.19
+42 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.11 i_con 5.05 plddt 0.37 ptm 0.88 i_ptm 0.13
+43 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.58 i_con 4.52 plddt 0.38 ptm 0.87 i_ptm 0.25
+44 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.01 i_con 4.95 plddt 0.35 ptm 0.88 i_ptm 0.17
+45 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.39 i_con 4.32 plddt 0.39 ptm 0.87 i_ptm 0.26
+46 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.49 i_con 4.43 plddt 0.43 ptm 0.87 i_ptm 0.23
+47 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.84 i_con 4.77 plddt 0.34 ptm 0.88 i_ptm 0.18
+48 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.75 i_con 4.68 plddt 0.37 ptm 0.88 i_ptm 0.21
+49 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.89 i_con 4.83 plddt 0.37 ptm 0.88 i_ptm 0.21
+50 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.05 i_con 4.99 plddt 0.40 ptm 0.88 i_ptm 0.19
+51 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.36 i_con 4.46 plddt 0.39 ptm 0.87 i_ptm 0.23 energy 8.43
+52 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.32 i_con 4.47 plddt 0.39 ptm 0.86 i_ptm 0.21 energy 7.84
+53 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.44 i_con 4.66 plddt 0.34 ptm 0.88 i_ptm 0.20 energy 7.18
+54 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.23 i_con 4.51 plddt 0.36 ptm 0.88 i_ptm 0.19 energy 6.61
+55 models [0] recycles 0 hard 0 soft 1 temp 1 loss 5.02 i_con 4.34 plddt 0.39 ptm 0.87 i_ptm 0.25 energy 6.17
+56 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.64 i_con 5.04 plddt 0.35 ptm 0.88 i_ptm 0.15 energy 5.32
+57 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.41 i_con 4.84 plddt 0.36 ptm 0.88 i_ptm 0.15 energy 5.05
+58 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.49 i_con 4.03 plddt 0.40 ptm 0.87 i_ptm 0.27 energy 3.99
+59 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.66 i_con 4.33 plddt 0.41 ptm 0.87 i_ptm 0.24 energy 2.79
+60 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.92 i_con 4.63 plddt 0.38 ptm 0.88 i_ptm 0.22 energy 2.23
+61 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.90 i_con 4.70 plddt 0.39 ptm 0.88 i_ptm 0.19 energy 1.43
+62 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.88 i_con 4.76 plddt 0.36 ptm 0.88 i_ptm 0.15 energy 0.56
+63 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.48 i_con 4.43 plddt 0.41 ptm 0.87 i_ptm 0.21 energy -0.13
+64 models [1] recycles 0 hard 0 soft 1 temp 1 loss 5.01 i_con 4.98 plddt 0.38 ptm 0.88 i_ptm 0.12 energy -0.34
+65 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.59 i_con 4.60 plddt 0.37 ptm 0.88 i_ptm 0.16 energy -0.82
+66 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.14 i_con 4.21 plddt 0.38 ptm 0.87 i_ptm 0.24 energy -1.39
+67 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.42 i_con 4.51 plddt 0.40 ptm 0.87 i_ptm 0.21 energy -1.49
+68 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.41 i_con 4.52 plddt 0.35 ptm 0.88 i_ptm 0.21 energy -1.77
+69 models [0] recycles 0 hard 0 soft 1 temp 1 loss 4.25 i_con 4.39 plddt 0.43 ptm 0.87 i_ptm 0.24 energy -1.90
+70 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.60 i_con 4.73 plddt 0.37 ptm 0.88 i_ptm 0.19 energy -1.97
+71 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.35 i_con 4.50 plddt 0.35 ptm 0.89 i_ptm 0.22 energy -2.21
+72 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.43 i_con 4.60 plddt 0.35 ptm 0.88 i_ptm 0.21 energy -2.26
+73 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.07 i_con 4.25 plddt 0.37 ptm 0.88 i_ptm 0.24 energy -2.42
+74 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.28 i_con 4.49 plddt 0.34 ptm 0.88 i_ptm 0.21 energy -2.76
+75 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.90 i_con 4.14 plddt 0.37 ptm 0.87 i_ptm 0.26 energy -3.05
+76 models [1] recycles 0 hard 0 soft 1 temp 1 loss 4.39 i_con 4.66 plddt 0.35 ptm 0.88 i_ptm 0.19 energy -3.29
+77 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.90 i_con 4.17 plddt 0.38 ptm 0.87 i_ptm 0.27 energy -3.37
+78 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.89 i_con 4.19 plddt 0.39 ptm 0.87 i_ptm 0.25 energy -3.58
+79 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.93 i_con 4.23 plddt 0.40 ptm 0.87 i_ptm 0.27 energy -3.64
+80 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.80 i_con 4.10 plddt 0.34 ptm 0.89 i_ptm 0.28 energy -3.67
+81 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.99 i_con 4.31 plddt 0.34 ptm 0.89 i_ptm 0.22 energy -3.88
+82 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.92 i_con 4.25 plddt 0.34 ptm 0.88 i_ptm 0.25 energy -3.88
+83 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.86 i_con 4.21 plddt 0.39 ptm 0.87 i_ptm 0.25 energy -4.08
+84 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.86 i_con 4.22 plddt 0.39 ptm 0.89 i_ptm 0.24 energy -4.19
+85 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.56 i_con 3.93 plddt 0.41 ptm 0.87 i_ptm 0.33 energy -4.31
+86 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.86 i_con 4.24 plddt 0.41 ptm 0.87 i_ptm 0.26 energy -4.42
+87 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.75 i_con 4.14 plddt 0.41 ptm 0.87 i_ptm 0.27 energy -4.47
+88 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.60 i_con 4.01 plddt 0.42 ptm 0.87 i_ptm 0.32 energy -4.69
+89 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.93 i_con 4.34 plddt 0.36 ptm 0.89 i_ptm 0.25 energy -4.79
+90 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.64 i_con 4.05 plddt 0.39 ptm 0.89 i_ptm 0.29 energy -4.71
+91 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.73 i_con 4.13 plddt 0.37 ptm 0.89 i_ptm 0.27 energy -4.68
+92 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.69 i_con 4.12 plddt 0.41 ptm 0.87 i_ptm 0.29 energy -4.87
+93 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.59 i_con 4.02 plddt 0.42 ptm 0.89 i_ptm 0.32 energy -4.85
+94 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.71 i_con 4.14 plddt 0.40 ptm 0.87 i_ptm 0.26 energy -4.95
+95 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.77 i_con 4.23 plddt 0.42 ptm 0.87 i_ptm 0.25 energy -5.14
+96 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.85 i_con 4.29 plddt 0.36 ptm 0.89 i_ptm 0.25 energy -5.04
+97 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.75 i_con 4.18 plddt 0.38 ptm 0.89 i_ptm 0.26 energy -4.95
+98 models [0] recycles 0 hard 0 soft 1 temp 1 loss 3.95 i_con 4.40 plddt 0.36 ptm 0.87 i_ptm 0.19 energy -5.11
+99 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.79 i_con 4.26 plddt 0.39 ptm 0.89 i_ptm 0.26 energy -5.24
+100 models [1] recycles 0 hard 0 soft 1 temp 1 loss 3.75 i_con 4.22 plddt 0.43 ptm 0.89 i_ptm 0.26 energy -5.23
+101 models [1] recycles 0 hard 0 soft 0 temp 1 loss 7.26 i_con 7.22 plddt 0.56 ptm 0.88 i_ptm 0.09
+102 models [0] recycles 0 hard 0 soft 0 temp 0.98 loss 4.91 i_con 4.85 plddt 0.40 ptm 0.87 i_ptm 0.24
+103 models [0] recycles 0 hard 0 soft 0 temp 0.96 loss 4.47 i_con 4.41 plddt 0.41 ptm 0.87 i_ptm 0.26
+104 models [1] recycles 0 hard 0 soft 0 temp 0.94 loss 4.59 i_con 4.53 plddt 0.42 ptm 0.89 i_ptm 0.23
+105 models [1] recycles 0 hard 0 soft 0 temp 0.92 loss 3.93 i_con 3.87 plddt 0.47 ptm 0.89 i_ptm 0.39
+106 models [0] recycles 0 hard 0 soft 0 temp 0.90 loss 3.88 i_con 3.83 plddt 0.46 ptm 0.88 i_ptm 0.42
+107 models [0] recycles 0 hard 0 soft 0 temp 0.88 loss 3.90 i_con 3.84 plddt 0.44 ptm 0.87 i_ptm 0.38
+108 models [0] recycles 0 hard 0 soft 0 temp 0.86 loss 3.82 i_con 3.76 plddt 0.45 ptm 0.88 i_ptm 0.41
+109 models [0] recycles 0 hard 0 soft 0 temp 0.84 loss 3.84 i_con 3.79 plddt 0.47 ptm 0.88 i_ptm 0.42
+110 models [0] recycles 0 hard 0 soft 0 temp 0.82 loss 3.69 i_con 3.64 plddt 0.47 ptm 0.88 i_ptm 0.46
+111 models [1] recycles 0 hard 0 soft 0 temp 0.80 loss 3.58 i_con 3.53 plddt 0.53 ptm 0.90 i_ptm 0.53
+112 models [1] recycles 0 hard 0 soft 0 temp 0.78 loss 3.37 i_con 3.32 plddt 0.57 ptm 0.90 i_ptm 0.62
+113 models [1] recycles 0 hard 0 soft 0 temp 0.76 loss 3.61 i_con 3.56 plddt 0.51 ptm 0.90 i_ptm 0.51
+114 models [1] recycles 0 hard 0 soft 0 temp 0.74 loss 3.44 i_con 3.40 plddt 0.56 ptm 0.90 i_ptm 0.63
+115 models [1] recycles 0 hard 0 soft 0 temp 0.72 loss 3.24 i_con 3.20 plddt 0.59 ptm 0.91 i_ptm 0.66
+116 models [0] recycles 0 hard 0 soft 0 temp 0.70 loss 3.76 i_con 3.71 plddt 0.46 ptm 0.88 i_ptm 0.45
+117 models [1] recycles 0 hard 0 soft 0 temp 0.68 loss 3.70 i_con 3.65 plddt 0.51 ptm 0.90 i_ptm 0.53
+118 models [1] recycles 0 hard 0 soft 0 temp 0.66 loss 3.39 i_con 3.35 plddt 0.58 ptm 0.90 i_ptm 0.64
+119 models [1] recycles 0 hard 0 soft 0 temp 0.64 loss 3.68 i_con 3.62 plddt 0.48 ptm 0.90 i_ptm 0.55
+120 models [1] recycles 0 hard 0 soft 0 temp 0.62 loss 3.27 i_con 3.23 plddt 0.60 ptm 0.91 i_ptm 0.67
+121 models [0] recycles 0 hard 0 soft 0 temp 0.60 loss 3.71 i_con 3.66 plddt 0.47 ptm 0.88 i_ptm 0.44
+122 models [0] recycles 0 hard 0 soft 0 temp 0.58 loss 3.76 i_con 3.70 plddt 0.47 ptm 0.88 i_ptm 0.43
+123 models [0] recycles 0 hard 0 soft 0 temp 0.56 loss 3.70 i_con 3.64 plddt 0.46 ptm 0.88 i_ptm 0.47
+124 models [0] recycles 0 hard 0 soft 0 temp 0.54 loss 3.45 i_con 3.40 plddt 0.52 ptm 0.89 i_ptm 0.59
+125 models [1] recycles 0 hard 0 soft 0 temp 0.52 loss 3.33 i_con 3.29 plddt 0.59 ptm 0.90 i_ptm 0.66
+126 models [1] recycles 0 hard 0 soft 0 temp 0.50 loss 2.82 i_con 2.79 plddt 0.69 ptm 0.91 i_ptm 0.78
+127 models [1] recycles 0 hard 0 soft 0 temp 0.48 loss 2.89 i_con 2.85 plddt 0.67 ptm 0.91 i_ptm 0.77
+128 models [1] recycles 0 hard 0 soft 0 temp 0.46 loss 3.11 i_con 3.07 plddt 0.60 ptm 0.91 i_ptm 0.70
+129 models [0] recycles 0 hard 0 soft 0 temp 0.44 loss 3.53 i_con 3.48 plddt 0.51 ptm 0.88 i_ptm 0.54
+130 models [1] recycles 0 hard 0 soft 0 temp 0.42 loss 2.51 i_con 2.48 plddt 0.74 ptm 0.91 i_ptm 0.82
+131 models [1] recycles 0 hard 0 soft 0 temp 0.40 loss 2.61 i_con 2.58 plddt 0.72 ptm 0.92 i_ptm 0.82
+132 models [1] recycles 0 hard 0 soft 0 temp 0.38 loss 2.73 i_con 2.69 plddt 0.65 ptm 0.91 i_ptm 0.76
+133 models [0] recycles 0 hard 0 soft 0 temp 0.36 loss 3.24 i_con 3.20 plddt 0.59 ptm 0.89 i_ptm 0.67
+134 models [1] recycles 0 hard 0 soft 0 temp 0.34 loss 2.69 i_con 2.66 plddt 0.69 ptm 0.91 i_ptm 0.79
+135 models [0] recycles 0 hard 0 soft 0 temp 0.32 loss 3.28 i_con 3.23 plddt 0.58 ptm 0.89 i_ptm 0.67
+136 models [0] recycles 0 hard 0 soft 0 temp 0.30 loss 2.88 i_con 2.85 plddt 0.64 ptm 0.89 i_ptm 0.75
+137 models [1] recycles 0 hard 0 soft 0 temp 0.28 loss 2.64 i_con 2.61 plddt 0.69 ptm 0.91 i_ptm 0.81
+138 models [0] recycles 0 hard 0 soft 0 temp 0.26 loss 3.28 i_con 3.24 plddt 0.55 ptm 0.89 i_ptm 0.67
+139 models [0] recycles 0 hard 0 soft 0 temp 0.24 loss 2.88 i_con 2.85 plddt 0.65 ptm 0.89 i_ptm 0.76
+140 models [0] recycles 0 hard 0 soft 0 temp 0.22 loss 2.90 i_con 2.87 plddt 0.67 ptm 0.89 i_ptm 0.78
+141 models [1] recycles 0 hard 0 soft 0 temp 0.20 loss 2.85 i_con 2.81 plddt 0.64 ptm 0.91 i_ptm 0.74
+142 models [1] recycles 0 hard 0 soft 0 temp 0.18 loss 2.87 i_con 2.83 plddt 0.64 ptm 0.91 i_ptm 0.74
+143 models [1] recycles 0 hard 0 soft 0 temp 0.16 loss 2.41 i_con 2.39 plddt 0.76 ptm 0.92 i_ptm 0.86
+144 models [0] recycles 0 hard 0 soft 0 temp 0.14 loss 2.68 i_con 2.65 plddt 0.69 ptm 0.90 i_ptm 0.80
+145 models [0] recycles 0 hard 0 soft 0 temp 0.12 loss 2.73 i_con 2.70 plddt 0.68 ptm 0.89 i_ptm 0.78
+146 models [1] recycles 0 hard 0 soft 0 temp 0.10 loss 2.47 i_con 2.44 plddt 0.75 ptm 0.92 i_ptm 0.84
+147 models [1] recycles 0 hard 0 soft 0 temp 0.08 loss 2.33 i_con 2.31 plddt 0.76 ptm 0.91 i_ptm 0.86
+148 models [1] recycles 0 hard 0 soft 0 temp 0.06 loss 2.20 i_con 2.18 plddt 0.79 ptm 0.92 i_ptm 0.88
+149 models [0] recycles 0 hard 0 soft 0 temp 0.04 loss 3.04 i_con 3.00 plddt 0.62 ptm 0.89 i_ptm 0.72
+150 models [1] recycles 0 hard 0 soft 0 temp 0.02 loss 2.22 i_con 2.20 plddt 0.79 ptm 0.92 i_ptm 0.87
+151 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.33 i_con 3.81 plddt 0.36 ptm 0.88 i_ptm 0.37 energy -5.51
+152 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.33 i_con 3.81 plddt 0.36 ptm 0.88 i_ptm 0.37 energy -5.51
+153 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.33 i_con 3.81 plddt 0.36 ptm 0.88 i_ptm 0.37 energy -5.51
+154 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.33 i_con 3.81 plddt 0.36 ptm 0.88 i_ptm 0.37 energy -5.51
+155 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.33 i_con 3.81 plddt 0.36 ptm 0.88 i_ptm 0.37 energy -5.51
+156 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.33 i_con 3.81 plddt 0.36 ptm 0.88 i_ptm 0.37 energy -5.51
+157 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.33 i_con 3.81 plddt 0.36 ptm 0.88 i_ptm 0.37 energy -5.51
+158 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.33 i_con 3.81 plddt 0.36 ptm 0.88 i_ptm 0.37 energy -5.51
+159 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.33 i_con 3.81 plddt 0.36 ptm 0.88 i_ptm 0.37 energy -5.51
+160 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.33 i_con 3.81 plddt 0.36 ptm 0.88 i_ptm 0.37 energy -5.51
+161 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.58 i_con 4.07 plddt 0.37 ptm 0.89 i_ptm 0.30 energy -5.51
+162 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.58 i_con 4.07 plddt 0.37 ptm 0.89 i_ptm 0.30 energy -5.51
+163 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.58 i_con 4.07 plddt 0.37 ptm 0.89 i_ptm 0.30 energy -5.51
+164 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.58 i_con 4.07 plddt 0.37 ptm 0.89 i_ptm 0.30 energy -5.51
+165 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.33 i_con 3.81 plddt 0.36 ptm 0.88 i_ptm 0.37 energy -5.51
+166 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.58 i_con 4.07 plddt 0.37 ptm 0.89 i_ptm 0.30 energy -5.51
+167 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.58 i_con 4.07 plddt 0.37 ptm 0.89 i_ptm 0.30 energy -5.51
+168 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.33 i_con 3.81 plddt 0.36 ptm 0.88 i_ptm 0.37 energy -5.51
+169 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.58 i_con 4.07 plddt 0.37 ptm 0.89 i_ptm 0.30 energy -5.51
+170 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.58 i_con 4.07 plddt 0.37 ptm 0.89 i_ptm 0.30 energy -5.51
+171 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.33 i_con 3.81 plddt 0.36 ptm 0.88 i_ptm 0.37 energy -5.51
+172 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.58 i_con 4.07 plddt 0.37 ptm 0.89 i_ptm 0.30 energy -5.51
+173 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.58 i_con 4.07 plddt 0.37 ptm 0.89 i_ptm 0.30 energy -5.51
+174 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.58 i_con 4.07 plddt 0.37 ptm 0.89 i_ptm 0.30 energy -5.51
+175 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.33 i_con 3.81 plddt 0.36 ptm 0.88 i_ptm 0.37 energy -5.51
+176 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.58 i_con 4.07 plddt 0.37 ptm 0.89 i_ptm 0.30 energy -5.51
+177 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.58 i_con 4.07 plddt 0.37 ptm 0.89 i_ptm 0.30 energy -5.51
+178 models [1] recycles 0 hard 1 soft 0 temp 0.00 loss 3.58 i_con 4.07 plddt 0.37 ptm 0.89 i_ptm 0.30 energy -5.51
+179 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.33 i_con 3.81 plddt 0.36 ptm 0.88 i_ptm 0.37 energy -5.51
+180 models [0] recycles 0 hard 1 soft 0 temp 0.00 loss 3.33 i_con 3.81 plddt 0.36 ptm 0.88 i_ptm 0.37 energy -5.51
+  seq=AWAGPDALLNYLMFL  loss=3.3263  loss_af=3.8772  energy=-5.5092  i_ptm=0.3674
+
+Saved 3 results to /home/share_nfs/342-Projets_BGE/342.3-Gen-Chem/342.3.2-BioInfo/342.3.2.8-SeqModels/protein_design/colabdesign_energy_guidance/prg/PA_PB1/sweep_results/sweep_ewlow0.00_ewhigh0.10.json
+
+================================================================================
+SUMMARY
+================================================================================
+ seed  loss_total   loss_af    energy   i_ptm     ptm   plddt  seq
+--------------------------------------------------------------------------------
+    0      4.1204    4.2945   -1.7407  0.3060  0.8927  0.4082  AAFSPAELVLLLCLL
+    1      3.8837    4.1118   -2.2805  0.3361  0.8778  0.3693  LASDPLCEVLLVMCC
+    2      3.3263    3.8772   -5.5092  0.3674  0.8786  0.3566  AWAGPDALLNYLMFL
+---------------------------------------------
+End time : Wed Mar 11 18:11:48 CET 2026
