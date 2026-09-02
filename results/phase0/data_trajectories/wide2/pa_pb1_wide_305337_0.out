@@ -1,0 +1,29 @@
+Job ID       : 305480
+Array task   : 0  →  protocol: opt_anneal_energy_B
+Node         : aar018
+Start time   : Wed May  6 19:56:17 CEST 2026
+---------------------------------------------
+Wed May  6 19:56:17 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.03              Driver Version: 560.35.03      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A30                     Off |   00000000:17:00.0 Off |                    0 |
+| N/A   68C    P0            175W /  165W |   20755MiB /  24576MiB |     89%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+---------------------------------------------
+JAX devices: [cuda(id=0)]
+GPU check passed: cuda:0
+Output file  : /home/share_nfs/342-Projets_BGE/342.3-Gen-Chem/342.3.2-BioInfo/342.3.2.8-SeqModels/protein_design/colabdesign_energy_guidance/prg/PA_PB1/results/run_multimer/opt_anneal_energy_B_albertoseqs.json
+Running protocol: opt_anneal_energy_B ...
+py3Dmol not installed
+/home/share_nfs/342-Projets_BGE/342.3-Gen-Chem/342.3.2-BioInfo/342.3.2.8-SeqModels/protein_design/energy_model_params/PAPB1pep/PNB_2R_3lay_negbinom_energy_model_weights.json
+---------------------------------------------
+End time : Wed May  6 19:56:28 CEST 2026
