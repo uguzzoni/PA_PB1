@@ -111,10 +111,11 @@ def _best_model_files(folder_path: str):
     return best_summary, full_data_file
 
 
-def classify_af3_consensus():
+def classify_af3_consensus(threshold: float = AF3_CONTACT_PROB_THRESHOLD):
     """Interfaccia per posizione dai contact_probs predetti da AF3, maggioranza
     sulle 35 sequenze 'promettenti' in af3_predictions/ (indicizzate da
-    summary_best_candidates.csv)."""
+    summary_best_candidates.csv). `threshold` esposto per l'analisi di
+    sensitività di 0.8.b (default: soglia usata in 0.5)."""
     manifest = pd.read_csv(AF3_MANIFEST_CSV)
     folders = manifest.drop_duplicates("af3_folder")[["af3_folder", "protocol"]]
 
@@ -145,7 +146,7 @@ def classify_af3_consensus():
     per_seq = pd.DataFrame(per_seq_rows)
 
     contact_cols = [f"pos_{i+1}_max_contact" for i in range(BINDER_LEN)]
-    interface_bool = per_seq[contact_cols] > AF3_CONTACT_PROB_THRESHOLD
+    interface_bool = per_seq[contact_cols] > threshold
     consensus = pd.DataFrame({
         "position": range(1, BINDER_LEN + 1),
         "af3_frac_interface": interface_bool.mean(axis=0).to_numpy(),

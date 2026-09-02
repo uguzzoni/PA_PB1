@@ -1,0 +1,34 @@
+{
+  "n_sequences": 23,
+  "regression_logKd_vs_aromatic": {
+    "label": "log(Kd) ~ conteggio_aromatico",
+    "n": 23,
+    "slope": -0.05931190751255774,
+    "intercept": 0.27605734420067846,
+    "r": -0.04892286245868364,
+    "r_squared": 0.002393446471151277,
+    "pvalue": 0.824567788368978,
+    "stderr": 0.26424089479031476
+  },
+  "regression_logKd_vs_energy": {
+    "label": "log(Kd) ~ energia",
+    "n": 23,
+    "slope": 0.23027243682926016,
+    "intercept": 0.06655372753061956,
+    "r": 0.37346842811345077,
+    "r_squared": 0.13947866679753174,
+    "pvalue": 0.07919723589085138,
+    "stderr": 0.12481283170968366
+  },
+  "pearson_energy_vs_logKd_direct": {
+    "r": 0.37346842811345066,
+    "pvalue": 0.07919723589085151
+  },
+  "partial_correlation_energy_vs_logKd_controlling_aromatic": {
+    "r_partial": 0.3942466888497327,
+    "df": 20,
+    "t": 1.9185156360901205,
+    "pvalue": 0.06943325644265526,
+    "n": 23
+  }
+}

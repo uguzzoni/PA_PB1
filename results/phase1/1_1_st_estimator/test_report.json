@@ -1,0 +1,6 @@
+{
+  "unit_tests_passed": true,
+  "unit_tests_source": "methods/colabdesign_energy_guidance/energy_guidance/test_model_3layer_v2.py",
+  "synthetic_trajectory_max_abs_gap_st": 0.0,
+  "synthetic_trajectory_note": "traiettoria sintetica (interpolazione verso un vertice fisso), non un run AfDesign reale \u2014 vedi run_1_1_st_estimator_check.py docstring"
+}

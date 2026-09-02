@@ -1,0 +1,11 @@
+stratum_type,stratum_value,n,aromatic_fraction
+has_energy,False,175,0.16952380952380952
+has_energy,True,725,0.18960919540229884
+energy_weight_stage3,0.0,175,0.16952380952380952
+energy_weight_stage3,0.05,73,0.09680365296803653
+energy_weight_stage3,0.2,110,0.17333333333333334
+energy_weight_stage3,0.5,363,0.20312213039485766
+energy_weight_stage3,0.7,68,0.21666666666666667
+energy_weight_stage3,0.9,111,0.206006006006006
+iptm_outcome,success (i_ptm>=0.5),51,0.21437908496732025
+iptm_outcome,failure (i_ptm<0.5),849,0.1839811542991755

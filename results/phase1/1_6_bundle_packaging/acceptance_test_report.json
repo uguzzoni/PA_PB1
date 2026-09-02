@@ -1,0 +1,63 @@
+{
+  "unit_tests_passed": true,
+  "bundle_roundtrip_ok": true,
+  "bundle_gap_ok": true,
+  "bundle_path": "/home/guido/Projects/protein_design/prj/PA_PB1/data/energy_model_params/PNB_2R_3lay_negbinom_energy_model_bundle_v1.npz",
+  "bundle_metadata": {
+    "note": "placeholder M=1 in attesa delle repliche di \u00a71.3/1.3.a \u2014 non usare come ensemble reale",
+    "phase0_metrics_source": "results/phase0/0_1_simplex_variance/metrics.json",
+    "format_version": "1.0",
+    "n_replicas": 1,
+    "binder_len": 15,
+    "created": "2026-08-27T16:36:59.309844+00:00",
+    "source_weights": [
+      "/home/guido/Projects/protein_design/prj/PA_PB1/data/energy_model_params/PNB_2R_3lay_negbinom_energy_model_weights.json"
+    ]
+  },
+  "acceptance_criteria": [
+    {
+      "id": 1,
+      "criterio": "Coerenza ai vertici (kappa=0 riproduce l'energia standardizzata)",
+      "esito": "verificato",
+      "dettaglio": "test 'media ensemble (kappa=0) coerente col calcolo a mano', energy_guidance/test_model_3layer_v2.py"
+    },
+    {
+      "id": 2,
+      "criterio": "Gap identicamente nullo in modalita' st",
+      "esito": "verificato",
+      "dettaglio": "single replica e bundle M=3 (test), bundle M=1 reale su disco (questo script)"
+    },
+    {
+      "id": 3,
+      "criterio": "Gradiente non nullo",
+      "esito": "verificato",
+      "dettaglio": "mlp_forward_st, 20/20 punti campionati"
+    },
+    {
+      "id": 4,
+      "criterio": "Gradiente di kappa*sigma finito e non nullo dove le repliche concordano",
+      "esito": "verificato parzialmente",
+      "dettaglio": "finito e non-NaN verificato; non-nullita' non isolata esplicitamente dal termine kappa=0"
+    },
+    {
+      "id": 5,
+      "criterio": "Retrocompatibilita' (energy_fn=None riproduce la traiettoria originale a parita' di seed)",
+      "esito": "NON verificabile in questo ambiente",
+      "dettaglio": "richiede un run AfDesign reale (PDB + parametri AF2) \u2014 perimetro CPU-only di Fase 1, da fare in Fase 2 \u00a72.1"
+    },
+    {
+      "id": 6,
+      "criterio": "Modalita' legacy (mode='soft', kappa=0 riproduce i run precedenti)",
+      "esito": "verificato",
+      "dettaglio": "make_energy_fn(path,...) invariato dopo il refactor a bundle, errore 0.00e+00"
+    },
+    {
+      "id": 7,
+      "criterio": "Test placeholder (glicina) esteso a kappa>0",
+      "esito": "NON fatto",
+      "dettaglio": "test_energy_guidance.py (integrazione AfDesign/PDB) non modificato in questa sessione \u2014 richiede GPU/PDB per essere eseguito comunque"
+    }
+  ],
+  "n_criteria_fully_verified": 4,
+  "n_criteria_total": 7
+}

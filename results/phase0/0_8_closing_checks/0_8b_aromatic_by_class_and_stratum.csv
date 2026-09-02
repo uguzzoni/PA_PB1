@@ -1,0 +1,5 @@
+stratum_type,stratum_value,n,aromatic_fraction_interface,aromatic_fraction_exposed
+has_energy,False,175,0.39285714285714285,0.08831168831168831
+has_energy,True,725,0.29586206896551726,0.1509717868338558
+iptm_outcome,success (i_ptm>=0.5),51,0.2107843137254902,0.21568627450980393
+iptm_outcome,failure (i_ptm<0.5),849,0.3209658421672556,0.13416854052896457

@@ -1,0 +1,23 @@
+grouping,gap_quartile,n,aromatic_fraction_mean,gap_max_range
+pooled_all_protocols,Q1_min,62,0.1924731182795699,1.8-8.1
+pooled_all_protocols,Q2,61,0.1726775956284153,8.2-11.9
+pooled_all_protocols,Q3,61,0.16065573770491803,12.0-17.0
+pooled_all_protocols,Q4_max,61,0.2098360655737705,17.0-47.0
+within_protocol[gen_energy_A],Q1_min,7,0.028571428571428574,5.0-12.6
+within_protocol[gen_energy_A],Q2,7,0.07619047619047618,13.2-15.2
+within_protocol[gen_energy_A],Q3,7,0.07619047619047618,15.4-16.5
+within_protocol[gen_energy_A],Q4_max,7,0.10476190476190475,16.6-22.4
+within_protocol[gen_energy_C],Q1_min,12,0.26666666666666666,9.9-24.0
+within_protocol[gen_energy_C],Q2,11,0.2303030303030303,24.1-29.2
+within_protocol[gen_energy_C],Q3,11,0.17575757575757575,29.8-34.4
+within_protocol[gen_energy_C],Q4_max,12,0.1388888888888889,35.7-47.0
+within_protocol[opt_anneal_energy_B],Q1_min,17,0.19999999999999998,1.8-4.6
+within_protocol[opt_anneal_energy_B],Q2,17,0.21176470588235294,4.6-5.7
+within_protocol[opt_anneal_energy_B],Q3,15,0.20888888888888887,5.8-7.4
+within_protocol[opt_anneal_energy_B],Q4_max,16,0.20833333333333334,7.4-11.5
+within_protocol[opt_anneal_energy_C],Q1_min,27,0.1703703703703704,7.3-10.4
+within_protocol[opt_anneal_energy_C],Q2,26,0.158974358974359,10.4-12.0
+within_protocol[opt_anneal_energy_C],Q3,26,0.17435897435897435,12.0-16.3
+within_protocol[opt_anneal_energy_C],Q4_max,27,0.25925925925925924,16.4-26.8
+reference_no_gap_trace,opt_anneal_noenergy,106,0.19433962264150945,n/d (nessuna traccia soft o w_E=0)
+reference_no_gap_trace,opt_hard_energy_C,31,0.18709677419354842,n/d (nessuna traccia soft o w_E=0)

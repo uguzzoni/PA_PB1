@@ -1,0 +1,6 @@
+{
+  "mu_train": 3.3987531661987305,
+  "sigma_train": 2.0875580310821533,
+  "n_train_sequences": 27342,
+  "n_train_dropped": 64
+}

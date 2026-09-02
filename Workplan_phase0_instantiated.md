@@ -1,6 +1,8 @@
-# Fase 0 — Piano istanziato (0.1–0.5)
+# Fase 0 — Piano istanziato (0.1–0.8)
 
-Istanziazione operativa di [`Workplan_peptidi_PA-PB1.md`](Workplan_peptidi_PA-PB1.md) §FASE 0, sottofasi 0.1–0.5. Per ciascuna: dati di input con path verificati nel repo, script da creare, output atteso, decisioni aperte.
+Istanziazione operativa di [`Workplan_peptidi_PA-PB1.md`](Workplan_peptidi_PA-PB1.md) §FASE 0 (versione 2, 12 agosto 2026), sottofasi 0.1–0.8. Per ciascuna: dati di input con path verificati nel repo, script da creare, output atteso, decisioni aperte.
+
+**Nota di versione (aggiornata 2026-08-26).** §0.1–0.5 eseguite l'11 agosto; §0.6–0.8 (aggiunte nella versione 2 del piano madre, 12 agosto) eseguite fra il 12 e il 26 agosto — **l'intera Fase 0 è ora completa**, 0.8.d esclusa (§0.8.d: deciso di chiedere direttamente al gruppo sperimentale invece di inferire lo schema di codoni da dati post-selezione). La versione precedente di questo file (solo 0.1–0.5) è conservata in [`Workplan_phase0_instantiated_v1_old.md`](Workplan_phase0_instantiated_v1_old.md).
 
 **Perimetro:** nessuna delle sottofasi 0.1–0.5 esegue ColabDesign (nessun `AfDesign`, nessuna GPU). Il forward del modello di energia però **va importato dal fork ColabDesign modificato**, non reimplementato: `colabdesign.energy_model.model_3layer` (fork in `/home/guido/Projects/protein_design/methods/colabdesign_energy_guidance`, dipendenza editable già dichiarata in `pyproject.toml`, quindi `import colabdesign` funziona out-of-the-box con `uv run`) espone:
 
@@ -17,24 +19,31 @@ Nota sull'alfabeto: la 21ª colonna (gap) è sempre azzerata in produzione (`mak
 
 **Validazione consigliata prima di usare l'encoder in 0.1/0.4:** `results/colabdesign/custom/seqs_aff_alberto_darren_6best.json` contiene energie già calcolate dal vero modello (via `make_energy_fn`) per 6 sequenze, es. `MDFNPWLLFLKVPAQ → energy = -1.0169219970703125`. Ricalcolarle con `mlp_forward(load_energy_model(...), encode(seq))` e verificare accordo entro `1e-4` — è un buon test end-to-end che l'encoder diretto in ordine Julia sia equivalente al percorso via ColabDesign (permutazione AF→Julia compresa).
 
-**Layout proposto (da confermare):**
+**Layout (0.1–0.5 eseguite così, 0.6–0.8 proposti coerenti):**
 ```
 src/phase0_diagnostics/
-├── data_loading.py         # loader condivisi (training set NGS, BLI, design esistenti) + encoder one-hot ordine Julia
+├── data_loading.py              # loader condivisi + encoder one-hot ordine Julia (esteso ad ogni sottofase)
 ├── run_0_1_simplex_variance.py
 ├── run_0_2_clustering.py
 ├── run_0_3_bli_composition.py
 ├── run_0_4_gradient_direction.py
-└── run_0_5_structural_context.py
+├── run_0_5_structural_context.py
+├── run_0_7_trajectory_gap.py    # da scrivere — vedi §0.7
+├── run_0_8a_partial_correlation.py     # da scrivere — vedi §0.8.a
+├── run_0_8b_design_stratification.py   # vedi §0.8.b (riusa la classificazione di 0.5)
+├── run_0_8b_hotspot_proximity.py       # vedi §0.8.b — estensione, classificazione su HOTSPOT_RESIDUES fisse
+├── run_0_8c_gap_composition.py         # da scrivere — vedi §0.8.c (dipende da 0.7)
 
 results/phase0/
 ├── 0_1_simplex_variance/
 ├── 0_2_clustering/
 ├── 0_3_bli_composition/
 ├── 0_4_gradient_direction/
-└── 0_5_structural_context/
+├── 0_5_structural_context/
+├── 0_7_trajectory_gap/
+└── 0_8_closing_checks/           # 0.8a/b/c/d condividono la cartella, file prefissati
 ```
-Alternativa: notebook in `src/analysis/phase0/` invece di script in `src/`. Preferisco script perché 0.1/0.2/0.4 sono riusati come moduli da fasi successive (2.1, 2.4, 2.6), ma è una scelta reversibile.
+§0.6 (screening TUP) **non produce uno script**: è una procedura manuale su web server esterno (SAROTUP), vedi sotto — l'unico artefatto generato in questo repo è l'elenco di sequenze da sottoporre, già estratto da `cluster_assignment.csv`.
 
 ---
 
@@ -227,22 +236,324 @@ PD_energy_model/data/4_counts/R_3_count_protein.csv
 
 ---
 
+## 0.6 — Screening TUP
+
+**Non produce codice**: è una procedura manuale su web server esterno (SAROTUP, `i.uestc.edu.cn/sarotup3`), non uno script CPU. L'unico lavoro fatto qui è estrarre le sequenze giuste da sottoporre — il resto (submission web, lettura dei risultati) resta fuori da questo repo.
+
+**Input — già estratto da `results/phase0/0_2_clustering/cluster_assignment.csv`** (colonne `is_representative`, `cluster_read_mass`):
+
+1. **19 rappresentanti dei cluster che coprono il 90,1% della massa di read in round 3** (`cluster_read_mass` decrescente):
+   ```
+   VDYNPWLLFLAQPWQ  MDFNPWLLFLKVPAQ  QDYNPYLLFLKKPKQ  YDVNPYLLFLSQPRQ
+   QDLNPWLLFLRLPVQ  FDFNPYMLLLKLPAQ  GDRNPKGRRRKRPAQ  LDFNPYFVFLKFPAQ
+   MDYNPLLLFLRRPLQ  YDMNPWLLFLQRPKQ  VDINPYLLFLQYPIQ  GGQESEEEEEERAGA
+   IDINPWLLFLYKPQQ  FDWNPFLVLLKVPAQ  GDSNPRRSRRKGPAQ  GDGNPRGGGGKGRRR
+   VDLNPWLVWLKLPAQ  VDGGPLLLFLSGPVQ  GDGNPREEGEERAGA
+   ```
+2. **Cluster dominante**, per lo screening separato richiesto dal piano (è già il primo della lista sopra): `VDYNPWLLFLAQPWQ` (440 sequenze, 11.232 reads, 34% della massa totale).
+3. **23 sequenze validate in BLI** (via `load_bli_population()`, 0.3'):
+   ```
+   IDFNPYLLFLKVPAQ  VDFNPWLLFLKVPAQ  MDFNPYLLFLKKPKQ  MDFNPWLLFLKVPAQ
+   VDYNPWLLFLRKPKQ  VDFNPWLLFLKLPAQ  MDFNPWMLFLKLPAQ  LDFNPYLIFLKMPAQ
+   IDYNPYLLFLKQPKQ  MDFNPYLLFLRKPSQ  WDYNPWLLFLRQPQQ  IDYNPWLLFLTRPQQ
+   QDYNPYLLFLKKPKQ  YDINPYLLFLKKPQQ  TDYNPWLLFLKQPEQ  QDMNPYLLFLWKPKQ
+   FDFNPYMLLLKLPAQ  LDFNPWFVFLKVPAQ  QDINPYLLFLKRPTQ  MDWNPLLLHLKRPAQ
+   FDQNPWLLFLKMPYQ  WDMNPWLLFLKLPRQ
+   ```
+   (`QDYNPYLLFLKKPKQ` compare in entrambe le liste — rappresentante di cluster arricchito **e** validato in BLI, Kd = 1,12 nM.)
+
+   **Correzione (2026-08-12): questa lista, come trascritta in questa conversazione, era inizialmente incompleta di una sequenza** — mancava `LDFNPWLLFLKLPAQ` (P3, Kd = 1,20 nM), poi sottoposta separatamente (risultato incluso sotto).
+
+**Osservazioni già disponibili senza SAROTUP, da tenere presenti nella lettura dei risultati:**
+- **Il rappresentante del cluster dominante è `P7`**, l'unica delle 23 sequenze BLI **senza segnale di legame misurabile** (Kd_nM = NA in `data/affinity_measurements_PA-PB1_formatted.csv`). È l'indizio circostanziale più diretto possibile a favore dell'ipotesi TUP per questo cluster specifico — indipendente da qualunque database esterno.
+- Il secondo cluster più abbondante è invece `MDFNPWLLFLKVPAQ` = P22, un legante vero (Kd = 0,65 nM): la contaminazione, se confermata, non riguarderebbe l'intero pool selezionato ma specificamente il cluster #1.
+- **4 delle 19 sequenze si discostano nettamente dal motivo di consenso** (`XDXNPXLLFLXXPXQ` circa, comune a tutte le altre 15): `GGQESEEEEEERAGA`, `GDSNPRRSRRKGPAQ`, `GDGNPRGGGGKGRRR`, `GDGNPREEGEERAGA` — composizione ricca in G/R/E, nessuna somiglianza compositiva con gli altri leganti candidati. Buoni candidati a priori per TUP anche a occhio, indipendentemente dall'esito di SAROTUP.
+
+**Strumenti da usare** (verificato: SAROTUP 3.1 è online e attivo, con anche una versione standalone GUI/CLI open source oltre al web server): `TUPScan`/`TUPredict` (motivi TUP noti / predizione ML), `PSBinder` (leganti al polistirene — il supporto di screening, quindi il più rilevante qui),`MimoSearch`/`MimoBlast` (ricerca di identità/similarità in BDB, il "Biopanning Data Bank").
+
+**Criteri di lettura** (dal piano madre): se il cluster dominante risulta un TUP noto (o PSBinder-positivo), il modello di energia è ancorato in misura sostanziale su un artefatto sperimentale — da dichiarare nei limiti. Se le 23 sequenze BLI non risultano segnalate mentre la coda arricchita (i 19 rappresentanti) sì, il modello apprende una miscela di due segnali non separabile con i dati disponibili.
+
+**Output:** nessun file in questo repo oltre a questa lista — i risultati SAROTUP vanno registrati manualmente (screenshot o CSV incollato in `results/phase0/0_6_tup_screening/sarotup_results.csv`, da creare a mano dopo la submission).
+
+**Costo stimato: 10 minuti** (come da piano madre).
+
+**Stato: parzialmente eseguita (2026-08-12).** TUPScan (motivi noti) sui 19 rappresentanti di cluster, e **PSBinder** (predittore ML per legame al polistirene, soglia 0,5) su entrambi i gruppi — fatto manualmente dall'utente sul web server SAROTUP. Risultati grezzi in `results/phase0/SAROTUP_results.txt`.
+
+| Strumento | Gruppo | N testate | Positive |
+|---|---|---|---|
+| TUPScan | 19 rappresentanti di cluster | 19 | 1 |
+| PSBinder | 19 rappresentanti di cluster | 19 | 3 |
+| PSBinder | sequenze BLI | 22 (manca P3, vedi sopra) | 1 |
+
+| Sequenza | Strumento | Punteggio | Esito |
+|---|---|---|---|
+| `VDYNPWLLFLAQPWQ` (**cluster dominante, = P7**) | PSBinder | **0,86** | **Yes** |
+| `YDMNPWLLFLQRPKQ` | PSBinder | 0,62 | Yes |
+| `VDLNPWLVWLKLPAQ` | TUPScan (`W-x(2)-W`) **e** PSBinder | — / 0,50 | Yes / Yes |
+| `LDFNPWFVFLKVPAQ` (**P26, BLI, Kd = 1,59 nM**) | PSBinder | 0,63 | Yes |
+
+**Letture, riviste rispetto alla prima bozza di questa sezione (che si basava sul solo TUPScan):**
+- **Il cluster dominante è positivo a PSBinder con punteggio alto (0,86).** A differenza di TUPScan (motivi noti, non lo segnala), il predittore ML lo classifica come probabile legante del polistirene — questo **conferma**, non indebolisce, l'ipotesi formulata sopra: `VDYNPWLLFLAQPWQ`/P7, il 34% di tutta la massa di read in round 3, è un candidato TUP credibile secondo almeno uno dei due strumenti, coerentemente con l'assenza di segnale in BLI.
+- **Un legante BLI reale, P26 (Kd = 1,59 nM), è anch'esso positivo a PSBinder.** Questo è il risultato più importante per l'interpretazione complessiva: PSBinder positivo **non implica** "non lega PA" — un peptide può legare il target reale e *anche* mostrare la firma composizionale (aromatica) che PSBinder associa al legame al polistirene. Non risolve la distinzione fra causa B (contaminazione) e causa A (bias strutturale AF2)/C: mostra che, con questo strumento, il segnale aromatico-plastico e il segnale di legame reale **non sono cleanly separabili** nemmeno a valle, riecheggiando esattamente l'ambiguità di fondo di tutto §B del piano madre.
+- Delle 4 sequenze compositivamente anomale segnalate sopra (ricche in G/R/E), **nessuna è positiva a PSBinder** (0,11–0,36, tutte sotto soglia) — l'anomalia composizionale di quelle sequenze, se reale, non è (secondo questo strumento) legame al polistirene; resta senza spiegazione.
+- **§0.6 resta aperta**:Verifica del sistema di phage display per capire se è stato usato polistirene.
+
+---
+
+## 0.7 — Traiettorie di design: divergenza fra rappresentazione soft e discreta
+
+**Input verificato: la copertura è parziale e limitata a una sola campagna.** `src/slurm_subs/*.out` contiene **9 file**, da due job array SLURM (`pa_pb1_wide_292363_{0..5}.out`, array completo 0-5; `pa_pb1_wide_304814_{0,1,2}.out`, riesecuzione parziale di soli 3 protocolli) — entrambi della campagna `run2_wide` (`submit_wide_search.sh`). **Nessun `.out` esiste per `run1_protocols`, `run_multimer`, `run_multimer2` o `custom`**: la campagna principale (`run1_protocols`, quella più rappresentata in `results/colabdesign/`) non ha traiettorie salvate, quindi §0.7 può caratterizzare solo il sottoinsieme `run2_wide` — limite da dichiarare esplicitamente nei risultati, non silenziare.
+
+Protocolli coperti, con relativo $w_E$ per stadio (da `PROTOCOL_CONFIGS` in `src/slurm_subs/parse_slurm_out.py`, già hardcoded lì — riusare quel dizionario invece di reinventarlo):
+
+| Protocollo | job/array | blocchi (seed) | $w_E$ (stage 1a/1b/2/3) |
+|---|---|---|---|
+| `gen_energy_A` | 292363_0 | 29 (parziale, atteso 100) | 0,02 / 0,05 / 0,02 / 0,05 |
+| `gen_energy_C` | 292363_1 + 304814_0 | 30 + 18 | 0,05 / 0,20 / 0,05 / 0,50 |
+| `opt_hard_energy_C` | 292363_2 | 31 | solo stage 3: 0,50 |
+| `opt_anneal_noenergy` | 292363_3 + 304814_1 | 66 + 42 | **0 / 0** — controllo essenziale |
+| `opt_anneal_energy_B` | 292363_4 | 66 | stage 2/3: 0,02 / 0,20 |
+| `opt_anneal_energy_C` | 292363_5 + 304814_2 | 66 + 42 | stage 2/3: 0,05 / 0,50 |
+
+Il controllo senza energia (`opt_anneal_noenergy`) richiesto esplicitamente dal piano madre **è disponibile**, con buona numerosità (108 blocchi combinati). Tutti i file sono log di job **interrotti** (`parse_slurm_out.py`, già presente nel repo, è stato scritto proprio per recuperare risultati da job uccisi dal cluster prima del salvataggio) — i conteggi di blocchi sono quindi censurati rispetto al piano originale (es. `gen_energy_A` atteso a 100 semi, osservati 29), non un problema per l'analisi di traiettoria (che non richiede completezza) ma da segnalare per l'interpretazione della numerosità per protocollo.
+
+**Formato verificato riga per riga** (non solo il formato SUMMARY che `parse_slurm_out.py` già estrae): ogni step di ogni blocco stampa una riga tipo
+```
+128 models [1] recycles 0 hard 0 soft 0 temp 0.46 loss 2.46 i_con 2.85 plddt 0.64 ptm 0.91 i_ptm 0.71 [energy -21.52]
+```
+cioè contatore di step **locale al blocco** (riparte da 1 a ogni nuovo `[N/M] seed=...`), flag `hard`/`soft`, `temp`, e tutte le metriche inclusa `energy` — quest'ultima è il valore **soft** durante gli stadi 1a/1b/2 (`hard 0`) e il valore **discreto** durante lo stadio 3 (`hard 1`). Esempio reale ispezionato (`pa_pb1_wide_292363_0.out`, blocco `gen_energy_A` seed=0): `energy` scende fino a **-25,08** nello stadio di annealing (step 147, `temp 0.08`) e si stabilizza a **-3,27** per tutti gli step dello stadio 3 (righe 151-155, valore identico a 3 cifre decimali) — stesso ordine di grandezza del gap preliminare (-50 → -5) descritto nel piano madre.
+
+**Decisione aperta, da confermare prima di scrivere il parser: $a^{(t)}$ e i logit $L^{(t)}$ non sono salvati.** Solo gli scalari per-step lo sono (nessuna distribuzione per posizione, nessun accesso ai logit). Per i criteri stessi del piano madre ("se non sono salvati neppure i logit, il run è escluso"), una lettura stretta escluderebbe tutti e 9 i file. **Proposta**, da confermare: usare comunque questi dati definendo un proxy operativo,
+```
+Δ_proxy(t) = E_soft(t) − E_hard,finale
+```
+dove `E_hard,finale` è il valore di energia a cui lo stadio 3 converge (verificato costante sulle ~30 iterazioni hard nel blocco ispezionato — la sequenza ha smesso di cambiare prima che lo stadio hard inizi, quindi `E_hard,finale` è un riferimento stabile, non un singolo campione rumoroso). Questo **non** è identico alla definizione del piano madre — $E(\text{onehot}(\arg\max a^{(t)}))$ **al medesimo passo** $t$, che richiederebbe $a^{(t)}$ — ma è la quantità più vicina calcolabile da questi log senza rieseguire ColabDesign su GPU. La differenza è probabilmente trascurabile a fine annealing (quando $a$ è già quasi concentrato) e più significativa nello stadio 1a/1b iniziale (dove il vertice più prossimo ad $a$ può ancora cambiare) — da dichiarare come limite, non da correggere silenziosamente.
+
+**Conseguenza sul controllo di correttezza del piano ("Δ_hard atteso nullo").** Sotto questo proxy, $\Delta_{\text{proxy}}$ all'ultimo step è **zero per costruzione** (è la definizione del riferimento), quindi non è più un test indipendente. Il controllo di correttezza analogo disponibile con questi dati è invece: **l'energia nello stadio hard deve essere costante entro la singola traiettoria** (verificato nell'esempio sopra) — se non lo è, la sequenza sta ancora cambiando durante lo stadio 3 e il protocollo o il parsing vanno rivisti.
+
+**Script da creare: `src/phase0_diagnostics/run_0_7_trajectory_gap.py`**
+1. Parser esteso rispetto a `parse_slurm_out.py` (che tiene solo la riga finale per blocco): per ciascuno dei 9 `.out`, estrarre **ogni riga di step** dentro ciascun blocco `[N/M] seed=...`/`[N/M] input=... seed=...`, con protocollo/stadio dedotto dal contatore locale e dai confini di `PROTOCOL_CONFIGS[proto]["protocol"]` (import diretto da `src/slurm_subs/parse_slurm_out.py` — non ridichiarare i pesi).
+2. Calcolare $\Delta_{\text{proxy}}(t)$ normalizzato in unità di $\sigma_{\text{train}} = 2{,}0876$ (valore esatto da `results/phase0/0_1_simplex_variance/metrics.json`, non ricalcolare).
+3. Scalari per run: $\Delta_{\max}$, $t^\ast$/stadio, $\int\Delta\,dt$ sullo stadio soft (1a+1b+2), $\Delta_{\text{fine-temp}}$ (ultimo step di stage 2), più $E_{\text{soft}}^{\min}$ e $E_{\text{hard,finale}}$.
+4. Aggregazione per protocollo e per $w_E$ (mediana + IQR, non singoli valori).
+5. Correlazione $\Delta_{\max}$/$\int\Delta\,dt$ vs `i_ptm` finale del blocco (dalla riga `seq=...` o dalla tabella SUMMARY se presente).
+6. Regressione $\Delta_{\max}$ vs $w_E$ (stage 3, il valore attivo quando la sequenza discreta finale viene prodotta).
+7. Salvare `trajectories_normalized.csv` con **tutte** le traiettorie normalizzate — dichiarato riusabile da §0.8.c, non ricalcolare lì.
+
+**Output:** `results/phase0/0_7_trajectory_gap/{trajectories_normalized.csv, summary_scalars_by_run.csv, summary_by_protocol.csv, delta_curves_by_protocol.png, delta_max_vs_iptm.png, delta_max_vs_wE.png}`
+
+**Costo stimato: mezza giornata, CPU** (parsing di 9 file + qualche migliaio di step totali — nessun ricalcolo del modello di energia necessario, i valori sono già nei log).
+
+**Stato: eseguita (2026-08-12), con un limite scoperto in esecuzione non anticipabile dal solo controllo dei file.** Script scritto ed eseguito: `src/phase0_diagnostics/run_0_7_trajectory_gap.py`, con `RE_STEP` esteso da `parse_slurm_out.py` per estrarre ogni riga di step (non solo il blocco finale) e proxy $\Delta_{\text{proxy}}(t) = E_{\text{soft}}(t) - E_{\text{hard,finale}}$ come confermato dall'utente. Output in `results/phase0/0_7_trajectory_gap/` (`trajectories_normalized.csv`, `summary_scalars_by_run.csv`, `summary_by_protocol.csv`, 3 grafici). **Aggiornamento (2026-08-26)**: `summary_scalars_by_run.csv` esteso con la colonna `final_seq` (sequenza discreta finale per blocco), necessaria per 0.8.c e non presente nella prima esecuzione — nessuna modifica ai valori già calcolati.
+
+**Il controllo essenziale (`opt_anneal_noenergy`) non è misurabile: `energy` non è stampata affatto per-step quando $w_E=0$ su tutti gli stadi** — solo nella riga finale `→ seq=...` (un valore per blocco, nessuna traccia). Verificato direttamente sui file (`grep` su `pa_pb1_wide_292363_3.out`): le righe di step per questo protocollo terminano a `i_ptm=...`, senza il campo `energy` che invece è sempre presente negli altri protocolli. Non è un bug del parser né una scelta di questo script: è come ColabDesign stampava il log quando $w_E=0$, la riga di stampa evidentemente non include il campo energia in quel ramo di codice. **Conseguenza**: l'obiettivo dichiarato nel piano madre per questo controllo ("misura l'ampiezza del gap di Jensen su una traiettoria che nessuno sta sfruttando") non è raggiungibile con questi log — servirebbe una riesecuzione con logging diverso, fuori dal perimetro CPU-su-dati-esistenti di Fase 0. Analogamente **`opt_hard_energy_C` non contribuisce**, ma per un motivo diverso e atteso: è hard fin dal primo step (nessuno stadio soft per costruzione del protocollo "hard-only").
+
+**Risultati sui 4 protocolli con traccia soft valida** (272 blocchi):
+
+| Protocollo | N blocchi | $w_E$ (stadio 3) | gap$_{\max}$ mediana ($\sigma_{\text{train}}$) | IQR | i_ptm finale mediana |
+|---|---|---|---|---|---|
+| `opt_anneal_energy_B` | 65 | 0,20 | 5,7 | 4,6–7,4 | 0,17 |
+| `opt_anneal_energy_C` | 106 | 0,50 | 12,0 | 10,4–16,4 | 0,23 |
+| `gen_energy_A` | 28 | 0,05 | 15,3 | 13,1–16,5 | 0,35 |
+| `gen_energy_C` | 46 | 0,50 | 29,5 | 24,0–35,3 | 0,36 (picco singolo osservato: 0,71) |
+
+- **Il gap è reale, sistematico e di ampiezza notevole**: mediane fra 5,7 e 29,5 $\sigma_{\text{train}}$, con un picco individuale a 47$\sigma$ (`gen_energy_C`) — quantifica su dati reali quanto solo stimato qualitativamente nel piano madre (-50 → -5). Le curve `gap(t)` (`delta_curves_by_protocol.png`) mostrano una crescita **progressiva e pressoché monotona** lungo l'intero stadio soft/anneal, non un picco isolato.
+- **La dipendenza da $w_E$ non è pulita**: `opt_anneal_energy_B` ($w_E$=0,20) ha gap mediano *inferiore* a `gen_energy_A` ($w_E$=0,05) nonostante un peso 4× più alto (5,7 vs 15,3); e i due protocolli a $w_E$=0,50 (`gen_energy_C` vs `opt_anneal_energy_C`) differiscono di oltre 2× fra loro (29,5 vs 12,0). Il confondente più plausibile è il **numero di step soft**: i protocolli `gen_*` hanno ~150 step soft (stadi 1a+1b+2) contro i ~50 di `opt_anneal_*` (solo stadio 2) — dato che il gap cresce monotonicamente con gli step (vedi sopra), più iterazioni soft producono più tempo per accumularlo, indipendentemente da $w_E$. La regressione richiesta dal piano madre (§0.7 passo 6) andrebbe quindi condotta controllando per il numero di step soft, non su $w_E$ da solo — non fatto qui, segnalato come raffinamento per chi riprende l'analisi.
+- **Correlazione gap$_{\max}$ vs i_ptm finale: dipende criticamente da come viene calcolata.** Aggregata su tutti i protocolli insieme, $r=+0{,}43$ (positiva — l'opposto del segno "conferma il meccanismo" ipotizzato dal piano madre). Ma è quasi interamente un **confondimento fra protocolli** (`delta_max_vs_iptm.png` mostra chiaramente 4 nuvole separate per colore): **entro ciascun protocollo la correlazione è debole e di segno incoerente** — `gen_energy_A`: $r=0{,}26$; `gen_energy_C`: $r=-0{,}27$; `opt_anneal_energy_B`: $r=0{,}02$; `opt_anneal_energy_C`: $r=-0{,}07$. Nessuna evidenza pulita, in nessuna direzione, che l'ampiezza del gap entro uno stesso protocollo predica l'esito strutturale finale.
+- **Nessuno dei quattro protocolli raggiunge la soglia di accettabilità i_ptm > 0,5** dichiarata in §B del piano madre (mediane 0,17–0,36) — il confronto sopra riguarda gradi diversi di fallimento strutturale, non successo vs fallimento. Da tenere presente per non sovrainterpretare il segno della correlazione (positiva o negativa che sia) come "il gap aiuta/danneggia il design", quando in realtà nessun run di questo campione ha prodotto una struttura accettabile.
+- **Nessuna delle tre letture proposte dal piano madre (§0.7, "Criteri di lettura") si applica pulitamente**: la prima e la terza richiedono il confronto con il controllo senza energia, non misurabile qui; la correlazione negativa attesa dalla prima non si osserva nemmeno nei protocolli con energia. La domanda "il gap è un effetto della guida energetica o una proprietà generica del rilassamento" **resta aperta** — non per mancanza di segnale nei dati disponibili, ma per l'assenza strutturale del controllo nei log salvati.
+
+---
+
+## 0.8 — Verifiche di chiusura
+
+Tre sotto-analisi (0.8.d non eseguita, vedi sotto — risposta diretta più rapida dal gruppo sperimentale che uno script). 0.8.c dipende da 0.7. File condivisi in `results/phase0/0_8_closing_checks/`, prefissati `0_8a_`/`0_8b_`/`0_8c_`.
+
+### 0.8.a — Correlazione parziale $K_D$ / energia / contenuto aromatico
+
+**Input:** le 23 sequenze BLI (`load_bli_population()`), energia calcolata con `load_energy_model`+`mlp_forward` (stesso encoder validato in 0.1/0.4 — nessun nuovo calcolo del modello), conteggio di residui aromatici (F+W+Y) per sequenza.
+
+**Script da creare: `src/phase0_diagnostics/run_0_8a_partial_correlation.py`**
+1. $\log K_D$ (media geometrica già in `Kd_nM_geomean`, colonna esistente in `load_bli_population()`) vs conteggio aromatico: regressione OLS (`numpy.linalg.lstsq` o `scipy.stats.linregress`, non serve `statsmodels` come nuova dipendenza).
+2. $\log K_D$ vs energia: stessa regressione.
+3. **Correlazione parziale** energia vs $\log K_D$ controllando per conteggio aromatico: residualizzazione (regredire entrambe le variabili sul conteggio aromatico, correlare i residui — equivalente alla formula chiusa della correlazione parziale a 3 variabili, non serve una libreria dedicata).
+4. Tutto in continuo su N=23, **non per quartili** (0.3' ha già mostrato che il potere è insufficiente a quel livello di stratificazione).
+
+**Output:** `results/phase0/0_8_closing_checks/{0_8a_partial_correlation.json, 0_8a_scatter_logKd_vs_energy_and_aromatic.png}`
+
+**Costo stimato: trascurabile** (N=23, nessun nuovo calcolo pesante).
+
+**Stato: eseguita (2026-08-12).** Script scritto ed eseguito: `src/phase0_diagnostics/run_0_8a_partial_correlation.py` (`JAX_PLATFORMS=cpu`, come 0.1/0.4 — il driver NVIDIA di questa macchina resta troppo vecchio per JAX-CUDA).
+
+| Regressione | r | R² | p |
+|---|---|---|---|
+| $\log K_D$ ~ conteggio aromatico | −0,05 | 0,00 | 0,83 |
+| $\log K_D$ ~ energia (diretta) | **0,37** | 0,14 | 0,079 |
+| $\log K_D$ ~ energia, **parziale** (controllato per aromatici) | **0,39** | — | 0,069 |
+
+- **Il conteggio aromatico non correla con $K_D$** (r=−0,05, p=0,83) — replica in continuo, su N=23, lo stesso risultato che 0.3' aveva trovato per quartili: gli aromatici discriminano *selezionato* da *non selezionato*, non *forte* da *debole* entro i leganti già selezionati.
+- **La correlazione parziale non collassa controllando per gli aromatici — anzi cresce leggermente** (da $r=0{,}37$ diretta a $r=0{,}39$ parziale). Questo è il segnale più diretto disponibile a favore della prima lettura proposta dal piano madre ("la correlazione parziale sopravvive: il modello ha segnale oltre gli aromatici"), anche se **nessuna delle due correlazioni raggiunge $p<0{,}05$** ($p=0{,}079$ e $p=0{,}069$ rispettivamente) — con N=23 il test resta sotto-potenziato, non è possibile scartare l'ipotesi nulla con sicurezza convenzionale, ma la direzione del risultato (il controllo per aromatici rinforza, non indebolisce, l'associazione) è quella attesa se il modello contenesse segnale reale.
+- **Segno coerente con l'atteso**: energia più bassa → $K_D$ più basso (legame più forte) — il modello, addestrato per arricchimento, produce energie che vanno nella direzione giusta rispetto all'affinità reale misurata indipendentemente.
+- **Limite non trascurabile**: il conteggio aromatico ha varianza molto bassa in questa popolazione (`0_8a_scatter_...png`, pannello destro) — quasi tutte le 23 sequenze hanno esattamente 3 residui aromatici su 15 (range osservato 1–4). Con così poca variabilità nella variabile di controllo, la correlazione parziale ha un potere limitato di per sé nel discriminare fra le due ipotesi del piano madre — un risultato più conclusivo richiederebbe sequenze validate con maggiore variazione aromatica, non disponibili in questo set.
+- **Lettura**: il risultato pende verso "il modello ha segnale oltre gli aromatici" ma non lo dimostra con la significatività convenzionale — coerente con l'impostazione del piano madre di trattare questa domanda come aperta fino a nuovi dati (§2.4, formulazione della penalità composizionale sospesa), non come già risolta in un senso o nell'altro.
+
+### 0.8.b — Stratificazione della popolazione di design
+
+**Input:** le 900 sequenze disegnate (`load_designed_sequences()`, 0.5) — **da estendere**: la funzione attuale non porta il peso $w_E$ né il flag "con/senza energia" per sequenza, presenti però già nel campo `protocol` di ciascun JSON sorgente (es. `data["protocol"]["stage_3"]["energy_weight"]`, verificato presente in tutti i file), quindi va aggiunta come colonna senza dover incrociare `PROTOCOL_CONFIGS` per nome file. La classificazione posizionale interfaccia/esposta è quella AF3-consensus già prodotta in 0.5 (`results/phase0/0_5_structural_context/position_classification.csv`), non va rifatta da zero.
+
+**Script da creare: `src/phase0_diagnostics/run_0_8b_design_stratification.py`**
+1. Estendere `load_designed_sequences()` in `data_loading.py` con `energy_weight_stage3` (o l'ultimo stadio presente) e `has_energy = energy_weight_stage3 > 0`.
+2. Frazione aromatica **aggregata** (nessuna classificazione posizionale) per: presenza/assenza di energia; per $w_E$; per riuscita/fallimento (`i_ptm` sopra/sotto 0,5, soglia già usata nel piano madre §B).
+3. Ripetere la decomposizione interfaccia/esposta di 0.5 **separatamente per strato** (con/senza energia almeno), riusando `classify_af3_consensus()` da `run_0_5_structural_context.py` (importare, non duplicare) con **analisi di sensitività sulla soglia di `contact_probs`**: 0,3 / 0,5 / 0,7, per verificare quanto la conclusione di 0.5 dipenda dalla soglia arbitraria già segnalata come limite in quella sezione.
+
+**Output:** `results/phase0/0_8_closing_checks/{0_8b_aromatic_by_stratum.csv, 0_8b_aromatic_by_class_and_stratum.csv, 0_8b_threshold_sensitivity.csv}`
+
+**Costo stimato: ~1 ora, CPU** (riuso quasi completo di codice esistente).
+
+**Stato: eseguita (2026-08-12).** Script scritto: `src/phase0_diagnostics/run_0_8b_design_stratification.py`. `load_designed_sequences()` esteso con `energy_weight_stage3`/`has_energy` (letti da `protocol.stage_3.energy_weight`, presente in tutti i 27 file sorgente). `classify_af3_consensus()` in `run_0_5_structural_context.py` reso parametrico su `threshold` (refactor minimo, non invasivo — 0.5 ri-eseguita per verifica, risultati identici a prima).
+
+**900 design: 725 con energia (stage 3), 175 senza.**
+
+**Frazione aromatica aggregata (nessuna classe posizionale):**
+
+| Strato | N | Frazione aromatica |
+|---|---|---|
+| senza energia | 175 | 17,0% |
+| con energia | 725 | 19,0% |
+| $w_E$=0,05 | 73 | **9,7%** (anomalia, sotto anche il controllo) |
+| $w_E$=0,20 | 110 | 17,3% |
+| $w_E$=0,50 | 363 | 20,3% |
+| $w_E$=0,70 | 68 | 21,7% |
+| $w_E$=0,90 | 111 | 20,6% |
+| esito: successo (i_ptm≥0,5, **N=51 soli su 900**) | 51 | 21,4% |
+| esito: fallimento (i_ptm<0,5) | 849 | 18,4% |
+
+- Con/senza energia: differenza modesta e nella direzione attesa (19,0% vs 17,0%), ma **non monotona in $w_E$** — il gruppo a $w_E$=0,05 (n=73) ha la frazione aromatica più bassa di tutti (9,7%), sotto perfino il controllo senza energia. Non spiegato da questi dati; segnalato, non interpretato oltre.
+- Solo 51/900 design (5,7%) superano la soglia di accettabilità i_ptm≥0,5 — il confronto successo/fallimento ha quindi potenza statistica intrinsecamente limitata.
+
+**Decomposizione interfaccia/esposta per strato (soglia contact_probs=0,5, come in 0.5) — risultato che ribalta la lettura tentativa di 0.5:**
+
+| Strato | N | Aromatica interfaccia | Aromatica esposta | Rapporto |
+|---|---|---|---|---|
+| senza energia | 175 | **39,3%** | 8,8% | **4,5×** |
+| con energia | 725 | 29,6% | 15,1% | 2,0× |
+| successo (i_ptm≥0,5) | 51 | 21,1% | 21,6% | **1,0× (nessuna concentrazione)** |
+| fallimento (i_ptm<0,5) | 849 | 32,1% | 13,4% | 2,4× |
+
+- **I design senza energia mostrano una concentrazione interfaccia/esposta più forte (4,5×) di quelli con energia (2,0×)** — l'opposto di quanto atteso se il termine di energia fosse la causa della concentrazione posizionale del bias aromatico. Il puro obiettivo AF2 (nessun segnale sperimentale) produce da solo una concentrazione interfaccia più marcata: **evidenza a favore della causa A** (l'obiettivo strutturale, non il modello di energia, guida la concentrazione posizionale), non della causa B/C come la lettura tentativa di 0.5 lasciava aperto.
+- **I design "di successo" (i_ptm≥0,5) non mostrano concentrazione posizionale alcuna** (21,1% vs 21,6%, rapporto ≈1) — il pattern "aromatico concentrato all'interfaccia" è una **firma dei design falliti** (rapporto 2,4×), non dei design strutturalmente validi. Coerente con l'ipotesi che il pattern via via emerso in 0.1/0.3'/0.4/0.5 sia associato alla patologia del processo di ottimizzazione, non a un tratto dei buoni leganti — ma il confronto poggia su soli 51 design "di successo", da leggere con cautela.
+
+**Analisi di sensitività sulla soglia `contact_probs` — la conclusione di 0.5 è fragile alla soglia:**
+
+| Soglia | N posizioni interfaccia | Posizioni | Aromatica interfaccia | Aromatica esposta | Rapporto |
+|---|---|---|---|---|---|
+| 0,3 | 14/15 | quasi tutte | 18,1% | 25,1% | **0,72× (invertito!)** |
+| 0,5 (usata in 0.5) | 4/15 | 6,7,8,9 | 31,5% | 13,9% | 2,27× |
+| 0,7 | **0/15** | nessuna | — | 18,6% | non definito |
+
+- **A soglia 0,3 la direzione della conclusione di 0.5 si inverte** (gli aromatici risultano più concentrati nella classe "esposta" che in quella "interfaccia") — praticamente perché a soglia bassa quasi tutte le posizioni (14/15) finiscono classificate "interfaccia", rendendo la partizione poco informativa nella direzione opposta a quella vista per il criterio di contatto 2ZNL a 5Å (degenere tutto-interfaccia). A soglia 0,7 non sopravvive **nessuna** posizione "interfaccia": nessuna delle 35 sequenze promettenti ha una singola posizione con frequenza di contatto >70% sulle 35 — la soglia 0,5 usata in 0.5 è già vicina al limite superiore di soglie che producono una classificazione non vuota.
+- **Conclusione**: la lettura posizionale di 0.5 (bias concentrato all'interfaccia 6-9) **dipende in modo sostanziale dalla scelta della soglia**, non è un risultato robusto — coerente con il limite già dichiarato esplicitamente in 0.5 ("non c'è discontinuità, c'è un gradiente tagliato a 0,5"), qui quantificato: basta scendere a 0,3 per ribaltare il segno del rapporto. Il risultato "senza energia > con energia" e "successo ≈ nessuna concentrazione" sopra (a soglia 0,5) va quindi trattato come indicativo, non come conclusivo, finché non si trova una definizione di interfaccia meno sensibile alla soglia arbitraria (es. basata su un margine statistico anziché su un singolo taglio percentuale).
+
+**Estensione richiesta dall'utente (2026-08-26): classificazione posizionale basata sui 28 residui hotspot fissati nel design, non su AF3.** `src/generative_protocols/model_energy_guidance.py` (identico in `src/config.py`) definisce `HOTSPOT_RESIDUES` (28 residui di catena A, passati come `hotspot=` a `model.prep_inputs(...)`) — i residui che ColabDesign è esplicitamente istruito a contattare. A differenza della classificazione AF3-consensus (derivata da predizioni, con la soglia fragile sopra), questa è la classificazione più direttamente legata a **cosa il processo di design ottimizza per costruzione**. Script scritto ed eseguito: `src/phase0_diagnostics/run_0_8b_hotspot_proximity.py`.
+
+**Anche qui la sola distanza minima è degenere** (tutte le 15 posizioni entro 3,75Å da almeno uno dei 28 hotspot, verificato su `2ZNL.pdb`) — stessa patologia di 0.5, ora confermata pure ristringendo il target ai soli hotspot invece che a tutta la catena A: il binder WT è incassato per l'intera lunghezza nel solco che gli hotspot delimitano, non solo in un sottoinsieme di posizioni. Usata quindi una metrica graduata: **numero di hotspot distinti (su 28) con un atomo entro 4,0Å** (soglia più conservativa dei 5Å usati altrove) da ciascuna posizione — range osservato 1–7, non degenere. Soglia di classificazione: **≥4 hotspot distinti → "near_hotspot"**, altrimenti "far_from_hotspot" (split bilanciato 7 vs 8 posizioni: near = {1,2,3,4,5,10,11}, far = {6,7,8,9,12,13,14,15}).
+
+| Popolazione | Aromatica *near_hotspot* (7 pos.) | Aromatica *far_from_hotspot* (8 pos.) | Rapporto |
+|---|---|---|---|
+| Riferimento nativo (WT) | 0,0% | 12,5% | 0 |
+| Libreria round 1 | 12,5% | 18,9% | 0,66× |
+| Training set | 12,2% | 23,0% | 0,53× |
+| Leganti validati in BLI | 14,9% | 24,5% | 0,61× |
+| Design (900, aggregati) | 16,4% | 20,5% | 0,80× |
+| Design senza energia | 10,2% | 22,9% | **0,45×** |
+| Design con energia | 17,9% | 19,9% | 0,90× |
+| Design "di successo" (i_ptm≥0,5, N=51) | **24,9%** | 18,4% | **1,36× (invertito)** |
+| Design falliti (i_ptm<0,5) | 15,9% | 20,6% | 0,77× |
+
+**Risultato di segno opposto a quello di 0.5/AF3-consensus, e più coerente al proprio interno:**
+- **In ogni popolazione tranne una, gli aromatici sono più frequenti LONTANO dagli hotspot che vicino** — pattern presente già nella libreria pre-selezione (0,66×) e che **si rafforza con la selezione** (0,53× nel training set, invece di attenuarsi). L'ipotesi più semplice è sterica: le posizioni a contatto diretto con più hotspot contemporaneamente hanno meno margine geometrico per una catena laterale aromatica ingombrante senza clash, indipendentemente da cosa la selezione stia premiando altrove.
+- **Coerente con 0.8.b**: i design senza energia mostrano di nuovo l'asimmetria più marcata (0,45×), quelli con energia sono più bilanciati (0,90×) — stessa direzione qualitativa del risultato AF3-based (causa A più che B/C nel determinare la collocazione), ma qui ottenuta da una classificazione indipendente e non soggetta alla stessa fragilità di soglia (il profilo di contatto a sinistra in `0_8b_hotspot_proximity_summary.png` mostra una separazione abbastanza netta fra i due gruppi di posizioni, non un continuo tagliato arbitrariamente).
+- **L'unica inversione è nei design "di successo" (i_ptm≥0,5): qui gli aromatici sono più frequenti VICINO agli hotspot (1,36×), non lontano.** Letto insieme al risultato AF3-based di 0.8.b (i design di successo non mostravano concentrazione posizionale, rapporto ≈1 su quella classificazione): le due letture non sono in conflitto, sono complementari — rispetto alla classificazione strutturalmente più rilevante (i residui che il design doveva effettivamente contattare), i design che funzionano sembrano collocare gli aromatici *dove contano*, mentre il pattern generico (aromatici ovunque tranne dove servono) è una firma dei design falliti e di quelli generati senza segnale sperimentale. Base ridotta (N=51), da confermare con più dati prima di appoggiarcisi.
+
+**Output:** `results/phase0/0_8_closing_checks/{0_8b_hotspot_contact_profile.csv, 0_8b_aromatic_by_hotspot_proximity.csv, 0_8b_hotspot_proximity_summary.png}`.
+
+### 0.8.c — Composizione al minimo del gap
+
+**Dipendenza:** richiede l'output di 0.7 (`trajectories_normalized.csv`) — non eseguibile prima.
+
+**Limite ereditato da 0.7**: poiché $a^{(t)}$ non è salvato, "composizione amminoacidica media di $a^{(t^\ast)}$" nel senso letterale del piano madre non è calcolabile. L'unica composizione disponibile a $t^\ast$ (il passo di $\Delta_{\max}$) è quella della **sequenza discreta finale del blocco** (`seq=` di fine blocco, non la sequenza al passo $t^\ast$ stesso — altro scarto fra piano madre e dati disponibili, da dichiarare insieme a quello di 0.7). Il confronto resta comunque informativo: confronta la composizione dei design **il cui $t^\ast$ cade nello stadio soft con $\Delta_{\max}$ grande** contro quella dei run di controllo senza energia.
+
+**Script da creare: `src/phase0_diagnostics/run_0_8c_gap_composition.py`**
+1. Da `trajectories_normalized.csv`, per ciascun blocco: $t^\ast$, stadio di $t^\ast$, sequenza finale del blocco.
+2. Frazione aromatica della sequenza finale, stratificata per: quartile di $\Delta_{\max}$ del blocco; protocollo (energy-guided vs `opt_anneal_noenergy`).
+3. Confronto diretto: i blocchi nel quartile più alto di $\Delta_{\max}$ hanno frazione aromatica maggiore di quelli nel quartile più basso?
+
+**Output:** `results/phase0/0_8_closing_checks/0_8c_aromatic_by_gap_quartile.csv`
+
+**Costo stimato: trascurabile**, dopo 0.7.
+
+**Stato: eseguita (2026-08-26).** Script scritto: `src/phase0_diagnostics/run_0_8c_gap_composition.py`. Estensione minima a 0.7 richiesta e fatta prima di poter procedere: `summarize_block()` in `run_0_7_trajectory_gap.py` non catturava la sequenza finale del blocco (solo la sua energia) — aggiunta colonna `final_seq` a `summary_scalars_by_run.csv`, 0.7 ri-eseguita (stessi numeri di prima, nessuna regressione).
+
+**Quartili di gap$_{\max}$ pooled su tutti i protocolli insieme (245 blocchi con traccia soft valida) — nessun trend pulito:**
+
+| Quartile | N | Frazione aromatica media | Range gap$_{\max}$ |
+|---|---|---|---|
+| Q1 (gap minimo) | 62 | 19,2% | 1,8–8,1 |
+| Q2 | 61 | 17,3% | 8,2–11,9 |
+| Q3 | 61 | 16,1% | 12,0–17,0 |
+| Q4 (gap massimo) | 61 | 21,0% | 17,0–47,0 |
+
+**Entro ciascun protocollo (per evitare lo stesso confondimento fra protocolli già trovato in 0.7) — segno del tutto incoerente:**
+
+| Protocollo | Q1 | Q2 | Q3 | Q4 | Direzione |
+|---|---|---|---|---|---|
+| `gen_energy_A` | 2,9% | 7,6% | 7,6% | **10,5%** | crescente |
+| `gen_energy_C` | **26,7%** | 23,0% | 17,6% | 13,9% | **decrescente** |
+| `opt_anneal_energy_B` | 20,0% | 21,2% | 20,9% | 20,8% | piatta |
+| `opt_anneal_energy_C` | 17,0% | 15,9% | 17,4% | 25,9% | quasi piatta poi salto in Q4 |
+
+- **Nessun pattern comune ai quattro protocolli**: `gen_energy_A` mostra una relazione crescente pulita (gap grande → sequenza finale più aromatica), `gen_energy_C` mostra l'esatto opposto (gap grande → sequenza finale MENO aromatica), gli altri due sono sostanzialmente piatti. Il quartile pooled (che media questi segni opposti) è quindi privo di significato — un altro caso, dopo 0.7, in cui l'aggregazione fra protocolli nasconde più di quanto riveli.
+- **I riferimenti senza traccia di gap non discriminano**: `opt_anneal_noenergy` (n=106, il controllo vero) ha frazione aromatica finale 19,4%, `opt_hard_energy_C` (n=31) 18,7% — entrambi cadono dentro il range già coperto dai quartili dei protocolli energy-guided (13,9–26,7%), non sotto né sopra in modo sistematico.
+- **Nessuna delle due letture proposte dal piano madre si applica pulitamente**: non è vero che "la massa si concentra su W/F/Y" in modo generalizzato al crescere del gap (solo `gen_energy_A` lo mostra), ma non è nemmeno chiaramente il caso opposto ("composizione generica", visto che due protocolli su quattro mostrano un trend chiaro, solo di segno opposto). **Numerosità per cella bassa** (7–27 blocchi) rende comunque questi trend per-protocollo poco solidi singolarmente presi.
+- **Lettura complessiva di 0.8.c**: coerente con quanto già visto in 0.7 per la correlazione gap$_{\max}$/i_ptm (debole, incoerente di segno entro protocollo) — l'ampiezza del gap di Jensen non sembra tradursi in un effetto compositivo sistematico e protocollo-indipendente sulla sequenza discreta finale. Non chiude la domanda causale del piano madre (§B), la lascia genuinamente aperta invece di forzarla verso una delle due letture proposte.
+
+### 0.8.d — Attesa composizionale della libreria (schema di codoni)
+
+**Deciso (2026-08-12): non eseguita come analisi bioinformatica.** Più rapido ed affidabile chiedere direttamente al gruppo sperimentale quale schema di codoni degenerati è stato effettivamente usato in sintesi, invece di inferirlo indirettamente da dati già post-selezione (nessun file nucleotidico di round 1/libreria naiva è disponibile in questo repo, vedi §0.2/§0.3 — l'inferenza sarebbe comunque stata indiretta anche eseguendo lo script).
+
+**Ipotesi di lavoro dell'utente: NNK, da confermare con chi ha eseguito il phage display.** Osservazione preliminare raccolta durante l'istanziazione, utile come punto di partenza per quella conversazione ma non come sostituto: la distribuzione grezza della terza base del codone in `PD_energy_model/data/4_counts/{F,R}_{2,3}_count.csv` (round 2/3, non la libreria naiva) non è pulitamente compatibile con NNK preso alla lettera (G+T atteso ~100%, osservato 81-83% a seconda della popolazione) — ma è dato post-selezione, quindi non dirimente da solo; il conteggio degli stop codon (TAG fortemente dominante, TGA/TAA solo 1-2 ordini di grandezza sotto) è comunque coerente con uno schema a singolo stop, incluso NNK.
+
+**Output:** nessuno — nessuno script, nessun file in `results/phase0/`. Il denominatore F+W+Y atteso per l'analisi di arricchimento di 0.3' resta da fissare una volta confermato lo schema con il gruppo sperimentale.
+
+---
+
 ## Riepilogo dipendenze fra sottofasi
 
 ```
 encoder + colabdesign.energy_model.model_3layer ──┬──> 0.1
                                                      └──> 0.4
 
-0.2 (loader training set + clustering) ──> usato da 0.1, 0.3′, 0.4 (stesso data_loading.py)
+0.2 (loader training set + clustering) ──> usato da 0.1, 0.3′, 0.4, 0.6 (cluster_assignment.csv)
 
-0.3′  indipendente (solo CSV BLI + conteggi round 1)
-0.5   indipendente dal modello di energia e da 0.2 (usa 2ZNL.pdb + af3_predictions/ + i JSON dei design)
+0.3′  indipendente (solo CSV BLI + conteggi round 1) ──> usato da 0.6, 0.8.a
+0.5   indipendente dal modello di energia e da 0.2 (usa 2ZNL.pdb + af3_predictions/ + i JSON dei design) ──> usato da 0.8.b (classify_af3_consensus)
+0.6   manuale, nessuna dipendenza di codice (solo le liste di sequenze da 0.2/0.3′)
+0.7   indipendente (solo i 9 .out di run2_wide + PROTOCOL_CONFIGS) ──> usato da 0.8.c
+0.8.a indipendente (solo 0.3′)
+0.8.b dipende da 0.5 (riusa classify_af3_consensus) e load_designed_sequences esteso
+0.8.c dipende da 0.7 (trajectories_normalized.csv)
+0.8.d indipendente (solo i conteggi nucleotidici round 2/3)
 ```
 
-Ordine di implementazione consigliato: **encoder + validazione (§Perimetro) → 0.3′ (rapido, valida i dati BLI) → 0.2 (loader condiviso + clustering) → 0.1 → 0.4 → 0.5**. 0.3′ prima di 0.2 perché è il rapporto informazione/costo più alto del piano originale ed è del tutto disaccoppiato dal resto — buon primo risultato da vedere prima di investire nel loader condiviso.
+Ordine di implementazione consigliato per 0.1–0.5 (eseguito): **encoder + validazione (§Perimetro) → 0.3′ (rapido, valida i dati BLI) → 0.2 (loader condiviso + clustering) → 0.1 → 0.4 → 0.5**. 0.3′ prima di 0.2 perché è il rapporto informazione/costo più alto del piano originale ed è del tutto disaccoppiato dal resto — buon primo risultato da vedere prima di investire nel loader condiviso.
+
+Per 0.6–0.8: **0.6 (manuale, indipendente, avviabile subito) → 0.8.a e 0.8.d in parallelo (entrambi rapidi e indipendenti) → 0.7 (mezza giornata) → 0.8.c (dipende da 0.7) → 0.8.b (indipendente da 0.7, ma a basso rapporto urgenza/costo essendo perlopiù un'analisi di sensitività su 0.5 già conclusa)**.
 
 ## Decisioni aperte da confermare prima di scrivere codice
 
 1. **MMseqs2 vs fallback Python** per 0.2 — dipende da cosa è installabile sul cluster AAR. **Risolto**: fallback greedy Python (vedi §0.2, eseguita).
 2. **Soglia di distanza per "contatto interfaccia"** in 0.5 su `2ZNL.pdb` (proposta: 5 Å heavy-atom, standard ma da confermare) **e** soglia di `contact_probs` per l'interfaccia AF3-based (proposta: 0.5, da confermare — le due soglie non sono direttamente comparabili, una è geometrica sulla struttura nativa, l'altra è una probabilità predetta da AF3 su 35 design reali).
-3. **Layout cartelle**: `src/phase0_diagnostics/` + `results/phase0/` come proposto sopra, oppure integrare nei notebook esistenti sotto `src/analysis/`. **Risolto de facto**: script in `src/phase0_diagnostics/` (0.1–0.4 eseguite così).
+3. **Layout cartelle**: `src/phase0_diagnostics/` + `results/phase0/` come proposto sopra, oppure integrare nei notebook esistenti sotto `src/analysis/`. **Risolto de facto**: script in `src/phase0_diagnostics/` (0.1–0.5 eseguite così).
+4. **Proxy per $\Delta(t)$ in 0.7** — **Risolto**: confermato dall'utente, eseguito con $\Delta_{\text{proxy}}(t) = E_{\text{soft}}(t) - E_{\text{hard,finale}}$ (vedi §0.7, eseguita). Limite aggiuntivo scoperto in esecuzione, non solo teorico: il controllo `opt_anneal_noenergy` non ha traccia energetica per-step affatto (non solo logit assenti), quindi resta comunque non misurabile con questo o qualunque altro proxy calcolabile dai log esistenti.
+5. **Copertura parziale di 0.7** — confermato come limite reale in esecuzione: solo `run2_wide` ha traiettorie salvate (9 file, 2 job array parziali), e anche entro questi il controllo senza energia non ha traccia per-step (vedi punto 4). Estendere a `run1_protocols` richiederebbe le sue `.out` originali (se reperibili sul cluster AAR) o una riesecuzione — fuori dal perimetro di Fase 0.
+6. **Schema di codoni (0.8.d)** — **Non più una decisione di questo documento**: deciso di chiedere direttamente al gruppo sperimentale invece di inferirlo da dati post-selezione. Ipotesi di lavoro dell'utente: NNK, da confermare.

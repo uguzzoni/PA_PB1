@@ -167,9 +167,16 @@ def load_designed_sequences() -> pd.DataFrame:
     usate in 0.3'/0.1, non output di una campagna di design).
 
     Returns: DataFrame[Sequence, protocol_file, energy, i_ptm, ptm, plddt,
-    loss_total, loss_af, seed]. Nessun dedup: la stessa sequenza può comparire
-    più volte fra protocolli/semi diversi, voluto (si contano i design, non le
-    sequenze uniche).
+    loss_total, loss_af, seed, energy_weight_stage3, has_energy]. Nessun dedup:
+    la stessa sequenza può comparire più volte fra protocolli/semi diversi,
+    voluto (si contano i design, non le sequenze uniche).
+
+    `energy_weight_stage3`/`has_energy` letti dal campo `protocol.stage_3.energy_weight`
+    di ciascun JSON sorgente (presente in tutti i file verificati, 0.8.b) — stage 3
+    è quella che produce la sequenza discreta finale, il peso più rilevante per
+    stratificare l'esito, non necessariamente rappresentativo degli stadi precedenti
+    (vedi PROTOCOL_CONFIGS in src/slurm_subs/parse_slurm_out.py per il dettaglio
+    per-stadio, se serve).
     """
     import json
 
@@ -184,12 +191,15 @@ def load_designed_sequences() -> pd.DataFrame:
             with open(os.path.join(dir_path, fname)) as f:
                 data = json.load(f)
             protocol_file = f"{subdir}/{fname[:-5]}"
+            w_e_stage3 = data.get("protocol", {}).get("stage_3", {}).get("energy_weight")
             for r in data.get("results", []):
                 rows.append({
                     "Sequence": r["seq"], "protocol_file": protocol_file,
                     "energy": r.get("energy"), "i_ptm": r.get("i_ptm"), "ptm": r.get("ptm"),
                     "plddt": r.get("plddt"), "loss_total": r.get("loss_total"),
                     "loss_af": r.get("loss_af"), "seed": r.get("seed"),
+                    "energy_weight_stage3": w_e_stage3,
+                    "has_energy": bool(w_e_stage3) and w_e_stage3 > 0,
                 })
     return pd.DataFrame(rows)
 
