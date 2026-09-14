@@ -135,24 +135,87 @@ PA_PB1/results/phase1/
 
 **Repliche generali (oltre 1.3.a): $M=5$–$10$ split casuali per cluster**, stesso meccanismo di esclusione della copia del notebook con `EXCLUDED_CLUSTER_IDS` diverso per ciascuna — esecuzione manuale, non ancora programmata in dettaglio (numero di repliche e criterio di split da confermare quando si arriva a questo punto).
 
+**Stato: eseguita (1.3.a il 2026-09-03; $M=10$ repliche generali + confronti il 2026-09-05), esecuzione manuale in Julia come previsto — nessuno script Python nuovo lato `PA_PB1`, tutta l'analisi resta nei notebook Julia (`PD_energy_model/training/training_2rounds/`, nested/git-ignored):**
+- `modelPNB_3layers_negbinom_ll_excluded_cluster0.jld2` — modello 1.3.a.
+- `TRAINING_models_random_split_clusters.ipynb` — $M=10$ split casuali per cluster, a massa esclusa bilanciata sul target di 1.3.a (~20,8% della massa totale ciascuno, stesso meccanismo `select_balanced_clusters`).
+- `COMPARE_models_random_splits.ipynb`, `COMPARE_models__training_7_PNB_negbinom_ll_3layers.ipynb` — confronti quantitativi (modello vs modello, modello vs dati).
+
+**Risultati 1.3.a (modello completo vs cluster0-escluso, valutati sulle 27406 sequenze):**
+- Energia dello stato `selection` (quello che conta per il legame): Pearson=0,645, Spearman=0,672 — molto più basso di `libraryF`/`libraryR` (Pearson 0,95–0,96): il cluster dominante pesa in modo non trascurabile sul fit dello stato di selezione, molto meno sulle library states.
+- log-abbondanze (tutti i nodi): Pearson=0,916 (alto, ma dominato dal ~98% di sequenze in comune fra i due modelli).
+- log-selectivities F/R (counts>10 in entrambi i round): 0,797 (N=92) / 0,776 (N=133).
+
+**Risultati repliche generali ($M=10$, ~20,8% di massa esclusa ciascuna) — stessa domanda ripetuta su split indipendenti:**
+- Energia `selection`, modello completo vs split, sull'intera popolazione (27406 seq): Pearson=0,43±0,05, Spearman=0,42±0,07 — contro 0,94±0,01/0,95±0,00 per `libraryF`/`libraryR`. Scomposto sequenze tenute/escluse da ciascuno split: `selection` 0,51±0,04 (tenute) vs 0,23±0,09 (escluse) — crollo netto solo sullo stato di legame; `libraryF`/`libraryR` non mostrano crollo analogo (0,94/0,93 tenute vs escluse).
+- log-selectivities F/R, modello completo vs split, sull'intera popolazione: 0,35±0,04 / 0,35±0,25 — molto più basso del singolo 1.3.a (0,80/0,78 sopra) e con dispersione alta fra repliche (specie R, dove il filtro counts>10 lascia pochissime sequenze per split).
+- **Nota:** questi numeri sono la base empirica dietro il risultato negativo di §1.5 — infrastruttura (split, training, notebook) condivisa fra le due sottofasi, qui la separazione è solo concettuale (§1.3 confronta modello-vs-modello, §1.5 sotto confronta modello-vs-dati veri sul cluster escluso).
+
+**Revisione 2026-09-09 (richiesta utente) — eseguita.** Riorganizzazione cartelle nel frattempo: i notebook Julia di Fase 1 ora vivono sotto `PD_energy_model/training/training_2rounds/workplan/` (i notebook di training storici sono in `.../first_training_phase/`). `TRAINING_models_random_split_clusters.ipynb` riscritto (stessa struttura, stesso `select_balanced_clusters`) con due cambi rispetto al run F+R/20% sopra:
+- **10% di massa esclusa, non ~20,8%** — giudicato troppo severo.
+- **Solo library F, R rimossa interamente** (dati caricati e struttura ad albero, non solo dal training) — R è più omogenea in termini di presenza dei cluster fra i round, quindi meno informativa per un test di generalizzazione a famiglie escluse.
+
+Output rinominati (`random_split_Fonly_10pct_*.jld2`) per non sovrascrivere i 10 modelli F+R/20% sopra, che restano un confronto storico valido, non invalidato da questa revisione. $M=10$ repliche, seed 2000+k, massa esclusa ~10,0% (target 6562/65623, raggiunto esatto).
+
+**Risultati (medie ± dev. std. sui 10 split, modello proprio-split vs DATI VERI sul proprio cluster escluso):**
+
+| metrica | train | test (held-out) |
+|---|---|---|
+| abbondanza F2 | 0,59 ± 0,03 | **0,08 ± 0,18** |
+| abbondanza F3 | 0,70 ± 0,02 | **−0,11 ± 0,23** |
+| selectivity F (log F3/F2 vs log-selectivity predetta) | 0,85 ± 0,02 | **0,45 ± 0,13** |
+
+(Versione con filtro counts>10 in *entrambi* i round applicato anche alle abbondanze, non solo per colonna — coerente con il filtro già usato per la selectivity: F2 train 0,66±0,03 → test 0,22±0,30; F3 train 0,70±0,02 → test −0,09±0,24. Stessa lettura qualitativa, filtro più severo → meno punti e varianza più alta sul test, non cambia la sostanza.)
+
+**Lettura circoscritta — conferma e affina il risultato negativo di §1.5 sotto, con una qualifica importante non visibile nella versione F+R/20%:** l'**abbondanza assoluta** predetta non generalizza a famiglie escluse nemmeno a questa scala meno severa (10% invece di 20%) — anzi F3 diventa in media *negativa* sul test, non solo vicina a zero. Ma la **selectivity** (il rapporto F3/F2, cioè la quantità relazionale legata più direttamente alla forza di legame) **mantiene un segnale reale e sistematicamente positivo sul held-out** (0,45 di media, mai negativo in nessuno dei 10 split) — più debole del train (0,85) ma non collassato. Non è un artefatto della scala 10% vs 20%: nel run F+R/20% originale (§1.3 sopra) la selectivity F sul test era già nel range 0,54–0,73 (train 0,32–0,76) — cioè la stessa qualifica "selectivity generalizza, abbondanza no" era già presente ma non era stata scorporata esplicitamente. **Conclusione pratica**: il modello di energia sembra codificare in modo robusto la componente *relativa* del legame (quali sequenze sono più/meno arricchite l'una rispetto all'altra) anche su famiglie mai viste, molto più di quanto codifichi l'*abbondanza assoluta* — rilevante per Fase 2, dove l'uso previsto (guida del design tramite un termine di energia nel loss) è comunque un confronto relativo fra sequenze candidate, non una predizione di abbondanza assoluta.
+
 ---
 
 ## 1.4 — Scala di baseline
 
 **Input verificato:** stesso training set (0.1/0.2), stesso `cluster_assignment.csv` per gli split.
 
-**Percorso proposto: (1) e (2) interamente in Python, senza Julia — (3) resta subordinato alla stessa domanda di 1.3.** I baseline 1 (composizione, 20 feature) e 2 (additivo one-hot, 300 feature) sono modelli lineari semplici: non serve la verosimiglianza binomiale negativa completa di `PhageNegBinom` per confrontare *quanta struttura* catturano rispetto alla MLP, un fit lineare standard sulle stesse osservazioni è sufficiente per il confronto di Spearman richiesto dal piano madre.
+**Percorso rivisto (2026-09-08): interamente in Julia/Flux, non più Python/sklearn.** Il percorso originale (baseline 1/2 in Python puro, modello 3 valutato "a parità non garantita" perché addestrato sull'intero training set) aveva un limite esplicitamente dichiarato: nessun vero held-out per il modello 3. Ora che l'infrastruttura Julia per lo split per cluster è verificata e riusabile (§1.3), conviene addestrare **tutti e tre i modelli nello stesso framework** (stessa verosimiglianza `PhageNegBinom`, stesso split 80/20, stesso protocollo a 4 stadi), cambiando solo l'architettura Flux dello stato `selection` — elimina l'asimmetria alla radice invece di dichiararla come limite.
 
-**Script da creare: `src/phase1_diagnostics/run_1_4_baseline_comparison.py`**
-1. Split 80/20 **per cluster** (non per read) usando `cluster_assignment.csv`, seed fisso.
-2. Baseline 1 — 20 feature di composizione (frequenza per amminoacido, ignora posizione): regressione lineare (o Ridge leggero) su `log(Count+1)` o sull'arricchimento già usato altrove.
-3. Baseline 2 — 300 feature one-hot (posizione × amminoacido): stessa regressione, con regolarizzazione (Ridge) vista la dimensionalità.
-4. Modello 3 (MLP attuale) valutato sullo split di test **con i pesi già disponibili**, via `mlp_forward`.
-5. Spearman fra predizione e osservato, sul set di test, per i tre modelli.
+**Notebook creato (non eseguito): `PD_energy_model/training/training_2rounds/model_training_9_baseline_comparison_flux.ipynb`** (nuovo, copia concettuale di `model_training_7_..._cluster_exclusion.ipynb` — legacy e copia di §1.3 restano intoccati, stessa convenzione dichiarata sopra). Contenuto:
+1. Split 80/20 **per cluster** (non per read), stesso meccanismo a massa bilanciata di §1.3 (`select_balanced_clusters`), target 20% invece della massa di cluster0, seed dedicato (1404) — un solo split, non $M=10$ repliche (per una barra d'errore analoga a §1.3 andrebbe ripetuto con altri seed, non fatto qui).
+2. Tre architetture Flux per lo stato `selection` (unico stato che cambia — `libraryF`/`libraryR`/`wash` restano l'MLP di produzione in tutti e tre i run, per isolare il confronto):
+   - **Baseline 1** (composizione): `Chain(x -> dropdims(sum(x,dims=2),dims=2), Dense(A,1,identity))` — A=21 feature (20 amminoacidi + gap, sempre a massa nulla), posizione ignorata.
+   - **Baseline 2** (one-hot additivo): `Chain(Flux.flatten, Dense(A*L,1,identity))` — già presente come riga commentata nel notebook legacy (`#state_arch()=Chain(Flux.flatten,Dense(A*L,1,identity))`), qui effettivamente usata.
+   - **Modello 3**: MLP 3 layer, architettura identica al modello di produzione.
+3. Stesso protocollo di training a 4 stadi (library-only → selection+μ → rumore/logA → tutti i parametri, stessi iperparametri `AdaBelief(1f-4)` verificati in §1.1–1.3), impacchettato in `train_full_protocol!` e ripetuto identico per le tre architetture — nessuna differenza di protocollo fra i tre run, solo l'architettura di `selection` cambia.
+4. Spearman fra energia di selezione predetta (`PhageNegBinom.energies(...)[:,3]`) e arricchimento osservato (`sel`/`selF`/`selR`, stesso calcolo di §1.3/1.5), separatamente su train e su test — la metrica richiesta dal piano madre, ora confrontabile onestamente fra i tre modelli.
 
-**Limite da dichiarare esplicitamente, non aggirabile senza Julia**: il modello 3 attuale è stato addestrato sull'**intero** training set, incluso quello che qui diventa "test" per (1)/(2) — il confronto a 3 vie ha quindi una asimmetria strutturale a favore di (3) (nessun vero held-out per lui). Confronto onesto a 3 vie richiede riaddestrare anche (3) sullo stesso split ridotto — stessa infrastruttura Julia di 1.3, stessa domanda aperta. **Fino a risposta, questo script produce un confronto onesto (1) vs (2), e un confronto (1)/(2) vs (3) esplicitamente etichettato come "non a parità di condizioni".**
+**Esecuzione: manuale, a carico dell'utente** (come tutti i notebook Julia di Fase 1 — nessuna esecuzione automatica qui). Costo stimato ~45–60 min (tre training completi in sequenza, stesso ordine di grandezza del training di §1.3.a).
 
-**Output:** `results/phase1/1_4_baseline_comparison/{spearman_by_model.csv, scatter_baselines.png}`.
+**Bug incontrato e corretto (2026-09-08)**: `sample2hot` (`PD_data_utils/utils.jl`) restituisce un array `Int8`, non `Float32`. Il primo tentativo di `state_arch_composition` convertiva a `Float32` **dentro** la Chain (`x -> dropdims(sum(Float32.(x),dims=2),dims=2)`) — Zygote prova a differenziare quella conversione e a scrivere il gradiente (continuo) dentro l'array `Int8` originale, dando `InexactError: Int8(9.03...)` durante il primo training (`baseline1_composition`, stadio "library"). L'MLP e il baseline one-hot non hanno mai avuto questo problema perché usano solo `Flux.flatten` (un reshape, nessuna operazione elementwise da differenziare) prima del primo `Dense`. **Fix**: la conversione `Float32.(...)` è stata spostata una volta sola, subito dopo `sample2hot`, fuori da qualunque blocco differenziato (cella dello split 80/20) — le tre Chain ricevono `sequences_train`/`sequences_test` già `Float32`, `state_arch_composition` non fa più conversioni di tipo al suo interno.
+
+**Output:** `results/phase1/1_4_baseline_comparison/spearman_by_model.csv` (scritto dal notebook stesso, path via `@__DIR__`) + `model_baseline1_composition_80split.jld2`, `model_baseline2_onehot_80split.jld2`, `model_mlp_80split.jld2`, `baseline_comparison_80_20_split.jld2` (tutti in `PD_energy_model/training/training_2rounds/`, gitignored).
+
+**Revisione 2026-09-09 (richiesta utente) — eseguita.** Riorganizzazione cartelle nel frattempo: i notebook Julia di Fase 1 ora vivono sotto `PD_energy_model/training/training_2rounds/workplan/` (path `@__DIR__` aggiornati di un livello in tutti i notebook toccati questa sessione, un `..` in più). `model_training_9_baseline_comparison_flux.ipynb` riscritto (stesso file, stesso nome, in place) con:
+- **Solo library F, R rimossa interamente** (dati e struttura ad albero) — stessa scelta di §1.3.
+- **10% di massa esclusa, non 20%** (split 90/10, seed 1409: 116 cluster, 11702 seq train / 483 seq test, massa esatta 10,0%).
+- **Due sezioni**: **A** = solo `selection` cambia (`libraryF` resta sempre l'MLP di produzione); **B** = `libraryF` **e** `selection` cambiano insieme, stessa architettura per entrambi (composizione/one-hot — MLP non ripetuto in B). 5 modelli addestrati (3 in A + 2 in B).
+- **Validazione su tre metriche**, tutte con filtro counts>10 in entrambi i round: energia di selezione vs enrichment osservato, selectivity predetta vs enrichment osservato, abbondanza predetta vs abbondanza dati (F2, F3).
+
+**Risultati (Pearson; energia anche Spearman; N train=126, N test=19 per energia/selectivity — N test piccolo, cautela sull'incertezza):**
+
+| modello | sezione | energia train | energia test | selectivity train | selectivity test | abbond. F2/F3 train | abbond. F2/F3 test |
+|---|---|---|---|---|---|---|---|
+| baseline1 composizione | A (solo selection) | −0,23 | +0,05 (segno invertito) | 0,24 | −0,06 | 0,51 / 0,59 | 0,20 / 0,23 |
+| baseline2 one-hot | A (solo selection) | −0,66 | −0,01 (collassato) | 0,66 | 0,00 | 0,52 / 0,66 | 0,14 / 0,16 |
+| **MLP (produzione)** | A (solo selection) | **−0,84** | **−0,34** | **0,85** | **0,34** | 0,59 / 0,72 | 0,35 / −0,22 |
+| baseline1 composizione | B (libraryF+selection) | −0,09 | −0,12 | 0,09 | 0,12 | 0,08 / 0,00 | 0,19 / 0,14 |
+| baseline2 one-hot | B (libraryF+selection) | −0,07 | −0,36* | 0,07 | 0,36* | 0,17 / −0,16 | 0,00 / −0,14 |
+
+\* B-onehot: il test è nominalmente il migliore di tutti (−0,36), ma il train è quasi nullo (−0,07) — il modello non ha imparato quasi nulla nemmeno sui dati visti, quindi il numero sul test (N=19) è verosimilmente rumore statistico, non generalizzazione reale; non affidabile senza repliche.
+
+**Lettura circoscritta:**
+1. **Ordinamento per capacità confermato sul train** (Sezione A): MLP ≫ one-hot ≫ composizione — atteso, più parametri catturano meglio la distribuzione vista.
+2. **Sul test, solo l'MLP mantiene un segnale reale**: energia −0,34, selectivity 0,34 — circa il 40% della magnitudine di train, degradato ma non azzerato. One-hot collassa quasi a zero (0,66→0,00); composizione collassa e **inverte segno** (−0,23→+0,05). Contrario all'intuizione "modello più semplice generalizza meglio": qui è vero il contrario, a parità di `libraryF` fissata alla capacità piena.
+3. **Sezione B (capacità ridotta anche su `libraryF`) è uniformemente debole già sul train** (−0,09/−0,07) — vincolare `libraryF` a un modello lineare pregiudica il fit anche della sola composizione della library iniziale, non solo del legame; l'unico numero test apparentemente buono (B one-hot, −0,36) è scartabile per il motivo detto sopra.
+4. **Coerente con §1.3/1.5 qui sopra**: la *selectivity* predetta (0,34 su MLP test) è nello stesso ordine di grandezza della selectivity F generalizzata trovata lì (0,45±0,13) — due notebook indipendenti convergono sulla stessa lettura qualitativa (segnale relazionale reale ma attenuato su famiglie non viste), mentre l'*abbondanza* F3 resta inaffidabile anche qui (MLP: F2 test 0,35 ma F3 test **−0,22**, stesso pattern di segno instabile visto in §1.3/1.5).
+
+Output: `results/phase1/1_4_baseline_comparison/spearman_by_model_Fonly_10pct.csv` (tabella completa) + `model_A_*_Fonly_90split.jld2`, `model_B_*_Fonly_90split.jld2` (in `PD_energy_model/training/training_2rounds/workplan/`, gitignored) — non sovrascrivono la versione F+R/80-20 sopra.
 
 ---
 
@@ -168,6 +231,23 @@ PA_PB1/results/phase1/
 **Output:** `results/phase1/1_5_heldout_family/{spearman_heldout.json, residual_distribution.png}`.
 
 **Soglia numerica (Gate 1, Spearman su famiglia esclusa): da fissare dopo 1.3, prima di eseguire 1.5** (deciso con l'utente) — 1.3/1.3.a danno la prima evidenza concreta su quanto il modello sia sensibile all'esclusione di famiglie, informazione utile per calibrare una soglia sensata invece di sceglierla nel vuoto. Resta comunque fissata **prima** di eseguire 1.5 stessa, non dopo averne visto l'esito — l'ordine cambia solo rispetto a 1.3, non rispetto a 1.5.
+
+**Stato: eseguita, risultato NEGATIVO (2026-09-05).** Eseguita nella stessa batteria manuale di notebook di §1.3 (`TRAINING_models_random_split_clusters.ipynb` + §6 di `COMPARE_models_random_splits.ipynb`) — nessuno script Python separato creato (`run_1_5_heldout_family_eval.py` non esiste), l'ordine pianificato "soglia Gate 1 fissata prima di eseguire" non è stato rispettato: 1.3 e 1.5 sono state eseguite insieme nella stessa sessione manuale, la soglia numerica resta quindi ancora da fissare esplicitamente con l'utente, ora però con questi numeri come riferimento invece che nel vuoto.
+
+**Cosa è stato misurato (punto 1 del piano): correlazione fra abbondanza predetta da ciascuno dei 10 modelli-split (§1.3) e i DATI VERI (conteggi NGS), sulle sole sequenze del *proprio* cluster escluso** — non modello-vs-modello come in §1.3, qui è la domanda predittiva vera e propria.
+
+**Risultato circoscritto — cosa è negativo, esattamente:**
+- Pearson(abbondanza predetta, dati), modello split vs DATI, train (sequenze viste) → held-out (proprio cluster escluso, mai visto): F2 0,51→**0,10**; F3 0,52→**−0,06**; R2 0,65→**0,23**; R3 non misurabile (troppo poche sequenze con counts>10 in entrambi i round dopo il filtro, quasi tutto `NaN`). **Il modello non generalizza sulla famiglia esclusa**: sui dati F mai visti in training il segnale residuo è vicino a zero o negativo.
+- Non è un artefatto di stato del kernel: rieseguito con kernel pulito in `COMPARE_models_random_splits.ipynb` §6, stesso risultato (train/held-out per F2/F3/R2/R3 quasi identici ai numeri sopra).
+- **Circoscrizione importante — non è "questi cluster sono intrinsecamente difficili da fittare"**: lo stesso test con il modello **completo** (che *ha visto* quelle sequenze in training, §5 dello stesso notebook) dà, sulle stesse sequenze escluse-per-gli-altri-split: F2=0,53, F3=0,71, R2=0,70 — praticamente identico al suo fit sulle sequenze "tenute" (0,59/0,67/0,72). Quindi il crollo è specifico della generalizzazione a famiglie non osservate in training, non di rumorosità/difficoltà intrinseca di quei dati.
+- Selectivity (non abbondanza) tiene meglio su F: train 0,32–0,76 → test 0,54–0,73 (N=39–56, ragionevole) — ma R è inutilizzabile in test (N=1–10 sequenze dopo lo split, quasi tutto `NaN`): dato insufficiente a questa granularità, non un segnale negativo vero e proprio.
+- Scala testata: $M=10$ split random-per-cluster, ciascuno ~20,8% della massa di read esclusa (bilanciata sul target di 1.3.a). Punto 3 del piano madre (prestazione in funzione di $N_{\text{eff}}$, a scale di esclusione diverse) **non eseguito** — il risultato negativo è circoscritto a questa scala (~1/5 della massa), non generalizzato ad esclusioni più piccole.
+
+**Gate 1:** con questi numeri, qualunque soglia ragionevole sull'abbondanza F/R2 held-out (Spearman/Pearson dell'ordine di 0,3–0,4) **non è superata**. Soglia formale ancora da fissare esplicitamente con l'utente.
+
+**Implicazione operativa per Fase 2:** il modello di energia attuale (MLP 3 layer, stato `selection`) non predice in modo affidabile il comportamento di una famiglia di sequenze interamente assente dal training (~20% di massa). Non invalida il modello sulle famiglie viste, ma ne restringe la generalizzazione dichiarata a design vicini alla distribuzione di training — da tenere presente per la guida energetica in Fase 2, specialmente se il design esplora regioni di sequenza lontane dal training set.
+
+**Output:** nessun file versionato in `results/phase1/1_5_heldout_family/` — l'analisi resta nei notebook Julia sopra (gitignored in `PA_PB1`). Da esportare come `{spearman_heldout.json, residual_distribution.png}` se serve un artefatto persistente, non fatto qui.
 
 ---
 
@@ -227,14 +307,16 @@ PA_PB1/results/phase1/
 ```
 1.1, 1.2, 1.6 ── FATTE (2026-08-27), stesso file (model_3layer_v2.py nel fork), commit locali
                   su energy_guidance (1d5277b, b8e2557, e1ab467), non pushati
-1.3.a ── indipendente, eseguibile subito (manualmente, Julia) — prossimo passo
-1.3 (repliche generali), 1.5 ── dopo 1.3.a: stessa infrastruttura Julia, ambiente e meccanismo di
-                                 esclusione ormai chiari, solo l'esecuzione manuale resta da fare
-1.4 ── (1)/(2) indipendenti (solo Python) eseguibili subito, (3) a parità di condizioni dipende dal
-        riaddestramento di 1.3
+1.3.a ── FATTA (2026-09-03, manuale Julia)
+1.3 (repliche generali, M=10), 1.5 ── FATTE (2026-09-05, F+R/20%; 2026-09-09, revisione F-only/10%)
+                                        — risultato NEGATIVO per l'abbondanza, ma segnale reale
+                                        (circoscritto) per la selectivity, in entrambe le versioni
+1.4 ── FATTA (2026-09-08 pivot Python→Julia/Flux; 2026-09-09 revisione F-only/10%, due sezioni,
+        tre metriche) — stessa lettura qualitativa di 1.3/1.5: solo l'MLP a piena capacità
+        generalizza in modo non banale, le baseline lineari collassano/invertono segno sul test
 ```
 
-**Fatto**: 1.1 → 1.2 → 1.6 (packaging, con placeholder a una replica $M=1$) — un artefatto funzionante e testato, 4/7 criteri di accettazione verificati in CPU (i rimanenti 2 richiedono AfDesign/PDB/GPU, rimandati a Fase 2 §2.1), pronto per essere consumato da Fase 2 **senza aspettare le repliche**, che restano necessarie solo per §2.3 (lower confidence bound). **Prossimo**: 1.3.a (manuale, Julia) → valutazione via `run_1_3_replica_ensemble_eval.py` → repliche generali di 1.3 → 1.4 (confronto a 3 vie completo) → 1.5 (soglia fissata dopo aver visto 1.3).
+**Fatto**: 1.1 → 1.2 → 1.6 (packaging, con placeholder a una replica $M=1$) — un artefatto funzionante e testato, 4/7 criteri di accettazione verificati in CPU (i rimanenti 2 richiedono AfDesign/PDB/GPU, rimandati a Fase 2 §2.1), pronto per essere consumato da Fase 2 **senza aspettare le repliche**, che restano necessarie solo per §2.3 (lower confidence bound). 1.3.a → 1.3 (repliche generali) → 1.5 → 1.4 eseguite manualmente in Julia, prima in versione F+R/20% (2026-09-03/05/08) poi in una revisione F-only/10% richiesta dall'utente (2026-09-09, stessa infrastruttura, cluster-split meno severo). **Sintesi convergente delle due revisioni** (tre notebook indipendenti: repliche di §1.3, held-out di §1.5, confronto baseline di §1.4): l'**abbondanza assoluta** predetta non generalizza a famiglie di sequenze escluse dal training (spesso vicina a zero o di segno instabile); la **selectivity/energia relativa** mantiene invece un segnale reale, più debole del train ma sistematicamente nella direzione giusta (~0,3–0,5 di correlazione sul held-out, mai nullo nelle repliche di §1.3). Solo il modello a piena capacità (MLP) su `selection` retiene questo segnale in modo significativo in §1.4; le baseline lineari (composizione, one-hot) lo perdono quasi interamente, e vincolare anche `libraryF` a un'architettura semplice (sezione B di §1.4) pregiudica il fit già sul training set. **Prossimo**: Fase 2 (guida energetica in run ColabDesign reali) — dove restano da chiudere i 2 criteri di accettazione GPU-dipendenti di §1.6 e la verifica su traiettoria reale di §1.1; nessuna altra sottofase di Fase 1 resta bloccante.
 
 ## Decisioni/domande aperte (riepilogo)
 
@@ -243,6 +325,8 @@ PA_PB1/results/phase1/
 3. ~~Nome del file copia~~ — **fatto**: `model_3layer_v2.py`, creato e committato (§1.1).
 4. **Push dei commit di 1.1/1.2/1.6** (`1d5277b`, `b8e2557`, `e1ab467`) sul remote `github.com/uguzzoni/colabdesign_energy_guidance` (branch `energy_guidance`, come richiesto per il branch — i commit sono locali, il push non ancora autorizzato) (§1.1/§1.2/§1.6).
 8. **2 dei 7 criteri di accettazione di §1.6 richiedono AfDesign/PDB/GPU** (retrocompatibilità della traiettoria reale, test placeholder glicina con κ>0) — non verificabili nel perimetro CPU-only di Fase 1, da fare in Fase 2 §2.1.
-5. **Esecuzione di 1.3.a**: manuale, a carico dell'utente (aprire `model_training_7_PNB_negbinom_ll_3layers_cluster_exclusion.ipynb`, verificare le assunzioni segnalate nella cella markdown, eseguire) — nessuna azione richiesta da parte mia finché non ci sono pesi da valutare.
-6. **Numero e criterio delle repliche generali** oltre 1.3.a (§1.3) — non ancora specificato, da definire quando si arriva a quel punto.
-7. **Soglia numerica di Gate 1** (Spearman su famiglia esclusa, §1.5) — da fissare dopo 1.3, prima di 1.5.
+5. ~~Esecuzione di 1.3.a~~ — **fatto** (2026-09-03), risultati in §1.3.
+6. ~~Numero e criterio delle repliche generali oltre 1.3.a~~ — **fatto**: $M=10$ split casuali per cluster, massa bilanciata sul target di 1.3.a, eseguiti 2026-09-05 (§1.3).
+7. **Soglia numerica di Gate 1** (Spearman su famiglia esclusa, §1.5) — **ancora aperta, ma ora informata da numeri consistenti su 3 notebook indipendenti**: l'ordine pianificato (fissarla dopo 1.3, prima di eseguire 1.5) non è stato rispettato. La revisione F-only/10% (2026-09-09) suggerisce che una singola soglia sull'abbondanza non ha senso (il segnale è strutturalmente vicino a zero/instabile, non "quasi sopra soglia"), mentre una soglia sulla **selectivity** (~0,3–0,4, coerente con i 0,45±0,13 di §1.3 e gli 0,34/0,36 di §1.4) sarebbe superata dal modello MLP attuale — da confermare esplicitamente con l'utente, ma la scelta naturale ora è "Gate 1 sulla selectivity, non sull'abbondanza".
+8. ~~Esecuzione di `model_training_9_baseline_comparison_flux.ipynb`~~ — **fatto** (2026-09-09, versione F-only/10%/due sezioni), risultati in §1.4.
+9. **Path `@__DIR__` non aggiornati dopo la riorganizzazione in `workplan/`** in 3 notebook non toccati in questa revisione (`COMPARE_models_random_splits.ipynb`, `COMPARE_models__training_7_PNB_negbinom_ll_3layers.ipynb`, `model_training_7_PNB_negbinom_ll_3layers_cluster_exclusion.ipynb`) — si romperanno su `Pkg.activate`/`cluster_assignment_path` se eseguiti così come sono; segnalato all'utente, non ancora corretto.
