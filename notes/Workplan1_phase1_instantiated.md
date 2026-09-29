@@ -1,4 +1,4 @@
-# Fase 1 — Piano istanziato (1.1–1.6)
+# Fase 1 — Piano istanziato (1.1–1.10)
 
 Istanziazione operativa di [`Workplan_peptidi_PA-PB1.md`](Workplan_peptidi_PA-PB1.md) §FASE 1 (versione 2, 12 agosto 2026), sullo stesso schema di [`Workplan_phase0_instantiated.md`](Workplan_phase0_instantiated.md): per ciascuna sottofase, dati/file verificati nel repo, script da scrivere, output atteso, decisioni aperte. **Nessuna sottofase è ancora eseguita** — questo documento è il piano, non il resoconto.
 
@@ -215,6 +215,10 @@ Output rinominati (`random_split_Fonly_10pct_*.jld2`) per non sovrascrivere i 10
 3. **Sezione B (capacità ridotta anche su `libraryF`) è uniformemente debole già sul train** (−0,09/−0,07) — vincolare `libraryF` a un modello lineare pregiudica il fit anche della sola composizione della library iniziale, non solo del legame; l'unico numero test apparentemente buono (B one-hot, −0,36) è scartabile per il motivo detto sopra.
 4. **Coerente con §1.3/1.5 qui sopra**: la *selectivity* predetta (0,34 su MLP test) è nello stesso ordine di grandezza della selectivity F generalizzata trovata lì (0,45±0,13) — due notebook indipendenti convergono sulla stessa lettura qualitativa (segnale relazionale reale ma attenuato su famiglie non viste), mentre l'*abbondanza* F3 resta inaffidabile anche qui (MLP: F2 test 0,35 ma F3 test **−0,22**, stesso pattern di segno instabile visto in §1.3/1.5).
 
+**Riformulazione del punto 2, dopo il bootstrap di robustezza statistica (2026-09-14, Workplan_phase1_addendum.md §1.8).** Il punto 2 sopra ("solo l'MLP mantiene un segnale reale") poggia su N=19 sequenze di test, senza repliche — a differenza di §1.3/§1.5, che hanno la replicazione ($M=10$, segno positivo 10/10) e reggono per quello. Un bootstrap non parametrico appaiato (10.000 ricampionamenti, stesse sequenze ricampionate per MLP e ciascun baseline) mostra che **solo 1 degli 8 confronti MLP-vs-baseline (energia+selectivity × 4 baseline) raggiunge la soglia del 95% di segno atteso** (al limite, 95,05% per il baseline one-hot sull'energia in sezione A); gli altri 7 vanno dal 46% al 94%. Il controllo di correttezza sullo stesso bootstrap applicato al train (N=126, dove il punto 1 sopra deve reggere) è pulito su tutti gli 8 confronti (≥99,99%), quindi il risultato debole sul test non è un artefatto dell'implementazione del bootstrap.
+
+**Conclusione rivista**: l'ordinamento per capacità (punto 1) e la stima puntuale che favorisce l'MLP (punto 2) restano validi, ma **la superiorità dell'MLP sui baseline più semplici, con N=19, non è statisticamente stabilita** — l'intervallo di confidenza dei confronti appaiati non esclude che la differenza osservata sia rumore campionario. Questo non ritira la giustificazione per mantenere l'MLP (l'uso previsto in Fase 2 — §2.2 del piano madre — è comunque la selectivity relativa, e il punto 4 sopra la conferma indipendentemente), ma il punto 2 va letto come "il dato punta in questa direzione", non come "dimostrato". Dettaglio: `results/phase1/1_8_baseline_bootstrap/{bootstrap_ci.csv, paired_differences.csv, forest_plot.png}`.
+
 Output: `results/phase1/1_4_baseline_comparison/spearman_by_model_Fonly_10pct.csv` (tabella completa) + `model_A_*_Fonly_90split.jld2`, `model_B_*_Fonly_90split.jld2` (in `PD_energy_model/training/training_2rounds/workplan/`, gitignored) — non sovrascrivono la versione F+R/80-20 sopra.
 
 ---
@@ -302,6 +306,69 @@ Output: `results/phase1/1_4_baseline_comparison/spearman_by_model_Fonly_10pct.cs
 
 ---
 
+## 1.7 — Export delle repliche e bundle multi-replica
+
+Non prevista dal piano istanziato originale: nata da una revisione dei risultati §1.1–1.6 il 2026-09-14 (`Workplan_phase1_addendum.md` §1.7, dove vive il metodo completo). Prerequisito mancante di §2.3 del piano madre ($M\geq2$ per $\kappa\sigma$, il bundle di §1.6 sopra ha $M=1$ placeholder).
+
+**Decisioni confermate con l'utente**: famiglia di repliche = **F-only/10%** (coerente con i numeri di §1.3/1.5 sopra, non F+R/20,8%); composizione del bundle = **solo i 10 split** (non modello completo + 10 split, per non mescolare popolazioni di training diverse nella dispersione).
+
+**Stato: eseguito (2026-09-14).**
+- `export_replica_weights.jl` (Julia, nuovo, `PD_energy_model/training/training_2rounds/workplan_phase1/`): pesi + sequenze di training per replica. Bug incontrati e corretti durante l'esecuzione: `JSON3.print` non esiste come serializzatore JSON — risolve silenziosamente a `Base.print`/`show`, scrivendo la rappresentazione Julia invece di JSON — corretto in `JSON3.write` con le matrici serializzate esplicitamente come lista-di-colonne (schema verificato contro il JSON di produzione, non assunto dal default di libreria); `seq2str` (`PD_data_utils`) non copre l'indice 21 (stop/residuo ambiguo, `q_other=21`) — dizionario `INT2AA` esteso localmente, package non toccato. **Passo A0 (regressione contro il JSON di produzione): errore 0,0 esatto** dopo i fix.
+- `build_replica_bundle.py` (Python, nuovo, `src/phase1_diagnostics/`): $\mu_m/\sigma_m$ calcolati sul training set **proprio** di ciascuna replica (non le statistiche globali di §1.2 — variano molto: $\mu$ 5,1–9,3, $\sigma$ 2,8–6,5, confermando che riusare quelle globali sarebbe stato sbagliato). **Tutte e 6 le verifiche di accettazione superate**: shape ($M=10$); standardizzazione per replica (media$\approx$0, std$\approx$1 su ciascun training set proprio); $\sigma_{\text{repliche}}$ non degenere sulle 23 BLI (0,10–1,03); gap nullo in modalità `st` (max$|{\rm gap}|=7{,}8\times10^{-8}$); retrocompatibilità del path singolo.
+
+**Output:** `data/energy_model_params/PNB_2R_3lay_negbinom_energy_model_bundle_M10.npz`, `results/phase1/1_7_replica_bundle/{replica_stats.csv, bundle_validation.json}`.
+
+---
+
+## 1.8 — Robustezza statistica del confronto fra baseline (§1.4)
+
+Non prevista dal piano istanziato originale (`Workplan_phase1_addendum.md` §1.8): la conclusione di §1.4 ("solo l'MLP mantiene un segnale reale") poggiava su N=19 senza repliche, a differenza di §1.3/§1.5. La riformulazione è già integrata nel testo di §1.4 sopra ("Riformulazione del punto 2..."); qui il resoconto dell'esecuzione.
+
+**Stato: eseguito (2026-09-14).**
+- `dump_baseline_test_predictions.jl` (Julia, nuovo): dump per-sequenza dei 5 modelli di §1.4 (train N=126, test N=19, stesso filtro counts>10 dei numeri già pubblicati). **Bug incontrato e corretto — istruttivo sul perché l'esecuzione Julia di questo progetto è normalmente manuale**: le architetture "composizione" (`state_arch_composition`, layer lambda anonimo) non si ricaricano in una sessione Julia fresca — JLD2 non riesce a risolvere il tipo della funzione anonima e lo sostituisce con un `ReconstructedSingleton` non richiamabile (funziona solo dentro lo stesso notebook/kernel che ha fatto il training, dove quella lambda è già definita). Riparato rilevando il layer non ricostruito e sostituendolo con una closure equivalente appena definita.
+- `run_1_8_baseline_bootstrap.py` (Python, nuovo): bootstrap non parametrico **appaiato** (10.000 ricampionamenti, stesse sequenze ricampionate per MLP e baseline). Bug corretto: il criterio "segno atteso" assumeva $r_{\text{MLP}}-r_{\text{baseline}}>0$ universalmente, ma per l'**energia** un modello migliore ha $r$ più *negativo* (energia bassa ⇔ arricchimento alto) — direzione attesa resa dipendente dalla metrica, non più un controllo unico.
+- **Risultato: solo 1 confronto MLP-vs-baseline su 8 (energia+selectivity × 4 baseline) raggiunge la soglia del 95% di segno atteso sul test** (al limite, 95,05%); gli altri vanno dal 46% al 94%. Controllo di correttezza sul train (N=126, atteso netto): pulito su tutti e 8 (≥99,99%) — il risultato debole sul test non è un artefatto del bootstrap.
+
+**Output:** `PD_energy_model/.../workplan_phase1/exported_predictions/1_4_per_sequence_*.csv`, `results/phase1/1_8_baseline_bootstrap/{bootstrap_ci.csv, paired_differences.csv, forest_plot.png, summary.json}`.
+
+---
+
+## 1.9 — Direzione del gradiente sul modello con cluster dominante escluso
+
+Non prevista dal piano istanziato originale (`Workplan_phase1_addendum.md` §1.9): verifica se la direzione aromatica di §0.4 (Fase 0) è indotta dal cluster dominante identificato come TUP in §0.6, o è una proprietà della popolazione selezionata nel suo complesso.
+
+**Discrepanza di documentazione trovata e corretta (preesistente, non introdotta in questa sessione)**: §0.4 del piano madre riportava "W ha gradiente medio negativo (−0,17)". Il valore effettivamente calcolato — verificato identico al dato committato in git al momento dell'esecuzione originale di §0.4 (commit `1a68083`, `aa_ranking.csv`) — è **+0,1699515, positivo**: nessuno dei 20 amminoacidi ha gradiente medio negativo in questa popolazione. Corretto in `Workplan_peptidi_PA-PB1.md` §0.4 e Appendice I (2026-09-14). Il criterio di lettura letterale dell'addendum ("W resta l'unico con gradiente negativo") non discrimina nulla con questo dato ed è stato sostituito da "W resta il più favorito (rank 1)".
+
+**Stato: eseguito (2026-09-14).**
+- `run_0_4_gradient_direction.py` (Fase 0) parametrizzato non invasivamente (`--weights-path`/`--out-dir`, default invariato) — **regressione verificata esplicitamente**: rieseguito senza argomenti riproduce `metrics.json` byte-identico a prima del refactor.
+- `run_1_9_gradient_comparison.py` (nuovo, riusa l'esportatore di §1.7): confronta il ranking del modello completo con quello del modello cluster0-escluso.
+- **Risultato, borderline**: W resta il più favorito (rank 1) in entrambi i modelli, ma la correlazione di Spearman fra i due ranking completi dei 20 amminoacidi è solo **0,51** (moderata — F passa da rank 18 a 3, C da 2 a 7, L da 10 a 19), e la differenza della mappa posizionale $15\times20$ è ampia (max$|{\rm diff}|=2{,}43$). La direzione aromatica "sopravvive" per la soglia usata (Spearman>0,5), ma il quadro completo è meno stabile di quanto un singolo risultato rank-1 suggerisca — non un esito pulito.
+- Estensione richiesta dall'addendum: modello cluster0-escluso valutato *anche* sulle 440 sequenze del cluster0 stesso (mai viste in training) — riportato separatamente, non mescolato nella media principale.
+
+**Output:** `results/phase1/1_9_gradient_cluster0/{aa_ranking_comparison.csv, position_map_diff.png, summary.json, model_cluster0_excluded/}`.
+
+---
+
+## 1.10 — Diagnostica delle due varianze
+
+Non prevista dal piano istanziato originale (`Workplan_phase1_addendum.md` §1.10): verifica esplicita che $\mathrm{Var}_{x\sim a}[E(x)]$ (aleatoria) e $\mathrm{Var}_{\text{repliche}}$ (epistemica, quella in $\kappa\sigma$) siano distinte e che quest'ultima cresca allontanandosi dai dati — il punto 2 di §1.3 mai eseguito nel piano istanziato originale. Dipende da §1.7 (bundle $M=10$).
+
+**Stato: eseguito (2026-09-14).**
+- `run_1_10_variance_diagnostics.py` (nuovo): $\sigma_{\text{repliche}}$ (dal bundle) vs $\mathrm{Var}_{x\sim a}[E(x)]$ (Monte Carlo, $K=64$) su punti Dirichlet (§0.1, stesso seed), 23 BLI, 20 rappresentanti di cluster (90,2% della massa, §0.6). Bug incontrato e corretto: direzione di concentrazione di Dirichlet($\alpha\cdot\mathbf{1}$) invertita nei commenti/verifica di monotonia iniziali ($\alpha$ piccolo → punti quasi one-hot/vertice, $\alpha$ grande → punto uniforme/baricentro, il contrario dell'assunzione ingenua) — dopo la correzione, la verifica sull'implementazione Monte Carlo passa nella direzione attesa (Var aleatoria cresce verso il baricentro, si annulla ai vertici: implementazione validata).
+- **Risultato — caveat reale per §2.3 del piano madre**: $\sigma_{\text{repliche}}$ **non cresce** allontanandosi dai dati per nessuno dei due proxy provati: correlazione con la distanza di Hamming minima dal training ≈ 0,003 (nulla); correlazione con $\log\alpha$ (proxy più pulito, libero dal rumore del tie-break dell'argmax ad alto $\alpha$) = **−0,575** (si restringe verso il baricentro — il contrario dell'atteso). La correlazione fra le due varianze (aleatoria/epistemica) è −0,369, non trascurabile (soglia "debolmente correlate" $|r|<0{,}3$ fallita di poco).
+
+**Output:** `results/phase1/1_10_variance_diagnostics/{variance_by_population.csv, sigma_vs_distance.png, aleatoric_vs_epistemic.png, summary.json}`.
+
+---
+
+## Gate 1 — Esito (2026-09-14, testo completo in `Workplan_peptidi_PA-PB1.md` §GATE 1)
+
+La soglia numerica non era mai stata fissata prima dell'esecuzione (decisione aperta #7 sotto) — fissarla ora avrebbe significato fissarla sui risultati. Sostituita col criterio che i dati effettivamente sostengono:
+
+**Superato sulla componente relativa (selectivity)**: segno positivo in 10 split su 10 ($p\approx0{,}001$), media $0{,}45\pm0{,}08$, replicato in §1.4 con lo stesso ordine di grandezza (0,34–0,36). **Non superato — e non applicabile — sull'abbondanza**: strutturalmente vicina a zero su famiglie escluse (§1.3/§1.5), per ragioni proprie del disegno sperimentale (la selectivity cancella il fattore di rappresentazione iniziale in libreria), non un fallimento del modello. **La condizione "MLP supera i baseline" è verificata solo debolmente**: il bootstrap di §1.8 mostra che con N=19 questa superiorità non è statisticamente stabilita (1/8 confronti ≥95%). **Decisione: si procede alla Fase 2**, sulla base della componente selectivity (l'unica solidamente verificata, ed è comunque l'uso previsto in Fase 2).
+
+---
+
 ## Riepilogo dipendenze e ordine
 
 ```
@@ -327,6 +394,6 @@ Output: `results/phase1/1_4_baseline_comparison/spearman_by_model_Fonly_10pct.cs
 8. **2 dei 7 criteri di accettazione di §1.6 richiedono AfDesign/PDB/GPU** (retrocompatibilità della traiettoria reale, test placeholder glicina con κ>0) — non verificabili nel perimetro CPU-only di Fase 1, da fare in Fase 2 §2.1.
 5. ~~Esecuzione di 1.3.a~~ — **fatto** (2026-09-03), risultati in §1.3.
 6. ~~Numero e criterio delle repliche generali oltre 1.3.a~~ — **fatto**: $M=10$ split casuali per cluster, massa bilanciata sul target di 1.3.a, eseguiti 2026-09-05 (§1.3).
-7. **Soglia numerica di Gate 1** (Spearman su famiglia esclusa, §1.5) — **ancora aperta, ma ora informata da numeri consistenti su 3 notebook indipendenti**: l'ordine pianificato (fissarla dopo 1.3, prima di eseguire 1.5) non è stato rispettato. La revisione F-only/10% (2026-09-09) suggerisce che una singola soglia sull'abbondanza non ha senso (il segnale è strutturalmente vicino a zero/instabile, non "quasi sopra soglia"), mentre una soglia sulla **selectivity** (~0,3–0,4, coerente con i 0,45±0,13 di §1.3 e gli 0,34/0,36 di §1.4) sarebbe superata dal modello MLP attuale — da confermare esplicitamente con l'utente, ma la scelta naturale ora è "Gate 1 sulla selectivity, non sull'abbondanza".
+7. ~~Soglia numerica di Gate 1~~ — **risolto (2026-09-14, Workplan_phase1_addendum.md §1.11, vedi sezione "Gate 1 — Esito" sopra)**: Gate 1 superato sulla selectivity (segno positivo 10/10 split, $p\approx0{,}001$, media $0{,}45\pm0{,}08$), non applicabile sull'abbondanza (strutturalmente vicina a zero, non un fallimento del modello). Si procede alla Fase 2.
 8. ~~Esecuzione di `model_training_9_baseline_comparison_flux.ipynb`~~ — **fatto** (2026-09-09, versione F-only/10%/due sezioni), risultati in §1.4.
 9. **Path `@__DIR__` non aggiornati dopo la riorganizzazione in `workplan/`** in 3 notebook non toccati in questa revisione (`COMPARE_models_random_splits.ipynb`, `COMPARE_models__training_7_PNB_negbinom_ll_3layers.ipynb`, `model_training_7_PNB_negbinom_ll_3layers_cluster_exclusion.ipynb`) — si romperanno su `Pkg.activate`/`cluster_assignment_path` se eseguiti così come sono; segnalato all'utente, non ancora corretto.

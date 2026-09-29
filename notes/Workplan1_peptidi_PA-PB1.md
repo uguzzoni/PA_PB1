@@ -218,14 +218,15 @@ Con $N_{\text{eff}} = \sum_s 1/m_s$ ($m_s$ = cardinalità del cluster di $s$), c
 **Metodo.** $\partial E/\partial x$ calcolato con `jax.grad` nei 27.342 vertici one-hot del training set e, separatamente, nei 23 vertici corrispondenti ai leganti validati. Derivata parziale non vincolata (nessuna proiezione sul simplesso), coerente con il modo in cui l'ottimizzatore perturba i logit.
 
 **Risultati.**
-- **W è l'unico amminoacido con gradiente medio negativo** ($-0{,}17$): aumentarne la probabilità a partire da un vertice osservato *riduce* $E$. I restanti 19 hanno gradiente medio positivo. **D è il più sfavorito** in entrambe le popolazioni.
+- **W è il più favorito** (gradiente medio $+0{,}17$, il più basso fra i 20 — **correzione 2026-09-14, vedi Appendice I**: il testo originale riportava questo valore come $-0{,}17$/negativo; il dato effettivamente calcolato, verificato identico a quello committato in git al momento dell'esecuzione, è **positivo**. Nessuno dei 20 amminoacidi ha gradiente medio negativo in questa popolazione). **D è il più sfavorito** in entrambe le popolazioni (gradiente $+0{,}88$).
 - **Correlazione di Spearman fra il ranking sul training set e quello sui leganti validati: 0,86.** La direzione non è un artefatto del training set: si riproduce sulle sequenze caratterizzate sperimentalmente.
 - Il ranking aggregato va letto insieme alla mappa posizionale $15\times20$: il segnale apparente su C è dominato quasi interamente dalla posizione 15 ($\approx -3\sigma$ in quella posizione, trascurabile altrove).
 - **Limite sui residui rari**: C rappresenta l'1,06% dei residui osservati (H 0,27%, T 0,64%). Il gradiente medio può riflettere una stima poco affidabile in una regione poco campionata piuttosto che una preferenza reale; i due casi non sono distinguibili senza dati mirati.
 
-**Conclusioni.**
-- La direzione di discesa dell'energia è quasi esclusivamente aromatica. Insieme a §0.3, questo costituisce l'indizio principale di *reward hacking*: l'ottimizzatore scende lungo l'asse che, per quanto misurabile, non predice l'affinità fra i leganti.
-- Che 19 amminoacidi su 20 abbiano gradiente positivo ai vertici osservati significa che i punti di training sono minimi locali lungo quasi tutte le direzioni. È compatibile con un buon fit, ma con il rapporto parametri/$N_{\text{eff}}$ di §0.2 la memorizzazione resta un'ipotesi da testare → §1.5.
+**Conclusioni (riviste 2026-09-14 in seguito alla correzione sopra — vedi anche Fase 1 §1.9).**
+- Con tutti e 20 gli amminoacidi a gradiente medio positivo, i vertici one-hot del training set sono minimi locali lungo **ogni** direzione, W incluso: non esiste una vera "via di fuga in discesa", solo una direzione meno ripida delle altre. La formulazione originale ("l'ottimizzatore scende lungo l'asse W", *reward hacking* per discesa attiva) non è supportata dai numeri e va ritirata in questa forma forte.
+- La lettura che regge: il modello premia **relativamente** l'aromaticità (W è sistematicamente il meno sfavorito), coerente con l'arricchimento aromatico osservato in §0.3 e con la sopravvivenza di questa direzione all'esclusione del cluster dominante (Fase 1 §1.9: W resta il più favorito nel modello cluster0-escluso, sebbene il ranking completo dei 20 amminoacidi correli solo moderatamente fra i due modelli, Spearman 0,51). È un bias di ranking fra alternative tutte localmente sfavorevoli, non un gradiente che spinge attivamente fuori dalla popolazione osservata — il collegamento con §0.3 resta valido come correlazione, con una spiegazione causale più debole di quella scritta originariamente.
+- Il rapporto parametri/$N_{\text{eff}}$ di §0.2 rende comunque la memorizzazione un'ipotesi da testare, indipendentemente da questa correzione → §1.5.
 
 ---
 
@@ -263,7 +264,7 @@ Con $N_{\text{eff}} = \sum_s 1/m_s$ ($m_s$ = cardinalità del cluster di $s$), c
 
 ---
 
-## 0.6 Screening TUP ⏳ *(da eseguire)*
+## 0.6 Screening TUP ✅
 
 **Domanda.** Qual è il livello di contaminazione da *target-unrelated peptides* nei dati di training?
 
@@ -278,9 +279,13 @@ Non essendo disponibili selezioni di controllo (biglie nude, libreria naive, ber
 3. Screening separato del **cluster dominante** (945 varianti, 34% della massa): è il singolo test più informativo della sottofase.
 4. Screening delle 23 sequenze validate in BLI.
 
-**Criteri di lettura.**
+**Criteri di lettura (ex-ante).**
 - Se il cluster dominante risulta un TUP noto, il modello di energia è ancorato in misura sostanziale su un artefatto sperimentale. Da dichiarare nei limiti del lavoro e da riflettere nel peso assegnato a $E$.
 - Se i leganti validati non risultano segnalati mentre la coda arricchita sì, il modello apprende una miscela di due segnali, concettualmente separabili ma non separabili con i dati disponibili.
+
+**Risultato ed esito rivisto (2026-09-14 — SAROTUP eseguito manualmente dall'utente, `results/phase0/SAROTUP_results.txt`; sensibilità verificata in Fase 1 §1.3.a e §1.9).** Il cluster dominante (`VDYNPWLLFLAQPWQ`, 34% della massa di round 3) è **PSBinder-positivo (0,86)**: la prima condizione di lettura è soddisfatta alla lettera. Le 23 sequenze BLI non risultano segnalate come TUP (un'eccezione PSBinder-positiva, ma con Kd=1,59nM, quindi un legante reale): anche la seconda condizione regge. La contaminazione da TUP è confermata.
+
+**Ma la conclusione "ancorato in misura sostanziale" non regge al test di sensibilità successivo, ed è da correggere**: riaddestrare escludendo il cluster dominante (§1.3.a) perturba il modello *meno* di un'esclusione casuale di massa equivalente (correlazione col modello completo 0,645 vs 0,43±0,05 sull'energia `selection`; 0,797 vs 0,35±0,04 sulla selectivity F), e la direzione aromatica del gradiente (§0.4, rivista sopra) sopravvive all'esclusione — W resta il più favorito in entrambi i modelli (Spearman fra i due ranking completi = 0,51, moderato non nullo). La contaminazione da TUP resta un limite reale e dichiarato del dataset di training, ma **non** è la spiegazione principale del segnale appreso dal modello: la direzione aromatica è una proprietà della popolazione selezionata nel suo complesso, non isolabile rimuovendo il singolo contaminante più vistoso. Non condiziona l'uso del modello in Fase 2.
 
 **Costo stimato: 10 minuti.**
 
@@ -534,14 +539,22 @@ Priorità elevata dal risultato di §0.2: il rapporto fra parametri e famiglie i
 
 > ## GATE 1
 >
-> Procedere alla Fase 2 se:
+> Condizioni originali:
 > - le verifiche di §1.1 sono superate;
 > - §1.4 mostra che la MLP supera i baseline, **oppure** si accetta esplicitamente di impiegare un modello equivalente a un additivo;
 > - §1.5 non è catastrofico.
 >
 > Se §1.5 è nullo **e** §1.4 mostra (1) ≈ (3) **e** §0.8.a mostra il collasso della correlazione parziale, il modello di energia è un contatore di composizione adattato alle famiglie osservate. Resta utilizzabile come filtro a valle, non come guida per l'esplorazione di sequenze nuove; la Fase 2 si riduce al confronto minimo.
 >
-> **Soglia numerica da fissare prima di eseguire §1.5**: quale valore di Spearman su famiglia esclusa giustifica la Fase 2 a budget pieno, e quale la riduce.
+> ### Esito (2026-09-14, Workplan_phase1_addendum.md §1.11) — sostituisce la soglia numerica mai fissata
+>
+> Fissare una soglia ora, a risultati noti, sarebbe scorretto quanto non fissarla affatto. Il criterio adottato è quello che i dati effettivamente sostengono:
+>
+> **Gate 1 superato sulla componente relativa (selectivity)**: segno positivo in 10 split su 10 (test dei segni, $p\approx0{,}001$), media $0{,}45\pm0{,}08$ (errore standard su 10 split, §1.3/§1.5), replicato indipendentemente in §1.4 con lo stesso ordine di grandezza (0,34–0,36 sul proprio held-out). **Non superato — e non applicabile — sulla componente assoluta (abbondanza)**: il conteggio in F2 è il prodotto della rappresentazione iniziale in libreria (estrazione casuale in sintesi, impredicibile dalla sequenza e dominante a conteggi bassi) per la sopravvivenza al round (dipendente dalla sequenza); la selectivity $\log(F3/F2)$ cancella il primo fattore. Il fallimento sull'abbondanza held-out è quindi strutturale e atteso, non un fallimento del modello, e riguarda una quantità che la Fase 2 non usa.
+>
+> **La condizione "§1.4 mostra che la MLP supera i baseline" è verificata solo debolmente.** Il bootstrap appaiato di §1.8 (N=19 sul test) mostra che solo 1 confronto MLP-vs-baseline su 8 raggiunge la soglia del 95% di segno atteso (al limite, 95,05%); gli altri vanno dal 46% al 94%. Il controllo di correttezza sul train (N=126, atteso netto) è pulito, quindi non è un artefatto del bootstrap: **con N=19 la superiorità della MLP sui baseline non è statisticamente stabilita**, sebbene la stima puntuale la favorisca sistematicamente su energia e selectivity.
+>
+> **Decisione: si procede alla Fase 2**, per la via alternativa già prevista dalla seconda condizione ("si accetta esplicitamente di impiegare un modello equivalente a un additivo se necessario") — resa non decisiva dal fatto che l'uso previsto in Fase 2 è comunque la selectivity relativa, l'unica componente solidamente verificata sopra. Il vincolo d'uso che ne consegue è esplicitato in §2.2/§2.3.
 
 ---
 
@@ -650,6 +663,16 @@ Il test 6 non è retrocompatibilità di cortesia: la modalità legacy è il **br
 
 **Costo stimato: 1,5 settimane, GPU.**
 
+## 2.0 Prerequisiti da chiudere prima delle ablazioni
+
+Blocco di apertura esplicito (Workplan_phase1_addendum.md §1.11.5) — tutti GPU-dipendenti, vanno eseguiti e riportati **prima** di avviare la matrice di ablazione di §2.5, non durante: altrimenti finiscono saltati sotto la pressione di far partire i run.
+
+1. **Criteri 5 e 7 di §1.6** (retrocompatibilità su un run AfDesign reale a parità di seed; test placeholder esteso a $\kappa>0$) — mai eseguiti in Fase 1, richiedono AfDesign/PDB/GPU, fuori dal perimetro CPU-only di quella fase.
+2. **Verifica dello straight-through su una traiettoria reale**, non sintetica: la verifica sintetica di §1.1 ha prodotto un gap massimo di $0{,}25\,\sigma_{\text{train}}$, contro le mediane reali di $5{,}7$–$29{,}5\,\sigma_{\text{train}}$ misurate in §0.7 su traiettorie vere — due ordini di grandezza sotto il regime che conta. Il meccanismo è dimostrato (§1.1), la sua efficacia sul regime reale no. Il campo `gap` di `energy_aux` è già strumentato per questo: basta un run di §2.1 con logging attivo.
+3. **Scala di $\kappa\sigma$ nella griglia di §2.3, alla luce di §1.10**: sul bundle $M=10$, $\sigma_{\text{repliche}}$ **non cresce** allontanandosi dai dati — anzi si restringe verso il baricentro del simplesso (corr. con $\log\alpha$ = $-0{,}575$; corr. con la distanza di Hamming minima dal training ≈ 0, nulla), mentre la correlazione fra $\sigma_{\text{repliche}}$ (epistemica) e $\mathrm{Var}_{x\sim a}[E(x)]$ (aleatoria) è $-0{,}369$, non trascurabile. Prima di scansionare $\kappa\in\{0,\,0{,}5,\,1,\,2\}$: verificare se questo pattern si conferma su traiettorie reali (non solo sui punti Dirichlet sintetici di §1.10), perché se $\sigma_{\text{repliche}}$ non cresce dove il design si allontana dai dati, il termine $\kappa\sigma$ non porta l'informazione epistemica per cui è stato introdotto — la griglia andrebbe ridisegnata o il termine sospeso, non semplicemente scansionato come se il presupposto fosse verificato.
+
+Nessuno dei tre punti è bloccante di per sé (la decisione di procedere alla Fase 2 è già presa al Gate 1), ma tutti e tre vanno chiusi prima che i loro esiti condizionino silenziosamente l'interpretazione di §2.1/§2.3.
+
 ## 2.1 Confronto fra modalità di forward
 
 Due bracci: soft (legacy) e straight-through. Il moment propagation costituisce un terzo braccio da attivare solo se lo straight-through produce traiettorie che si arrestano o gradienti eccessivamente sparsi.
@@ -657,6 +680,8 @@ Due bracci: soft (legacy) e straight-through. Il moment propagation costituisce 
 Metrica primaria: `i_ptm` e `i_con` finali, a parità di seed e budget. Metrica di controllo: il campo `gap` deve essere identicamente nullo nel braccio straight-through e riprodurre nel braccio legacy il profilo caratterizzato in §0.7.
 
 ## 2.2 Ritaratura di $w_E$
+
+**Vincolo d'uso (Gate 1, Workplan_phase1_addendum.md §1.11.3).** Il termine di energia è validato come **confronto relativo fra candidati** (selectivity, §1.3/§1.5/§1.4), non come stima assoluta (l'abbondanza held-out non generalizza, per ragioni strutturali — vedi Gate 1) né come architettura dimostrata superiore ai baseline con margine statistico (§1.8). Non blocca $w_E$ o $\kappa$ — è l'uso già previsto qui — ma va tenuto presente nell'interpretare cosa la taratura sta effettivamente ottimizzando: un ranking fra sequenze proposte, non un valore di energia da prendere alla lettera.
 
 Da ripetere integralmente: le tarature precedenti sono state condotte contro un forward divergente (§1.2). La ricerca va condotta in unità di $\sigma_{\text{train}}$.
 
@@ -670,7 +695,7 @@ Con lo straight-through il gradiente dell'energia diventa più sparso, quindi il
 
 ## 2.3 Lower confidence bound
 
-Scansione di $\kappa \in \{0,\ 0{,}5,\ 1,\ 2\}$ sul termine $E_{\text{ST}}(a) + \kappa\,\sigma(a)$.
+Scansione di $\kappa \in \{0,\ 0{,}5,\ 1,\ 2\}$ sul termine $E_{\text{ST}}(a) + \kappa\,\sigma(a)$. **Prerequisito da chiudere prima**: §2.0 punto 3 — su punti sintetici, $\sigma_{\text{repliche}}$ non è risultato crescere allontanandosi dai dati (§1.10); verificare su traiettoria reale prima di considerare la griglia informativa. Stesso vincolo d'uso di §2.2: il termine misura confidenza relativa fra repliche, non un'incertezza assoluta calibrata.
 
 ## 2.4 Penalità composizionale
 
@@ -778,6 +803,8 @@ Registro delle ipotesi formulate nella versione 1 del piano e abbandonate alla l
 | Il bias aromatico dei design è di collocazione e non di quantità; la causa A è esclusa | Fondata su una classificazione posizionale con soglia arbitraria e accordo 6/15 fra criteri indipendenti, applicata a design aggregati su campagne eterogenee (§0.5) |
 | Penalità composizionale posizionale calibrata sul profilo dei leganti validati | Sospesa insieme alla lettura di §0.5 su cui si fondava; la formulazione dipende da §0.8 |
 | Riponderazione delle sequenze per cluster nella verosimiglianza di training | Nei dati di screening l'abbondanza costituisce la misura; riponderare corromperebbe l'osservabile che il modello è costruito per spiegare (§0.2) |
+| §0.4: "W ha gradiente medio negativo (−0,17)", letto come una vera direzione di discesa attiva (*reward hacking*) | Errore di trascrizione nel testo originale, non un cambio di risultato: il valore effettivamente calcolato — verificato identico a quello committato in git (commit `1a68083`) — è **+0,1699515, positivo**. Nessuno dei 20 amminoacidi ha gradiente medio negativo. W resta il più favorito (il meno sfavorito), ma non esiste una vera via di fuga in discesa (corretto 2026-09-14, Workplan_phase1_addendum.md §1.9) |
+| §0.6: "il cluster dominante PSBinder-positivo implica il modello ancorato in misura sostanziale su un artefatto" | §1.3.a mostra che escludere il cluster dominante perturba il modello *meno* di un'esclusione casuale di massa equivalente, e §1.9 mostra che la direzione aromatica di §0.4 sopravvive all'esclusione (Spearman 0,51 fra i due ranking). La contaminazione resta un limite dichiarato, non il driver principale del segnale appreso (corretto 2026-09-14) |
 
 ---
 

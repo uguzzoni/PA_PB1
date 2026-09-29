@@ -1,0 +1,90 @@
+{
+  "bundle_path": "/home/guido/Projects/protein_design/prj/PA_PB1/data/energy_model_params/PNB_2R_3lay_negbinom_energy_model_bundle_M10.npz",
+  "replica_family": "Fonly_10pct",
+  "n_replicas": 10,
+  "test_1_regression_export": "verificato manualmente in export_replica_weights.jl passo A0 (Julia, fuori da questo script)",
+  "test_2_shape_ok": true,
+  "test_3_standardization_per_replica": [
+    {
+      "replica": "random_split_Fonly_10pct_1",
+      "mean_z": -4.720024193716199e-08,
+      "std_z": 0.9999999403953552
+    },
+    {
+      "replica": "random_split_Fonly_10pct_2",
+      "mean_z": -1.188409797237e-07,
+      "std_z": 0.9999998807907104
+    },
+    {
+      "replica": "random_split_Fonly_10pct_3",
+      "mean_z": 4.735813075029682e-09,
+      "std_z": 1.0
+    },
+    {
+      "replica": "random_split_Fonly_10pct_4",
+      "mean_z": -1.2844976993164892e-07,
+      "std_z": 1.0
+    },
+    {
+      "replica": "random_split_Fonly_10pct_5",
+      "mean_z": 5.547098780311899e-08,
+      "std_z": 1.0
+    },
+    {
+      "replica": "random_split_Fonly_10pct_6",
+      "mean_z": -4.749843895979211e-08,
+      "std_z": 1.0
+    },
+    {
+      "replica": "random_split_Fonly_10pct_7",
+      "mean_z": 6.080473724523472e-08,
+      "std_z": 0.9999999403953552
+    },
+    {
+      "replica": "random_split_Fonly_10pct_8",
+      "mean_z": 9.85031167743955e-09,
+      "std_z": 1.0000001192092896
+    },
+    {
+      "replica": "random_split_Fonly_10pct_9",
+      "mean_z": 1.8169234294873604e-07,
+      "std_z": 1.0
+    },
+    {
+      "replica": "random_split_Fonly_10pct_10",
+      "mean_z": 1.9502198966847573e-08,
+      "std_z": 0.9999999403953552
+    }
+  ],
+  "test_3_mean_z_ok": true,
+  "test_3_std_z_ok": true,
+  "test_4_sigma_replicas_bli": [
+    0.6013359427452087,
+    0.7366060018539429,
+    0.3582232594490051,
+    0.23515281081199646,
+    0.2709256112575531,
+    0.7859405875205994,
+    0.5362114310264587,
+    0.607670783996582,
+    1.0279823541641235,
+    1.025550127029419,
+    0.2585590183734894,
+    0.23972295224666595,
+    0.6331390142440796,
+    0.1000879630446434,
+    0.15706805884838104,
+    0.20283639430999756,
+    0.5347772836685181,
+    0.14115917682647705,
+    0.21224543452262878,
+    0.24371255934238434,
+    0.37929409742355347,
+    0.22983017563819885,
+    0.1371958702802658
+  ],
+  "test_4_sigma_degenerate": false,
+  "test_5_gap_st_max_abs": 7.817608604909765e-08,
+  "test_5_gap_ok": true,
+  "test_6_backward_compat_ok": true
+}

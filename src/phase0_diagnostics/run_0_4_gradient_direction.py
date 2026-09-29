@@ -20,8 +20,19 @@ rumorosa con questo N (nota esplicita nel piano).
 
 Usage:
     uv run python src/phase0_diagnostics/run_0_4_gradient_direction.py
+    uv run python src/phase0_diagnostics/run_0_4_gradient_direction.py \
+        --weights-path <path> --out-dir <dir>
+
+Parametrizzato in Workplan_phase1_addendum.md §1.9 su --weights-path/--out-dir
+per essere rieseguibile sul modello con cluster0 escluso senza duplicare lo
+script -- comportamento di default (nessun argomento) invariato rispetto alla
+versione di Fase 0: stesso WEIGHTS_PATH/OUT_DIR hardcoded, stessa validazione
+dell'encoder (quella validazione e' specifica alle energie note del modello
+di PRODUZIONE, quindi resta condizionata a --weights-path di default: su un
+modello diverso quelle energie attese non hanno motivo di combaciare).
 """
 
+import argparse
 import json
 import os
 import sys
@@ -43,10 +54,10 @@ from data_loading import (AAS_JULIA, BINDER_LEN, REPO_ROOT, encode_sequence, loa
 
 from colabdesign.energy_model.model_3layer import load_energy_model, mlp_forward
 
-WEIGHTS_PATH = os.path.join(
+DEFAULT_WEIGHTS_PATH = os.path.join(
     REPO_ROOT, "data", "energy_model_params", "PNB_2R_3lay_negbinom_energy_model_weights.json"
 )
-OUT_DIR = os.path.join(REPO_ROOT, "results", "phase0", "0_4_gradient_direction")
+DEFAULT_OUT_DIR = os.path.join(REPO_ROOT, "results", "phase0", "0_4_gradient_direction")
 STANDARD_AA = list(AAS_JULIA[:20])
 
 # Stesse sequenze/energie di validazione di 0.1 — condividono pesi ed encoder.
@@ -91,11 +102,26 @@ def summarize_gradients(grads: np.ndarray):
     return ranking, ranking_std, position_map
 
 
-def main():
-    os.makedirs(OUT_DIR, exist_ok=True)
+def parse_args():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--weights-path", default=DEFAULT_WEIGHTS_PATH,
+                         help="Path al JSON dei pesi (default: modello di produzione, §0.4 originale)")
+    parser.add_argument("--out-dir", default=DEFAULT_OUT_DIR,
+                         help="Cartella di output (default: results/phase0/0_4_gradient_direction)")
+    return parser.parse_args()
 
-    params = load_energy_model(WEIGHTS_PATH)
-    validate_encoder(params)
+
+def main():
+    args = parse_args()
+    weights_path, out_dir = args.weights_path, args.out_dir
+    os.makedirs(out_dir, exist_ok=True)
+
+    params = load_energy_model(weights_path)
+    if weights_path == DEFAULT_WEIGHTS_PATH:
+        validate_encoder(params)
+    else:
+        print(f"weights_path non di default ({weights_path}) -- "
+              "validate_encoder saltata (le energie di riferimento sono specifiche al modello di produzione).\n")
     grad_batch = make_grad_batch(params)
 
     print("Caricamento training set (4_counts: F2+F3+R2+R3, stesso set di 0.1/0.2)...")
@@ -123,7 +149,7 @@ def main():
         "std_gradient_bli": bli_ranking_std[order],
         "rank_training": np.arange(1, 21),
     })
-    aa_ranking.to_csv(os.path.join(OUT_DIR, "aa_ranking.csv"), index=False)
+    aa_ranking.to_csv(os.path.join(out_dir, "aa_ranking.csv"), index=False)
     print("aa_ranking.csv (ordinato per gradiente training crescente = più favorito -> più evitato):")
     print(aa_ranking.to_string(index=False))
 
@@ -137,7 +163,7 @@ def main():
         "most_disfavored_aa_bli": STANDARD_AA[int(np.argmax(bli_ranking))],
         "spearman_training_vs_bli_ranking": float(spearman_num),
     }
-    with open(os.path.join(OUT_DIR, "metrics.json"), "w") as f:
+    with open(os.path.join(out_dir, "metrics.json"), "w") as f:
         json.dump(metrics, f, indent=2)
     print("\n" + json.dumps(metrics, indent=2))
 
@@ -153,7 +179,7 @@ def main():
     ax.set_title("Direzione media del gradiente di E per amminoacido")
     ax.legend(fontsize=8)
     fig.tight_layout()
-    fig.savefig(os.path.join(OUT_DIR, "aa_ranking.png"), dpi=150)
+    fig.savefig(os.path.join(out_dir, "aa_ranking.png"), dpi=150)
     plt.close(fig)
 
     # --- mappa 15x20 non mediata sulle posizioni (solo training set) ---
@@ -169,10 +195,13 @@ def main():
     ax.set_title(f"Gradiente medio ∂E/∂x per posizione (training set, N={len(train_seqs)})\nblu=favorito (E minore), rosso=evitato (E maggiore)")
     plt.colorbar(im, label=r"$\overline{\partial E/\partial x}$")
     fig.tight_layout()
-    fig.savefig(os.path.join(OUT_DIR, "position_map.png"), dpi=150)
+    fig.savefig(os.path.join(out_dir, "position_map.png"), dpi=150)
     plt.close(fig)
+    # array grezzo (oltre al PNG) -- ordine colonne = STANDARD_AA (AAS_JULIA[:20], fisso
+    # indipendentemente dai pesi caricati), usato da run_1_9_gradient_comparison.py per il diff.
+    np.save(os.path.join(out_dir, "position_map.npy"), position_map)
 
-    print(f"\nOutput scritto in {OUT_DIR}")
+    print(f"\nOutput scritto in {out_dir}")
 
 
 if __name__ == "__main__":

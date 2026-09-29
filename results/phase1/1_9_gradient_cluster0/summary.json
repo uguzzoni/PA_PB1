@@ -1,0 +1,20 @@
+{
+  "spearman_ranking_complete_vs_cluster0_excluded": 0.5097744360902255,
+  "w_negative_gradient_complete": false,
+  "w_negative_gradient_cluster0_excluded": false,
+  "n_aa_negative_gradient_complete": 0,
+  "n_aa_negative_gradient_cluster0_excluded": 0,
+  "negative_gradient_criterion_note": "nessun AA ha gradiente medio negativo in nessuno dei due modelli -- Workplan_phase0_instantiated.md \u00a70.4 riporta '-0.17' per W ma il valore committato in git (1a68083) e' +0.1699515: refuso nel testo del piano madre, non un bug di questo script (verificato). Criterio letterale non discriminante, sostituito da w_most_favored_* sotto.",
+  "w_most_favored_complete": true,
+  "w_most_favored_cluster0_excluded": true,
+  "position_map_diff_max_abs": 2.4253125190734863,
+  "aromatic_direction_survives": true,
+  "reading": "la direzione aromatica e' una proprieta' della popolazione selezionata, non del contaminante -- \u00a70.6 si ridimensiona a limite dichiarato (addendum \u00a71.11.1)",
+  "cluster0_only_evaluation": {
+    "n_cluster0_sequences_in_full_training_set": 440,
+    "cluster0_id": 0,
+    "most_favored_aa_on_cluster0_only": "R",
+    "most_disfavored_aa_on_cluster0_only": "H",
+    "note": "valutazione del modello cluster0-escluso SOLO sulle sequenze che non ha visto in training -- NON mescolata con la media principale sopra (addendum \u00a71.9)"
+  }
+}

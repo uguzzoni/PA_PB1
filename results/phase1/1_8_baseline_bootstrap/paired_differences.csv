@@ -1,0 +1,17 @@
+split,metric,baseline,reference,n,point_diff,expected_diff_sign,frac_expected_sign,ci_lo_95,ci_hi_95,discriminates_at_95pct
+train,energia,A_baseline1_composition,A_mlp_production,126,-0.6048645039876338,-,1.0,-0.7810681447643305,-0.43520958123004017,True
+train,energia,A_baseline2_onehot,A_mlp_production,126,-0.17668402367162162,-,0.9999,-0.2887088291441351,-0.07379279905936202,True
+train,energia,B_baseline1_composition,A_mlp_production,126,-0.7451515729276684,-,1.0,-0.9351112303628379,-0.5589785518011808,True
+train,energia,B_baseline2_onehot,A_mlp_production,126,-0.7657339634064451,-,1.0,-0.9385647564926299,-0.5956171803312214,True
+train,selectivity,A_baseline1_composition,A_mlp_production,126,0.6090032685565436,+,1.0,0.4369305544067539,0.7827286461117176,True
+train,selectivity,A_baseline2_onehot,A_mlp_production,126,0.19001289219066053,+,1.0,0.08973560812703489,0.3055610505388287,True
+train,selectivity,B_baseline1_composition,A_mlp_production,126,0.7545899381115616,+,1.0,0.5720260946811618,0.9473609947551422,True
+train,selectivity,B_baseline2_onehot,A_mlp_production,126,0.7762012135031867,+,1.0,0.6034093793212671,0.9495899711713663,True
+test,energia,A_baseline1_composition,A_mlp_production,19,-0.39138738175922483,-,0.8313,-0.8716855098286781,0.3958399436776768,False
+test,energia,A_baseline2_onehot,A_mlp_production,19,-0.3287639003641207,-,0.9505,-0.5607915284208724,0.05964803577869248,True
+test,energia,B_baseline1_composition,A_mlp_production,19,-0.21633304115573065,-,0.7657,-0.7022661620489624,0.35336012401436917,False
+test,energia,B_baseline2_onehot,A_mlp_production,19,0.02250839577281638,-,0.4693,-0.4640876231997403,0.49355993816233146,False
+test,selectivity,A_baseline1_composition,A_mlp_production,19,0.40243344327502883,+,0.8436,-0.3879712972214042,0.8441838013855583,False
+test,selectivity,A_baseline2_onehot,A_mlp_production,19,0.3387732387929985,+,0.9463,-0.06665344187768982,0.5712898596622881,False
+test,selectivity,B_baseline1_composition,A_mlp_production,19,0.21687011937949413,+,0.7638,-0.3335173352594688,0.7231078231644728,False
+test,selectivity,B_baseline2_onehot,A_mlp_production,19,-0.0209893953706905,+,0.4628,-0.505305668105462,0.4617077428341914,False

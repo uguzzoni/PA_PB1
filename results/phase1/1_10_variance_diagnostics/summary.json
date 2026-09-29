@@ -1,0 +1,16 @@
+{
+  "n_dirichlet_points": 10000,
+  "n_bli": 23,
+  "n_cluster_representatives": 20,
+  "corr_sigma_repliche_vs_hamming_distance": 0.0034902386543267136,
+  "corr_sigma_repliche_vs_log_alpha": -0.5746422505412606,
+  "sigma_grows_with_distance": false,
+  "sigma_grows_with_log_alpha": false,
+  "var_x_given_a_decreases_toward_vertices": true,
+  "corr_two_variances": -0.3689881600340577,
+  "two_variances_weakly_correlated": false,
+  "sigma_repliche_scale_note": "gia' in unita' standardizzate per replica (ordine 1 sul training per costruzione, \u00a71.6(c)) -- nessuna conversione aggiuntiva necessaria per il confronto con la griglia kappa di \u00a72.3",
+  "sigma_repliche_median_bli": 0.27092376351356506,
+  "sigma_repliche_median_cluster_representative": 0.631911963224411,
+  "sigma_repliche_median_dirichlet": 0.3110108971595764
+}
