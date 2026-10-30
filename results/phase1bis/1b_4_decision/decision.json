@@ -1,0 +1,25 @@
+{
+  "outcome": "degenerazione_1b1",
+  "decision": "Nessuno stimatore di incertezza epistemica adottato (\u00a71b.1 ha rilevato degenerazione: la leva dei design di Fase 0 non supera in modo apprezzabile quella del training set). Caratterizzazione rimandata a Fase 4 (modello multilineare, che fornisce incertezza in forma chiusa senza questo regime di degenerazione). \u00a73.5 non include soglie su sigma ne' quota riservata ad alta sigma.",
+  "evidence": {
+    "h_bar_theoretical": 0.0005851803086826128,
+    "by_population_median_ratio": {
+      "training_set": 0.8769996656459735,
+      "bli_23": 0.8211564447953017,
+      "cluster_representative": 0.7388371638818475,
+      "fase0_designs": 1.7366975291429125
+    },
+    "by_population_frac_over_100x": {
+      "training_set": 0.0,
+      "bli_23": 0.0,
+      "cluster_representative": 0.0,
+      "fase0_designs": 0.0
+    },
+    "fase0_designs_n": 900
+  },
+  "source": "/home/guido/Projects/protein_design/prj/PA_PB1/results/phase1bis/1b_1_leverage_check/summary.json",
+  "sottofasi_non_eseguite": [
+    "\u00a71b.2 (stima)",
+    "\u00a71b.3 (validazione)"
+  ]
+}

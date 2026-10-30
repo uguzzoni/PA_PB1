@@ -1,0 +1,43 @@
+# Configuration for the PA_PB1 agent system.
+#
+# Read-only at runtime: agents cannot modify this file, and no tool exposes it.
+
+llm:
+  # Passed to slapsci's get_llm_provider(provider, model).
+  provider: anthropic
+  model: claude-sonnet-4-6
+  # Per-agent overrides. The architect benefits most from a stronger model
+  # because its output is a design decision rather than a lookup.
+  per_agent:
+    architect: null
+    trainer: null
+    generator: null
+    orchestrator: null
+
+execution:
+  # Julia project to activate. Relative to the repository root.
+  julia_project: PD_energy_model
+  julia_bin: julia
+  timeout_s: 3600
+  # Phase 2: set to "slurm" once SlurmRunner is implemented.
+  backend: local
+
+defaults:
+  seq_length: 15
+  # Cysteine excluded to avoid spurious disulfides in designed peptides.
+  forbidden_aa: "C"
+  # The energy model is a cost: lower is better. See schemas.py.
+  objective: minimize
+
+sampling:
+  n: 50
+  temperature: 1.0
+  n_steps: 1000
+  # Below this mean pairwise Hamming distance, treat the run as collapsed.
+  min_mean_hamming: 3.0
+
+data:
+  # Repo-relative. Verify these against the actual repository before use.
+  seed_sequences: data/input_sequences.txt
+  affinity_measurements: data/affinity_measurements_PA-PB1_formatted.csv
+  reference_weights_dir: data/energy_model_params

@@ -1,0 +1,5 @@
+population,n,frac_over_training_p95,nominal_if_same_distribution_p95,frac_over_training_p99,nominal_if_same_distribution_p99,frac_over_training_p99.9,nominal_if_same_distribution_p99.9
+training_set,27342,0.050032916392363395,0.05,0.010021212786189745,0.01,0.0010240655401945725,0.001
+bli_23,23,0.0,0.05,0.0,0.01,0.0,0.001
+cluster_representative,20,0.0,0.05,0.0,0.01,0.0,0.001
+fase0_designs,900,0.48777777777777775,0.05,0.36444444444444446,0.01,0.10777777777777778,0.001

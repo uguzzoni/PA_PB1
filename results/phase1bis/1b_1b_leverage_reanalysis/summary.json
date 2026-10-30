@@ -1,0 +1,77 @@
+{
+  "revision_of": "/home/guido/Projects/protein_design/prj/PA_PB1/results/phase1bis/1b_1_leverage_check/summary.json",
+  "revision_date": "2026-10-01",
+  "revision_reason": "Il criterio originale di \u00a71b.1 ('frazione di design con h/h_bar oltre 100x') era mal posto: il massimo osservato sul training set stesso e' 28,7x, quindi 100x era irraggiungibile per costruzione. Il riferimento corretto e' la distribuzione osservata sul training, non un multiplo assoluto dell'attesa teorica p/N. Questa rianalisi (\u00a71b.1.b) parte dagli stessi dati di \u00a71b.1 (nessun nuovo calcolo di leva) e corregge solo la lettura.",
+  "original_verdict_preserved_for_traceability": true,
+  "design_metadata_coverage": {
+    "n_metadata": 900,
+    "n_leverage": 900,
+    "n_matched": 900,
+    "coverage_fraction": 1.0
+  },
+  "tail_thresholds_from_training": {
+    "95": 1.8071934661909437,
+    "99": 2.8579508844865984,
+    "99.9": 11.414235038057866
+  },
+  "dose_response_monotonic_in_energy_weight": false,
+  "leverage_vs_iptm": {
+    "pearson_r": 0.24363786908559648,
+    "pearson_p": 1.2541433189478478e-13,
+    "spearman_r": 0.32545730613303236,
+    "spearman_p": 1.1916905836129466e-23,
+    "success_group_median_h_over_hbar": 4.634167167373127,
+    "failure_group_median_h_over_hbar": 1.6356369492045228
+  },
+  "reading": "La coda e' costituita (almeno in parte) dai run energy-guided: mediana con energia 2.17 vs senza energia 1.09, con tendenza crescente ma SENZA monotonia stretta in energy_weight_stage3 (flessione a 0.2). Il pattern e' pero' molto piu' netto per PROTOCOLLO che per la sola presenza di energia: i protocolli 'gen_energy_*' (generazione de novo, init casuale + energia) hanno mediana ~9.9, contro ~1.8 per i protocolli senza energia e valori intermedi per gli 'opt_anneal_energy_*' (ottimizzazione da sequenze di partenza + energia). Top 3 protocolli per mediana: [{'stratum_value': 'gen_energy_D', 'median_h_over_hbar': 14.740821064644837, 'n': 30}, {'stratum_value': 'gen_energy_C', 'median_h_over_hbar': 10.94757353310742, 'n': 96}, {'stratum_value': 'gen_energy_E', 'median_h_over_hbar': 9.872387692431506, 'n': 30}]; bottom 3: [{'stratum_value': 'opt_hard_energy_C', 'median_h_over_hbar': 1.2271456540510757, 'n': 36}, {'stratum_value': 'opt_anneal_energy_B', 'median_h_over_hbar': 1.166904948774014, 'n': 85}, {'stratum_value': 'opt_anneal_noenergy', 'median_h_over_hbar': 1.0757874005010317, 'n': 150}]. Non e' quindi solo 'l'energia' a spingere fuori dalla regione dei dati, ma specificamente la generazione de novo con energia attiva fin dall'inizio -- rilevante data l'assenza di mitigazione in-loop (\u00a7B.5).",
+  "iptm_conflict_reading": "Correlazione positiva e fortemente significativa fra leva e i_ptm su tutti i 900 design (Pearson r=0.244, p=1.3e-13; Spearman r=0.325, p=1.2e-23): i design che AF2 giudica strutturalmente migliori sono sistematicamente PIU' lontani dalla regione coperta dai dati di selezione, non meno. Il gruppo 'successo' (i_ptm>=0.5, N=51) ha mediana h/h_bar=4.63 contro 1.64 del gruppo 'fallimento' -- quasi 3 volte piu' alta. Conferma il rischio segnalato nell'incarico: l'obiettivo strutturale puo' star premiando l'allontanamento dalla regione vincolata dai dati di selezione, mettendo in tensione le due metriche su cui la Fase 2 si basa.",
+  "top_protocols_by_median_leverage": [
+    {
+      "stratum_value": "gen_energy_D",
+      "median_h_over_hbar": 14.740821064644837,
+      "n": 30
+    },
+    {
+      "stratum_value": "gen_energy_C",
+      "median_h_over_hbar": 10.94757353310742,
+      "n": 96
+    },
+    {
+      "stratum_value": "gen_energy_E",
+      "median_h_over_hbar": 9.872387692431506,
+      "n": 30
+    }
+  ],
+  "bottom_protocols_by_median_leverage": [
+    {
+      "stratum_value": "opt_hard_energy_C",
+      "median_h_over_hbar": 1.2271456540510757,
+      "n": 36
+    },
+    {
+      "stratum_value": "opt_anneal_energy_B",
+      "median_h_over_hbar": 1.166904948774014,
+      "n": 85
+    },
+    {
+      "stratum_value": "opt_anneal_noenergy",
+      "median_h_over_hbar": 1.0757874005010317,
+      "n": 150
+    }
+  ],
+  "revised_outcome": {
+    "claim_1_absolute_scale": {
+      "verdict": "degenerazione CONFERMATA",
+      "detail": "h massimo osservato sui design = 0.0208 (in unita' assolute, non di h/h_bar) => sigma(x)/sigma_n = sqrt(1+h) = 1.0104, cioe' un aumento di appena 1.0% anche all'estremo della coda. Non si costruiscono barre di errore assolute su E con questo stimatore."
+    },
+    "claim_2_ranking_use": {
+      "verdict": "NON VALUTATO -- richiede \u00a71b.3, non eseguita",
+      "detail": "Gli usi di diagnostica sui design e criterio di selezione in \u00a73.5 dipendono solo dall'ordinamento indotto da h(x), non dalla sua scala assoluta. \u00a71b.1 da solo non puo' stabilire se quell'ordinamento sia informativo: serve la validazione held-out di \u00a71b.3 (istanziata come piano, non eseguita in questo passaggio)."
+    },
+    "claim_3_preliminary_evidence_ranking_discriminates": {
+      "verdict": "EVIDENZA PRELIMINARE A FAVORE, da confermare con \u00a71b.3",
+      "detail": "La coda e' costituita (almeno in parte) dai run energy-guided: mediana con energia 2.17 vs senza energia 1.09, con tendenza crescente ma SENZA monotonia stretta in energy_weight_stage3 (flessione a 0.2). Il pattern e' pero' molto piu' netto per PROTOCOLLO che per la sola presenza di energia: i protocolli 'gen_energy_*' (generazione de novo, init casuale + energia) hanno mediana ~9.9, contro ~1.8 per i protocolli senza energia e valori intermedi per gli 'opt_anneal_energy_*' (ottimizzazione da sequenze di partenza + energia). Top 3 protocolli per mediana: [{'stratum_value': 'gen_energy_D', 'median_h_over_hbar': 14.740821064644837, 'n': 30}, {'stratum_value': 'gen_energy_C', 'median_h_over_hbar': 10.94757353310742, 'n': 96}, {'stratum_value': 'gen_energy_E', 'median_h_over_hbar': 9.872387692431506, 'n': 30}]; bottom 3: [{'stratum_value': 'opt_hard_energy_C', 'median_h_over_hbar': 1.2271456540510757, 'n': 36}, {'stratum_value': 'opt_anneal_energy_B', 'median_h_over_hbar': 1.166904948774014, 'n': 85}, {'stratum_value': 'opt_anneal_noenergy', 'median_h_over_hbar': 1.0757874005010317, 'n': 150}]. Non e' quindi solo 'l'energia' a spingere fuori dalla regione dei dati, ma specificamente la generazione de novo con energia attiva fin dall'inizio -- rilevante data l'assenza di mitigazione in-loop (\u00a7B.5).",
+      "supporting_numbers": "vedi design_vs_training_tails.csv, ks_tests.csv, leverage_by_protocol.csv"
+    }
+  }
+}

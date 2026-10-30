@@ -1,0 +1,19 @@
+# Everything the agents produce is generated and, apart from the registry,
+# not worth tracking. Deleting store/ returns the repository to its
+# pre-agent state exactly.
+
+store/*
+
+# Keep the directory itself and the model registry: the registry is the
+# human-readable record of what was trained and is small.
+!store/.gitkeep
+!store/models/
+store/models/*
+!store/models/registry.json
+
+# Small, useful exports stay tracked if you choose to add them explicitly
+# with `git add -f agents/store/sequences/<name>.csv`.
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
