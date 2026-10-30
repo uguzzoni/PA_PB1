@@ -110,19 +110,59 @@ If per-call latency becomes a problem, mitigate in this order: a
 `PackageCompiler.jl` sysimage → a persistent Julia daemon → only then
 `juliacall`.
 
-### What still needs wiring
+### What is wired
 
-Three files, each with one clearly marked `BEGIN wire-up block`:
+All three entry points are implemented against the packages:
 
-| File | Needs from the package |
+| File | Uses |
 |---|---|
-| `julia/train.jl` | counts loader, model constructor, `train!`, weight exporter (`PhageNegBinom.jl`) |
-| `julia/sample.jl` | the samplers — especially `gradient` and `greedy` (`PhageMC.jl`) |
-| `julia/inspect.jl` | load a stored model, report real layer sizes |
+| `julia/train.jl` | `PhageNegBinom.train!` / `log_likelihood` / `Node`, Flux chains, JSON export |
+| `julia/sample.jl` | `SeqModelMC.Δenergy` and `descent!`, plus a Zygote gradient sampler |
+| `julia/inspect.jl` | rebuilds the stored chain and reports its real layer sizes |
 
-`sample.jl` is **optional for phase 1**: `tools/fitness.py` has a pure-Python
-reference MCMC. Flip `prefer_julia=True` in `sample_sequences()` once the Julia
-sampler works.
+`julia/common.jl` holds what they share: the alphabet, one-hot encoding, chain
+construction, and the weight export/load pair.
+
+Two things about the packages are worth knowing before you read that code.
+
+**`PhageNegBinom` is pinned to a branch.** `PD_energy_model/Manifest.toml`
+resolves it to `changing_ll` of `SelectionScreeningNB.jl`, **not** the checkout
+in `~/Projects/julia_packages/PhageNegBinom.jl`. The branch groups the
+likelihood parameters into `data_params` / `distr_params` NamedTuples and calls
+`regularizer(ps)` with the whole parameter tuple; the checkout uses positional
+arguments and a splatted regulariser. `train.jl` calls the branch's form,
+matching the training notebooks. If the Manifest is ever re-resolved to the
+other version, `train.jl` is where it breaks.
+
+**`PhageMC`'s module is `SeqModelMC`, and its samplers cannot take
+constraints.** `anneal!` and `descent!` draw mutations with `rand(1:A)` over
+the whole alphabet, so neither can honour `forbidden_aa` or `fixed_positions`
+— and those are not optional, since cysteine is excluded by default.
+`sample.jl` therefore builds its Metropolis and greedy loops on the package's
+`Δenergy` primitive, and calls `descent!` directly only when there are no
+constraints at all. `anneal_batch!` is unusable here: it reads `model.A` and
+`model.L`, which a plain Flux `Chain` does not have. The `gradient` method has
+no counterpart in the package and is implemented with Zygote (reached through
+`Flux`, so no new dependency).
+
+`sample_sequences()` now routes `gradient` and `greedy` to Julia
+automatically. `mcmc` stays on the vectorised numpy path by default because it
+is faster and needs no Julia start-up; pass `prefer_julia=True` to send it to
+`PhageMC.jl` instead.
+
+### The dataset manifest
+
+`DatasetSpec` carries a single `counts_file`, but the experiment is two
+replicate lineages of two rounds each. `train.jl` accepts either a wide CSV
+(`Sequence` plus one count column per node) or a JSON manifest naming the
+per-branch round files — `agents/config/dataset_2R.json` is the campaign's.
+The manifest form is the only one that can express the tree.
+
+Training follows the notebooks: one library state per branch, one shared
+`selection` state (the energy model), a zeroed `wash` reference, and two
+stages — libraries first, then selection. Fitting them jointly from scratch
+lets the selection state absorb each library's composition, which is the exact
+confound the energy model must not learn. Only `states.selection` is exported.
 
 ---
 
@@ -135,16 +175,44 @@ sampler minimises by default. If the Julia side returns a fitness where higher
 is better, set `objective="maximize"` — do not flip the sign midway through
 the stack.
 
-**Alphabet.** `schemas.AA_ALPHABET` is `"ACDEFGHIKLMNPQRSTVWY"`. It must match
-the one-hot order used when the Julia model was trained. If it does not,
-`predict_fitness` returns confident nonsense rather than failing. Verify
-before trusting any number from the Python fast path.
+**Alphabet.** `schemas.AA_ALPHABET` is `"ACDEFGHIKLMNPQRSTVWY"` — but the
+campaign's models are **21 residues wide**, not 20. `dense1_W` in
+`data/energy_model_params/PNB_2R_3lay_negbinom_energy_model_weights.json` is
+315×45 = (21·15)×(3·15): the models were trained on
+`PhageNegBinom.AMINO_ACIDS_GAP`, which appends the gap. A designed binder
+never occupies that column — `model_3layer.py` pads a zero for it — but the
+input width must still match.
 
-The loader does handle matrix orientation automatically — Julia stores
-`Dense(in, out)` as `(out, in)` — by transposing whichever way chains from
-`seq_length × 20`, and raising if neither does.
+Encoding width is therefore a property of the **loaded model**, not a global
+constant: `EnergyModel.n_aa` is inferred from the first layer (or read from
+the `arch` block `train.jl` writes), and `encode_onehot` takes it as an
+argument. Pass `model.n_aa`; never assume 20. An ambiguous width is an error,
+not a default.
+
+The loader also handles matrix orientation — Julia stores `Dense(in, out)` as
+`(out, in)` and serialises column-major, so the file arrives as `(in, out)`
+and the forward pass is `x @ W`, not `x @ W.T`. It transposes whichever way
+chains from the input width and raises if neither does.
+
+**Activations.** They are not recoverable from weight matrices. Files written
+by `train.jl` record them in the `arch` block; for older files the loader
+falls back to the campaign's convention — relu hidden, identity output —
+which is what `model_3layer.py` hard-codes.
 
 ---
+
+## Verified agreement across the three forward passes
+
+The same weights, scored three ways — the Flux chain `common.jl` rebuilds, the
+numpy fast path in `tools/fitness.py`, and `model_3layer.py` as ColabDesign
+calls it — agree to float32 precision. For `ACDEFGHIKLMNPQR` under the
+promoted 2R weights all three give **9.080465**. `test_fitness.py` pins that
+value, so the alphabet, orientation and activation conventions cannot drift
+apart silently.
+
+A model trained by `train.jl` is a drop-in for the pipeline: its exported file
+loads unchanged in `model_3layer.py` and produces identical numbers. Promotion
+is still a human action — see `registry.promotion_instructions(name)`.
 
 ## First real validation (zero cost, no Julia)
 

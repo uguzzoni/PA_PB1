@@ -19,6 +19,7 @@ in :func:`sample_sequences` once the real entry point works.
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Sequence
@@ -47,6 +48,19 @@ __all__ = [
 
 _AA_INDEX = {aa: i for i, aa in enumerate(AA_ALPHABET)}
 _N_AA = len(AA_ALPHABET)
+
+#: Width of the one-hot encoding when the model was trained on gapped data.
+#:
+#: The campaign's models were: ``dense1_W`` in
+#: ``data/energy_model_params/PNB_2R_3lay_negbinom_energy_model_weights.json``
+#: is 315x45 = (21*15) x (3*15).  The gap column is never occupied by a
+#: designed binder -- ``colabdesign/energy_model/model_3layer.py`` pads a zero
+#: column for it -- but the input width must still match or every number is
+#: wrong.  Encoding width is therefore a property of the *loaded model*, not a
+#: global constant.
+_N_AA_GAP = _N_AA + 1
+
+_DENSE_KEY = re.compile(r"^dense(\d+)_([Wb])$")
 
 
 # ==========================================================================
@@ -128,6 +142,21 @@ def _extract_layers(raw: Any) -> list[tuple[np.ndarray, np.ndarray]]:
             for w, b in zip(raw["weights"], raw["biases"])
         ]
 
+    # Layout D: {"dense1_W": ..., "dense1_b": ..., "dense2_W": ...}
+    # This is what the campaign actually has: the layout written by
+    # PD_energy_model/analysis/save_model_json.jl, by agents/julia/train.jl,
+    # and read by colabdesign/energy_model/model_3layer.py.
+    if isinstance(raw, dict) and any(_DENSE_KEY.match(k) for k in raw):
+        idx = sorted(
+            int(m.group(1)) for m in (_DENSE_KEY.match(k) for k in raw) if m and m.group(2) == "W"
+        )
+        out = []
+        for i in idx:
+            w = raw[f"dense{i}_W"]
+            b = raw.get(f"dense{i}_b")
+            out.append((_to_float_array(w), _to_float_array(b) if b is not None else np.zeros(1)))
+        return out
+
     raise ValueError(
         "unrecognised weights layout. Run inspect_weights_file() on this file and "
         "extend _extract_layers() for the layout you actually have. "
@@ -144,6 +173,40 @@ _ACTIVATIONS = {
 }
 
 
+def _infer_n_aa(first_w: np.ndarray, seq_length: int, arch: Any | None) -> int:
+    """Decide whether the model was trained on 20 or 21 residue columns.
+
+    Prefers the ``arch`` block written by ``agents/julia/train.jl``; otherwise
+    matches the first layer's input width against both candidates.  Guessing
+    wrong here is the failure mode the README warns about -- the forward pass
+    would return confident nonsense -- so an ambiguous or unmatched width is an
+    error, never a default.
+    """
+    if isinstance(arch, dict) and arch.get("n_aa"):
+        n_aa = int(arch["n_aa"])
+        if n_aa not in (_N_AA, _N_AA_GAP):
+            raise ValueError(f"arch.n_aa must be {_N_AA} or {_N_AA_GAP}, got {n_aa}")
+        return n_aa
+    if first_w.ndim != 2:
+        raise ValueError(f"first layer: expected a 2-D weight, got shape {first_w.shape}")
+    widths = set(first_w.shape)
+    matches = [n for n in (_N_AA, _N_AA_GAP) if seq_length * n in widths]
+    if len(matches) == 1:
+        return matches[0]
+    if not matches:
+        raise ValueError(
+            f"first layer shape {first_w.shape} chains with neither orientation from an "
+            f"input dim of {seq_length}*{_N_AA}={seq_length * _N_AA} or "
+            f"{seq_length}*{_N_AA_GAP}={seq_length * _N_AA_GAP}. Check seq_length (got "
+            f"{seq_length}) and the alphabet used at training time."
+        )
+    raise ValueError(
+        f"first layer shape {first_w.shape} is ambiguous at seq_length={seq_length}: it "
+        f"matches both a {_N_AA}- and a {_N_AA_GAP}-letter alphabet. Re-export the "
+        "weights with an `arch` block (agents/julia/train.jl does) to disambiguate."
+    )
+
+
 @dataclass
 class EnergyModel:
     """A loaded MLP energy model. Lower output = better binder, by convention."""
@@ -152,10 +215,12 @@ class EnergyModel:
     activations: list[str]
     seq_length: int
     name: str = ""
+    #: 20 (no gap) or 21 (trailing gap column), inferred from the weights.
+    n_aa: int = _N_AA
 
     @property
     def input_dim(self) -> int:
-        return self.seq_length * _N_AA
+        return self.seq_length * self.n_aa
 
     def energy(self, x: np.ndarray) -> np.ndarray:
         """Forward pass. ``x`` is (batch, input_dim); returns (batch,)."""
@@ -179,7 +244,15 @@ def load_energy_model(
     Julia is column-major and ``Dense(in, out)`` stores its weight as
     ``(out, in)``, so an exported matrix may arrive in either orientation.
     Rather than guess, this transposes whichever way makes the dimensions chain
-    from ``seq_length * 20`` and raises if neither does.
+    from the input width and raises if neither does.
+
+    The input width is ``seq_length * n_aa`` where ``n_aa`` is 20 or 21,
+    inferred from the first layer (and taken from the file's ``arch`` block
+    when ``agents/julia/train.jl`` wrote one).  Both occur in this repository:
+    the promoted models in ``data/energy_model_params/`` are 21-wide.
+
+    Verified against ``colabdesign/energy_model/model_3layer.py``: both give
+    9.0804653 for ``ACDEFGHIKLMNPQR`` under the promoted 2R weights.
     """
     p = Path(weights_path)
     if not p.is_absolute():
@@ -188,8 +261,13 @@ def load_energy_model(
     raw = json.loads(p.read_text(encoding="utf-8"))
     pairs = _extract_layers(raw)
 
+    arch = raw.get("arch") if isinstance(raw, dict) else None
+    if isinstance(arch, dict) and arch.get("seq_length"):
+        seq_length = int(arch["seq_length"])
+    n_aa = _infer_n_aa(pairs[0][0], seq_length, arch)
+
     fixed: list[tuple[np.ndarray, np.ndarray]] = []
-    dim = seq_length * _N_AA
+    dim = seq_length * n_aa
     for i, (w, b) in enumerate(pairs):
         if w.ndim != 2:
             raise ValueError(f"layer {i}: expected a 2-D weight, got shape {w.shape}")
@@ -203,6 +281,7 @@ def load_energy_model(
                 f"input dim {dim}. Check seq_length (got {seq_length}) and the alphabet "
                 f"ordering in schemas.AA_ALPHABET."
             )
+
         out_dim = w_fixed.shape[1]
         b_fixed = np.asarray(b, dtype=np.float64).reshape(-1)
         if b_fixed.size not in (out_dim, 1):
@@ -211,29 +290,43 @@ def load_energy_model(
         dim = out_dim
 
     if activations is None:
-        # Convention from CLAUDE.md: 3-layer MLP, nonlinear hidden, linear output.
-        activations = ["tanh"] * (len(fixed) - 1) + ["identity"]
+        if isinstance(arch, dict) and arch.get("activations"):
+            activations = [str(a) for a in arch["activations"]]
+        else:
+            # The campaign's convention, and the one model_3layer.py hard-codes:
+            # relu hidden layers, linear output. Activations cannot be recovered
+            # from weight matrices, so files without an `arch` block get this.
+            activations = ["relu"] * (len(fixed) - 1) + ["identity"]
     if len(activations) != len(fixed):
         raise ValueError(f"{len(activations)} activations for {len(fixed)} layers")
 
-    return EnergyModel(fixed, list(activations), seq_length, name or p.stem)
+    return EnergyModel(fixed, list(activations), seq_length, name or p.stem, n_aa)
 
 
 # ==========================================================================
 # Encoding
 # ==========================================================================
-def encode_onehot(sequences: Iterable[str], seq_length: int | None = None) -> np.ndarray:
-    """One-hot encode sequences to (batch, L*20), row-major over positions.
+def encode_onehot(
+    sequences: Iterable[str], seq_length: int | None = None, n_aa: int = _N_AA
+) -> np.ndarray:
+    """One-hot encode sequences to ``(batch, L*n_aa)``, row-major over positions.
+
+    ``n_aa=21`` appends an always-zero gap column per position, matching the
+    gapped alphabet the campaign's models were trained on.  Pass
+    ``model.n_aa``; do not assume 20.
 
     .. warning::
-       The residue order is :data:`agents.core.schemas.AA_ALPHABET`. It must
-       match the order used at training time in Julia.
+       The residue order is :data:`agents.core.schemas.AA_ALPHABET`, with the
+       gap last. It must match the order used at training time in Julia
+       (``PhageNegBinom.AMINO_ACIDS_GAP``).
     """
+    if n_aa not in (_N_AA, _N_AA_GAP):
+        raise ValueError(f"n_aa must be {_N_AA} or {_N_AA_GAP}, got {n_aa}")
     seqs = list(sequences)
     if not seqs:
         return np.zeros((0, 0))
     L = seq_length or len(seqs[0])
-    out = np.zeros((len(seqs), L, _N_AA), dtype=np.float64)
+    out = np.zeros((len(seqs), L, n_aa), dtype=np.float64)
     for i, s in enumerate(seqs):
         if len(s) != L:
             raise ValueError(f"sequence {i} has length {len(s)}, expected {L}")
@@ -242,7 +335,7 @@ def encode_onehot(sequences: Iterable[str], seq_length: int | None = None) -> np
                 out[i, j, _AA_INDEX[aa]] = 1.0
             except KeyError:
                 raise ValueError(f"sequence {i} position {j}: unknown residue {aa!r}") from None
-    return out.reshape(len(seqs), L * _N_AA)
+    return out.reshape(len(seqs), L * n_aa)
 
 
 # ==========================================================================
@@ -274,7 +367,7 @@ def predict_fitness(
         L = seq_length or len(sequences[0])
 
     model = load_energy_model(path, seq_length=L, name=model_name or "")
-    energies = model.energy(encode_onehot(sequences, L))
+    energies = model.energy(encode_onehot(sequences, model.seq_length, model.n_aa))
     return [FitnessScore(seq=s, energy=float(e)) for s, e in zip(sequences, energies)]
 
 
@@ -326,7 +419,7 @@ def sample_mcmc_python(
     state = _apply_fixed(state, config.constraints)
 
     def energies_of(mat: np.ndarray) -> np.ndarray:
-        return sign * model.energy(encode_onehot(_decode(mat), L))
+        return sign * model.energy(encode_onehot(_decode(mat), L, model.n_aa))
 
     cur_e = energies_of(state)
     best_state, best_e = state.copy(), cur_e.copy()
@@ -373,23 +466,19 @@ def sample_sequences(
 ) -> SampleResult:
     """Generate sequences from a registered energy model.
 
-    Routes to ``PhageMC.jl`` when ``prefer_julia`` is set and Julia is
-    available, otherwise to the Python reference sampler.  Flip the default to
-    True once ``agents/julia/sample.jl`` is wired to the real package.
+    ``method='gradient'`` and ``method='greedy'`` exist only on the Julia side
+    and are routed there automatically -- ``agents/julia/sample.jl`` is wired
+    to ``PhageMC.jl``.  ``method='mcmc'`` stays on the vectorised numpy path by
+    default because it is the faster of the two and needs no Julia start-up;
+    pass ``prefer_julia=True`` to run it through ``PhageMC.jl`` instead.
     """
     entry = registry.get_model(config.model_name)
 
-    if prefer_julia:
+    if prefer_julia or config.method != "mcmc":
         runner = runner or default_runner()
         run_dir = ws.run_dir(ws.slug("adhoc-sample"), create=True)
         return runner.run("sample.jl", config, SampleResult, run_dir=run_dir, tag=config.model_name)
 
-    if config.method != "mcmc":
-        raise NotImplementedError(
-            f"method={config.method!r} exists only on the Julia side. "
-            "Set prefer_julia=True once agents/julia/sample.jl is wired up, "
-            "or use method='mcmc' for the Python reference sampler."
-        )
     model = load_energy_model(
         entry.weights_path, seq_length=entry.arch.seq_length, name=entry.name
     )

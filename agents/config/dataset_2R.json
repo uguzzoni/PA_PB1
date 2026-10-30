@@ -1,0 +1,33 @@
+{
+  "_comment": [
+    "Counts manifest for agents/julia/train.jl -- point DatasetSpec.counts_file here.",
+    "Two replicate lineages (F and R), two selection rounds each, in order.",
+    "This is the structure the campaign's data actually has, and the one the",
+    "notebooks in PD_energy_model/training/training_2rounds build their tree from:",
+    "columns [F2, F3, R2, R3] map to nodes [root F, child F, root R, child R].",
+    "",
+    "The *_nogap.csv files are used because the others carry '*' and '_' from stop",
+    "codons and frameshifts. The model is still trained on the 21-wide gapped",
+    "alphabet so its exported weights stay interchangeable with the promoted",
+    "models in data/energy_model_params/ and with",
+    "colabdesign/energy_model/model_3layer.py, which pads a zero gap column at",
+    "inference time. The gap column simply never gets occupied -- exactly as in",
+    "ColabDesign design runs."
+  ],
+  "branches": [
+    {
+      "label": "F",
+      "files": [
+        "PD_energy_model/data/4_counts/F_2_count_protein_nogap.csv",
+        "PD_energy_model/data/4_counts/F_3_count_protein_nogap.csv"
+      ]
+    },
+    {
+      "label": "R",
+      "files": [
+        "PD_energy_model/data/4_counts/R_2_count_protein_nogap.csv",
+        "PD_energy_model/data/4_counts/R_3_count_protein_nogap.csv"
+      ]
+    }
+  ]
+}

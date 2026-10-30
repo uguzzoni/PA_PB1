@@ -1,0 +1,80 @@
+{
+  "agent-2R-3lay": {
+    "name": "agent-2R-3lay",
+    "arch": {
+      "name": "agent-2R-3lay",
+      "n_rounds": 2,
+      "layers": [
+        {
+          "units": 45,
+          "activation": "relu"
+        },
+        {
+          "units": 15,
+          "activation": "relu"
+        },
+        {
+          "units": 1,
+          "activation": "identity"
+        }
+      ],
+      "likelihood": "negbinom",
+      "input_encoding": "onehot",
+      "seq_length": 15,
+      "regularization": {
+        "l2": 0.01
+      },
+      "notes": "smoke test: same shape as the promoted PNB_2R_3lay model"
+    },
+    "metrics": {
+      "spearman": null,
+      "pearson": null,
+      "val_loss": 33279.6171875,
+      "n": 5266
+    },
+    "weights_path": "models/agent-2R-3lay/agent-2R-3lay_energy_model_weights.json",
+    "n_params": 14926,
+    "run_id": "20261030T120145Z_train-agent-2R-3lay",
+    "created": "2026-10-30T12:02:24.988781+00:00",
+    "promoted": false
+  },
+  "synthetic-demo": {
+    "name": "synthetic-demo",
+    "arch": {
+      "name": "synthetic-demo",
+      "n_rounds": 2,
+      "layers": [
+        {
+          "units": 16,
+          "activation": "tanh"
+        },
+        {
+          "units": 8,
+          "activation": "tanh"
+        },
+        {
+          "units": 1,
+          "activation": "identity"
+        }
+      ],
+      "likelihood": "negbinom",
+      "input_encoding": "onehot",
+      "seq_length": 15,
+      "regularization": {
+        "l2": 0.0001
+      },
+      "notes": "Random weights. For plumbing tests only -- the energies are meaningless."
+    },
+    "metrics": {
+      "spearman": null,
+      "pearson": null,
+      "val_loss": null,
+      "n": 0
+    },
+    "weights_path": "models/synthetic-demo/synthetic-demo_energy_model_weights.json",
+    "n_params": 4961,
+    "run_id": null,
+    "created": "2026-10-30T13:30:17.107042+00:00",
+    "promoted": false
+  }
+}

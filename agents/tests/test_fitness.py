@@ -78,6 +78,76 @@ class TestLoader:
         assert np.allclose(together, apart)
 
 
+class TestExportedLayout:
+    """The layout agents/julia/train.jl writes and model_3layer.py reads.
+
+    Weights are stored as (in, out) -- Julia serialises a Flux (out, in) matrix
+    column-major -- and the campaign's models are 21 residues wide, with the
+    gap column last and never occupied. Getting either wrong produces confident
+    nonsense rather than an error, which is why these are pinned.
+    """
+
+    def write_dense(self, path, dims=(315, 45, 15, 1), arch=None):
+        rng = np.random.default_rng(1)
+        payload = {}
+        for k, (a, b) in enumerate(zip(dims, dims[1:]), start=1):
+            payload[f"dense{k}_W"] = (rng.normal(size=(a, b)) * 0.1).tolist()
+            payload[f"dense{k}_b"] = rng.normal(size=b).tolist()
+        if arch is not None:
+            payload["arch"] = arch
+        path.write_text(json.dumps(payload), encoding="utf-8")
+        return path
+
+    def test_dense_layout_loads_as_21_wide(self, tmp_path):
+        model = fitness.load_energy_model(self.write_dense(tmp_path / "w.json"), seq_length=15)
+        assert model.n_aa == 21
+        assert model.input_dim == 315
+        e = model.energy(fitness.encode_onehot(["ACDEFGHIKLMNPQR"], 15, model.n_aa))
+        assert e.shape == (1,) and np.isfinite(e).all()
+
+    def test_arch_block_supplies_activations_and_width(self, tmp_path):
+        p = self.write_dense(
+            tmp_path / "w.json",
+            arch={"seq_length": 15, "n_aa": 21, "units": [45, 15, 1],
+                  "activations": ["tanh", "tanh", "identity"]},
+        )
+        model = fitness.load_energy_model(p)
+        assert model.activations == ["tanh", "tanh", "identity"]
+        assert model.n_aa == 21 and model.seq_length == 15
+
+    def test_activations_default_to_the_campaign_convention(self, tmp_path):
+        model = fitness.load_energy_model(self.write_dense(tmp_path / "w.json"), seq_length=15)
+        assert model.activations == ["relu", "relu", "identity"]
+
+    def test_gap_column_is_encoded_but_never_set(self):
+        x = fitness.encode_onehot(["A" * 15], 15, 21).reshape(15, 21)
+        assert x.shape == (15, 21)
+        assert x[:, 20].sum() == 0.0, "the gap column must stay empty for a designed binder"
+        assert x[0, AA_ALPHABET.index("A")] == 1.0
+
+    def test_encode_rejects_other_widths(self):
+        with pytest.raises(ValueError, match="n_aa must be"):
+            fitness.encode_onehot(["A" * 15], 15, 22)
+
+    def test_promoted_model_matches_colabdesign(self):
+        """The agent fast path and the ColabDesign energy term must agree.
+
+        Both read the same file and implement the same forward pass, so any
+        disagreement is a real bug. The expected value was cross-checked
+        against colabdesign/energy_model/model_3layer.py and against the Flux
+        chain rebuilt by agents/julia/common.jl.
+        """
+        from agents.core import workspace as ws
+
+        p = ws.REPO_ROOT / "data/energy_model_params/PNB_2R_3lay_negbinom_energy_model_weights.json"
+        if not p.exists():
+            pytest.skip("promoted weights not present in this checkout")
+        model = fitness.load_energy_model(p, seq_length=15)
+        assert model.n_aa == 21
+        e = model.energy(fitness.encode_onehot(["ACDEFGHIKLMNPQR"], 15, model.n_aa))[0]
+        assert e == pytest.approx(9.080465, abs=1e-4)
+
+
 class TestSampler:
     def _model(self, tmp_path):
         return fitness.load_energy_model(make_weights(tmp_path / "w.json"), seq_length=15)
