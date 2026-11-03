@@ -24,6 +24,8 @@ from typing import Any, Callable, Iterable
 
 from pydantic import BaseModel, create_model
 
+from .. import config as cfg
+
 __all__ = ["Tool", "Agent", "tool", "build_params_model", "bind_to_slapsci"]
 
 #: Parameters that are wiring, not model-facing arguments.
@@ -160,7 +162,7 @@ class Agent:
 # --------------------------------------------------------------------------
 # slapsci binding -- the only framework-aware code in the package
 # --------------------------------------------------------------------------
-def bind_to_slapsci(agent: Agent, provider_name: str = "anthropic", model: str | None = None):
+def bind_to_slapsci(agent: Agent, provider_name: str | None = None, model: str | None = None):
     """Instantiate a slapsci provider wired to this agent's tools.
 
     .. note::
@@ -180,8 +182,8 @@ def bind_to_slapsci(agent: Agent, provider_name: str = "anthropic", model: str |
         ) from exc
 
     return get_llm_provider(
-        provider_name,
-        model or agent.model or "claude-sonnet-4-6",
+        provider_name or cfg.get("llm.provider", "anthropic"),
+        model or agent.model or cfg.get("llm.model", "claude-sonnet-4-6"),
         tools=agent.to_openai_tools(),   # <- verify keyword against the slapsci examples
         system_prompt=agent.system_prompt,
     )

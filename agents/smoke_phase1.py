@@ -42,7 +42,9 @@ def make_synthetic_model(name: str = SYNTHETIC, seq_length: int = 15) -> ModelEn
     )
 
     rng = np.random.default_rng(0)
-    dims = [seq_length * 20] + units
+    # 21-wide, matching the gapped alphabet the campaign's real models use,
+    # so the synthetic weights agree with the ArchSpec describing them.
+    dims = [seq_length * 21] + units
     layers = [
         {
             "W": (rng.normal(size=(a, b)) * 0.1).tolist(),

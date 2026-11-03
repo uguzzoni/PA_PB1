@@ -28,6 +28,16 @@ dependencies = [
     "jupyter",
     "scikit-learn",
     "seaborn",
+    # agents/ layer: pydantic for the tool/IO contracts, pyyaml for
+    # agents/config/default.yaml. Both were already present transitively;
+    # declared here because agents/core imports them directly.
+    "pydantic>=2",
+    "pyyaml",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
 ]
 
 [tool.uv.sources]

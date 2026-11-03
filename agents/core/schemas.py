@@ -117,6 +117,18 @@ class ArchSpec(_Base):
     seq_length: int = Field(
         15, ge=1, le=200, description="Binder length in residues. 15 for the PA-PB1 campaign."
     )
+    n_aa: int = Field(
+        21,
+        ge=20,
+        le=21,
+        description=(
+            "Width of the one-hot encoding. 21 is the gapped alphabet the campaign's "
+            "models were trained on (PhageNegBinom.AMINO_ACIDS_GAP: the 20 residues "
+            "plus a trailing gap column). A designed binder never occupies the gap "
+            "column, but the input width must still match or the forward pass is "
+            "wrong. Use 20 only for a model trained without the gap."
+        ),
+    )
     regularization: dict[str, float] = Field(
         default_factory=lambda: {"l2": 1e-4},
         description="Regularisation terms, e.g. {'l2': 1e-4}.",
@@ -141,7 +153,7 @@ class ArchSpec(_Base):
 
     @property
     def input_dim(self) -> int:
-        return self.seq_length * len(AA_ALPHABET)
+        return self.seq_length * self.n_aa
 
     def n_params(self) -> int:
         """Total trainable parameters, including biases."""

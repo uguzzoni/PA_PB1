@@ -19,9 +19,27 @@ class TestArchSpec:
 
     def test_param_count(self):
         arch = ArchSpec(name="t", layers=self._layers([16, 8, 1]), seq_length=15)
-        # 300*16+16 + 16*8+8 + 8*1+1 = 4816+136+9
-        assert arch.n_params() == 4961
+        # 315*16+16 + 16*8+8 + 8*1+1 = 5056+136+9
+        assert arch.n_params() == 5201
+        assert arch.input_dim == 315
+
+    def test_default_width_is_the_gapped_alphabet(self):
+        """21, not 20: the campaign's models carry a trailing gap column.
+
+        Getting this wrong makes estimate_params() disagree with the n_params
+        train.jl actually reports, and makes the Architect reason about
+        capacity from the wrong input dimension.
+        """
+        assert ArchSpec(name="t", layers=self._layers([1]), seq_length=15).n_aa == 21
+
+    def test_no_gap_alphabet_is_still_reachable(self):
+        arch = ArchSpec(name="t", layers=self._layers([16, 8, 1]), seq_length=15, n_aa=20)
         assert arch.input_dim == 300
+        assert arch.n_params() == 4961
+
+    def test_width_outside_20_or_21_is_refused(self):
+        with pytest.raises(ValueError):
+            ArchSpec(name="t", layers=self._layers([1]), seq_length=15, n_aa=22)
 
     def test_non_scalar_output_is_refused(self):
         with pytest.raises(ValueError, match="units=1"):

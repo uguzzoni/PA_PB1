@@ -79,12 +79,17 @@ testable with no provider and no API key.
 ## Quick start
 
 ```bash
-pip install numpy pydantic pytest        # slapsci only when you wire the LLM loop
 cd /path/to/PA_PB1
+uv sync                                  # or: pip install numpy pydantic pyyaml pytest
+                                         # slapsci only when you wire the LLM loop
 
-python -m pytest agents/tests -q         # 62 tests, no Julia needed
+python -m pytest agents/tests -q         # 85 tests, no Julia needed
 python -m agents.smoke_phase1            # full Generator loop on a synthetic model
 ```
+
+**For task-by-task instructions and runnable examples, see
+[USAGE.md](USAGE.md) and [examples/](examples/).** This README is the rationale:
+why the system is shaped this way, and which conventions break it silently.
 
 The smoke script builds a model with *random* weights, registers it, generates
 sequences, measures diversity, shortlists and saves — exercising the sandbox,

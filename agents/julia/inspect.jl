@@ -77,6 +77,7 @@ run_entrypoint() do cfg
         "likelihood"     => String(cfg.likelihood),
         "input_encoding" => String(cfg.input_encoding),
         "seq_length"     => loaded.seq_length,
+        "n_aa"           => loaded.n_aa,
         "regularization" => cfg.regularization,
         "notes"          => join(notes, "; "),
     )

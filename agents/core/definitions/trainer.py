@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from .. import config as cfg
 from ..schemas import ArchSpec, DatasetSpec, Hyperparams, Layer
 from ..tools import architecture, training
 from .. import registry
@@ -167,6 +168,8 @@ model looks good enough to use, say so and explain how to promote it.
 
 
 def build_trainer_agent(model: str | None = None) -> Agent:
+    # llm.per_agent.trainer in agents/config/default.yaml, falling back to llm.model.
+    model = model or cfg.get("llm.per_agent.trainer") or cfg.get("llm.model")
     return Agent(
         name="trainer",
         description="Trains and evaluates energy models from a given architecture.",

@@ -1,5 +1,17 @@
 # Configuration for the PA_PB1 agent system.
 #
+# This file IS loaded: agents/core/config.py reads it at import time, and
+# agents/core/execution.py and agents/core/definitions/* take their defaults
+# from it. Because it is read at import, the values here are what appear as
+# defaults in the tool schemas the LLM is shown.
+#
+# Editing it changes behaviour on the next run. Point PA_PB1_AGENTS_CONFIG at
+# another file to override it without touching this one.
+#
+# Every key below is mirrored by DEFAULTS in agents/core/config.py, which is
+# the merge base: deleting a key here restores the built-in value rather than
+# breaking anything, and a key this file omits is simply inherited.
+#
 # Read-only at runtime: agents cannot modify this file, and no tool exposes it.
 
 llm:
@@ -37,7 +49,9 @@ sampling:
   min_mean_hamming: 3.0
 
 data:
-  # Repo-relative. Verify these against the actual repository before use.
+  # Repo-relative, and all three exist. Informational for now: no tool reads
+  # these yet, they record where the canonical inputs live. The examples in
+  # agents/examples/ use the same paths.
   seed_sequences: data/input_sequences.txt
   affinity_measurements: data/affinity_measurements_PA-PB1_formatted.csv
   reference_weights_dir: data/energy_model_params

@@ -27,7 +27,7 @@ from typing import TypeVar
 
 from pydantic import BaseModel
 
-from . import workspace as ws
+from . import config as cfg, workspace as ws
 
 __all__ = ["Runner", "LocalJuliaRunner", "SlurmRunner", "ExecutionError", "default_runner"]
 
@@ -96,13 +96,19 @@ class LocalJuliaRunner(Runner):
     def __init__(
         self,
         project: Path | str | None = None,
-        julia_bin: str = "julia",
-        timeout_s: int = 3600,
+        julia_bin: str | None = None,
+        timeout_s: int | None = None,
         env: dict[str, str] | None = None,
     ) -> None:
-        self.project = Path(project) if project else ws.read_path("PD_energy_model")
-        self.julia_bin = julia_bin
-        self.timeout_s = timeout_s
+        # Defaults come from agents/config/default.yaml (execution.*), so the
+        # Julia project, binary and timeout can be changed without editing code.
+        self.project = (
+            Path(project) if project
+            else ws.read_path(cfg.get("execution.julia_project", "PD_energy_model"))
+        )
+        self.julia_bin = julia_bin or cfg.get("execution.julia_bin", "julia")
+        self.timeout_s = int(timeout_s if timeout_s is not None
+                             else cfg.get("execution.timeout_s", 3600))
         self.env = env
 
     def available(self) -> bool:
@@ -190,5 +196,20 @@ class SlurmRunner(Runner):
 
 
 def default_runner() -> Runner:
-    """The runner used when a tool is not given one explicitly."""
-    return LocalJuliaRunner()
+    """The runner used when a tool is not given one explicitly.
+
+    Selected by ``execution.backend`` in ``agents/config/default.yaml``.
+    """
+    backend = str(cfg.get("execution.backend", "local")).lower()
+    if backend == "local":
+        return LocalJuliaRunner()
+    if backend == "slurm":
+        raise ExecutionError(
+            "execution.backend is 'slurm' in agents/config/default.yaml, but "
+            "SlurmRunner is still a phase-2 placeholder. Set it back to 'local', "
+            "or implement SlurmRunner -- its signature is already fixed."
+        )
+    raise ExecutionError(
+        f"unknown execution.backend {backend!r} in agents/config/default.yaml; "
+        "expected 'local' or 'slurm'."
+    )

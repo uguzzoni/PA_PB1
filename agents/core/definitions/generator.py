@@ -12,11 +12,21 @@ from __future__ import annotations
 
 from typing import Any
 
+from .. import config as cfg
 from ..schemas import SampleConfig, SeqConstraints, SeqRecord
 from ..tools import analysis, fitness
 from .base import Agent, tool
 
 __all__ = ["build_generator_agent"]
+
+# Read once, at import, so the concrete numbers appear in the tool schemas the
+# LLM is shown. See agents/config/default.yaml.
+_N = int(cfg.get("sampling.n", 50))
+_TEMPERATURE = float(cfg.get("sampling.temperature", 1.0))
+_N_STEPS = int(cfg.get("sampling.n_steps", 1000))
+_MIN_MEAN_HAMMING = float(cfg.get("sampling.min_mean_hamming", 3.0))
+_SEQ_LENGTH = int(cfg.get("defaults.seq_length", 15))
+_FORBIDDEN_AA = str(cfg.get("defaults.forbidden_aa", "C"))
 
 
 @tool(
@@ -47,13 +57,13 @@ def predict_fitness(sequences: list[str], model_name: str) -> list[dict[str, Any
 )
 def generate_sequences(
     model_name: str,
-    n: int = 50,
-    length: int = 15,
-    temperature: float = 1.0,
-    n_steps: int = 1000,
+    n: int = _N,
+    length: int = _SEQ_LENGTH,
+    temperature: float = _TEMPERATURE,
+    n_steps: int = _N_STEPS,
     seed: int = 0,
     seed_sequences: list[str] | None = None,
-    forbidden_aa: str = "C",
+    forbidden_aa: str = _FORBIDDEN_AA,
 ) -> dict[str, Any]:
     config = SampleConfig(
         model_name=model_name,
@@ -88,9 +98,12 @@ def generate_sequences(
     """
 )
 def check_diversity(sequences: list[str], identity_threshold: float = 0.8) -> dict[str, Any]:
-    return analysis.diversity_metrics(
-        sequences, identity_threshold=identity_threshold
-    ).model_dump()
+    metrics = analysis.diversity_metrics(sequences, identity_threshold=identity_threshold)
+    out = metrics.model_dump()
+    # Threshold from sampling.min_mean_hamming in agents/config/default.yaml.
+    out["collapsed"] = metrics.n_clusters <= 1 or metrics.mean_hamming < _MIN_MEAN_HAMMING
+    out["min_mean_hamming"] = _MIN_MEAN_HAMMING
+    return out
 
 
 @tool(
@@ -170,6 +183,8 @@ plainly -- it is a useful result, not a failure to hide.
 
 
 def build_generator_agent(model: str | None = None) -> Agent:
+    # llm.per_agent.generator in agents/config/default.yaml, falling back to llm.model.
+    model = model or cfg.get("llm.per_agent.generator") or cfg.get("llm.model")
     return Agent(
         name="generator",
         description="Samples candidate binders from a trained fitness model and assesses them.",

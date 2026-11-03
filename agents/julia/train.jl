@@ -256,10 +256,12 @@ run_entrypoint() do cfg
     units = [Int(l.units) for l in arch.layers]
     acts  = [String(l.activation) for l in arch.layers]
     L     = Int(arch.seq_length)
-    # The campaign's exported models use the 21-letter gap alphabet. ArchSpec
-    # has no field for this, so follow that convention; `arch` in the exported
-    # file records it for inspect.jl and the Python loader.
-    n_aa  = 21
+    # Encoding width: 21 (gapped) for the campaign's models, 20 for a model
+    # trained without the gap. Defaulted here so configs written before
+    # ArchSpec gained the field still train. The exported file records it in
+    # its `arch` block for inspect.jl and the Python loader.
+    n_aa  = haskey(arch, :n_aa) ? Int(arch.n_aa) : 21
+    n_aa in (20, 21) || error("arch.n_aa must be 20 or 21, got $n_aa")
     λ     = haskey(arch.regularization, :l2) ? Float64(arch.regularization[:l2]) : 0.0
 
     last(units) == 1 || error("final layer must have 1 unit (got $(last(units))): the model emits a scalar energy")

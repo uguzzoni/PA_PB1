@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from .. import config as cfg
 from ..schemas import ArchSpec, Layer
 from ..tools import architecture, training
 from .base import Agent, tool
@@ -125,8 +126,9 @@ negative-binomial likelihood. The existing production model is a 3-layer MLP
 with two selection rounds, named in the style PNB_2R_3lay_negbinom.
 
 The binding constraint is DATA, not compute. These datasets are small relative
-to the input dimension (15 x 20 = 300). Overfitting is the failure mode that
-matters; a larger network is almost never the answer.
+to the input dimension (15 residues x 21 columns = 315; the alphabet carries a
+trailing gap column). Overfitting is the failure mode that matters; a larger
+network is almost never the answer.
 
 Method:
 1. Look at what exists first -- both the agent-trained models and the
@@ -144,6 +146,8 @@ two architectures, say so and propose the smaller one.
 
 
 def build_architect_agent(model: str | None = None) -> Agent:
+    # llm.per_agent.architect in agents/config/default.yaml, falling back to llm.model.
+    model = model or cfg.get("llm.per_agent.architect") or cfg.get("llm.model")
     return Agent(
         name="architect",
         description="Decides the energy-model architecture from what exists and what the data supports.",
